@@ -1,0 +1,287 @@
+/* Fichier : css/style.css
+   Rôle : styles globaux de Caisse Vesuvio. */
+
+:root {
+  --color-background: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-text: #1f2933;
+  --color-muted: #6b7280;
+  --color-border: #d8dee4;
+
+  --color-midi: #2563eb;
+  --color-midi-soft: #dbeafe;
+
+  --color-soir: #7c3aed;
+  --color-soir-soft: #ede9fe;
+
+  --color-success: #15803d;
+  --color-danger: #b91c1c;
+
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+body.service-midi {
+  background-color: var(--color-midi-soft);
+}
+
+body.service-soir {
+  background-color: var(--color-soir-soft);
+}
+
+.app-header {
+  padding: 16px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+}
+
+.service-switch {
+  display: flex;
+  gap: 8px;
+}
+
+.service-button {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.service-button.is-active {
+  color: #ffffff;
+  border-color: transparent;
+}
+
+body.service-midi .service-button[data-service="midi"].is-active {
+  background-color: var(--color-midi);
+}
+
+body.service-soir .service-button[data-service="soir"].is-active {
+  background-color: var(--color-soir);
+}
+
+.app-main {
+  padding: 16px;
+}
+
+.app-pages {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.service-section {
+  background-color: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.service-section h2 {
+  margin-top: 0;
+}
+
+.service-section[data-service="midi"] h2 {
+  color: var(--color-midi);
+}
+
+.service-section[data-service="soir"] h2 {
+  color: var(--color-soir);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+fieldset {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+legend {
+  padding: 0 6px;
+  font-weight: 700;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+label {
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: 2px solid var(--color-midi);
+  outline-offset: 1px;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-midi);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+.payment-list {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.payment-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+}
+
+.payment-remove-button {
+  background-color: var(--color-danger);
+  padding: 6px 10px;
+}
+
+.recap-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.recap-section {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.recap-section h3 {
+  margin-top: 0;
+}
+
+.recap-list {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.recap-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+}
+
+.recap-list dt {
+  color: var(--color-muted);
+}
+
+.recap-list dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.form-message {
+  min-height: 20px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+
+.form-message.is-error {
+  color: var(--color-danger);
+}
+
+.form-message.is-success {
+  color: var(--color-success);
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+.form-actions button[type="submit"] {
+  background-color: var(--color-success);
+}
+
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (min-width: 640px) {
+  .app-header {
+    padding: 20px 24px;
+  }
+
+  .app-main {
+    padding: 24px;
+  }
+
+  .service-section {
+    padding: 24px;
+  }
+
+  .recap-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
