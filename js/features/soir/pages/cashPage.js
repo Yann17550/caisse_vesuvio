@@ -14,6 +14,7 @@
  * La touche Entrée permet de passer d’un champ au suivant.
  */
 
+import { isFilled, showFieldError, clearFieldError } from '../../../utils/validation.js';
 import { setupEnterNavigation } from '../../../utils/formNavigation.js';
 import { formatEuro } from '../../../utils/format.js';
 
@@ -219,4 +220,28 @@ export function initCashPage(container) {
   setupEnterNavigation(formElement);
 
   updateCountedTotal();
+}
+
+/**
+ * Valide la page Espèces du Soir.
+ * Le champ Espèces Adipos est obligatoire, même s'il vaut 0.
+ * Retourne true si la page est valide, false sinon.
+ */
+export function validateCashPage() {
+  const adiposInput = document.getElementById('soir-cash-adipos');
+
+  clearFieldError(adiposInput);
+
+  if (!isFilled(adiposInput.value)) {
+    showFieldError(
+      adiposInput,
+      'Espèces Adipos obligatoire (0 autorisé).',
+    );
+
+    adiposInput.focus();
+
+    return false;
+  }
+
+  return true;
 }
