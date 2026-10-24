@@ -6,8 +6,9 @@
  * ni gestion de liste MyPos, ni accès direct à Supabase.
  */
 
+
 import midiView from './midiView.js';
-import { createMyPosPayments } from './myPosPayments.js';
+import { createPaymentList } from '../../utils/paymentList.js';
 import { createMidiRecap } from './midiRecap.js';
 import { setupEnterNavigation } from '../../utils/formNavigation.js';
 import {
@@ -19,17 +20,20 @@ import {
   closeDailyClosing,
 } from '../../services/dailyClosingService.js';
 
+
 const midiController = {
   init() {
     midiView.init();
 
-    this.myPos = createMyPosPayments({
+
+    this.myPos = createPaymentList({
       amountInput: midiView.elements.myPosAmount,
       addButton: midiView.elements.myPosAddButton,
       listElement: midiView.elements.myPosList,
       totalElement: midiView.elements.myPosTotal,
       onChange: () => this.updateRecap(),
     });
+
 
     this.recap = createMidiRecap([
       {
@@ -94,27 +98,33 @@ const midiController = {
       },
     ]);
 
+
     setupEnterNavigation(
       midiView.elements.form,
       midiView.elements.myPosAmount,
     );
 
+
     midiView.elements.form.addEventListener('input', () => {
       this.updateRecap();
     });
+
 
     midiView.elements.form.addEventListener('submit', (event) => {
       event.preventDefault();
       this.handleValidate();
     });
 
+
     midiView.elements.modifyButton.addEventListener('click', () => {
       this.handleModify();
     });
 
+
     midiView.setLocked(false);
     this.updateRecap();
   },
+
 
   getBusinessDate() {
     const now = new Date();
@@ -122,8 +132,10 @@ const midiController = {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
 
+
     return `${year}-${month}-${day}`;
   },
+
 
   getRawMidiData() {
     return {
@@ -142,20 +154,26 @@ const midiController = {
     };
   },
 
+
   updateRecap() {
     midiView.clearMessage();
 
+
     const validation = validateMidiRawData(this.getRawMidiData());
+
 
     if (validation.isValid) {
       this.recap.update(validation.data);
     }
   },
 
+
   async handleValidate() {
     midiView.clearMessage();
 
+
     const validation = validateMidiRawData(this.getRawMidiData());
+
 
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
@@ -163,13 +181,17 @@ const midiController = {
       return;
     }
 
+
     const closingData = buildMidiClosingData(validation.data);
+
 
     try {
       midiView.showMessage('Enregistrement du Midi en cours…', 'info');
 
+
       await saveDailyClosing(this.getBusinessDate(), 'midi', closingData);
       await closeDailyClosing(this.getBusinessDate(), 'midi');
+
 
       midiView.setLocked(true);
       midiView.showMessage(
@@ -182,10 +204,12 @@ const midiController = {
     }
   },
 
+
   handleModify() {
     midiView.setLocked(false);
     midiView.showMessage('Modification du Midi ouverte.', 'info');
   },
 };
+
 
 export default midiController;

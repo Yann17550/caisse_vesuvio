@@ -210,13 +210,13 @@ export function validateMidiRawData(rawData) {
  */
 export function buildMidiClosingData(validatedData) {
   return {
-    mypos_total: validatedData.myPosTotal,
+    mypos: validatedData.myPosTotal,
     cb_classic: validatedData.cbClassic,
     cb_ticket_resto: validatedData.cbTicketResto,
     cash_adipos: validatedData.cashAdipos,
     ancv_paper: validatedData.ancvPaper,
     ancv_connect: validatedData.ancvConnect,
-    checks: validatedData.checks,
+    checks_total: validatedData.checks,
     vat_5_5: validatedData.vat55,
     vat_10: validatedData.vat10,
     vat_20: validatedData.vat20,
