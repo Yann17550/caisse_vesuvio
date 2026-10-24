@@ -9,10 +9,12 @@
  * - les espèces Adipos.
  *
  * Total espèces comptées = (billets + pièces) - fond de caisse.
- * L’écart espèces est visible dans le Récapitulatif.
+ * Le résultat ne peut jamais être négatif : le fond de caisse
+ * ne fait pas partie du chiffre d’affaires.
  *
  * La touche Entrée permet de passer d’un champ au suivant.
  */
+
 
 
 import { isFilled, showFieldError, clearFieldError } from '../../../utils/validation.js';
@@ -22,11 +24,14 @@ import { getInputAmount } from '../../../utils/amounts.js';
 import { cashPageTemplate } from './templates/cashPageTemplate.js';
 
 
+
 export function initCashPage(container) {
   container.innerHTML = cashPageTemplate;
 
 
+
   const formElement = document.getElementById('soir-cash-form');
+
 
 
   const inputs = {
@@ -45,9 +50,11 @@ export function initCashPage(container) {
   };
 
 
+
   const countedTotalElement = document.getElementById(
     'soir-cash-counted-total',
   );
+
 
 
   function updateCountedTotal() {
@@ -64,11 +71,19 @@ export function initCashPage(container) {
       getInputAmount(inputs.coin010) * 0.1;
 
 
-    const countedTotal = cashOnHand - getInputAmount(inputs.fund);
+
+    // CA en espèces : le fond de caisse est déduit du comptage
+    // physique, mais le résultat ne peut pas être négatif.
+    const countedTotal = Math.max(
+      0,
+      cashOnHand - getInputAmount(inputs.fund),
+    );
+
 
 
     countedTotalElement.textContent = formatEuro(countedTotal);
   }
+
 
 
   Object.values(inputs).forEach((input) => {
@@ -76,11 +91,14 @@ export function initCashPage(container) {
   });
 
 
+
   setupEnterNavigation(formElement);
+
 
 
   updateCountedTotal();
 }
+
 
 
 /**
@@ -93,7 +111,9 @@ export function validateCashPage() {
   const adiposInput = document.getElementById('soir-cash-adipos');
 
 
+
   clearFieldError(adiposInput);
+
 
 
   if (!isFilled(adiposInput.value)) {
@@ -103,11 +123,14 @@ export function validateCashPage() {
     );
 
 
+
     adiposInput.focus();
+
 
 
     return false;
   }
+
 
 
   return true;

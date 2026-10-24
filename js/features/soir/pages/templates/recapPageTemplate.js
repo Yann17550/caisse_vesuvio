@@ -5,13 +5,24 @@
  * Ce fichier ne contient que du HTML. Aucune logique.
  */
 
+
 export const recapPageTemplate = `
   <h3>Récapitulatif</h3>
 
 
+
   <form id="soir-recap-form" class="card" novalidate>
+    <div
+      id="soir-recap-message"
+      class="form-message"
+      role="status"
+    ></div>
+
+
+
     <fieldset>
       <legend>Encaissements</legend>
+
 
 
       <div class="recap-line">
@@ -20,10 +31,12 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="recap-line">
         <span>CB classique + AMEX</span>
         <strong id="soir-recap-cb-classic-amex">0,00 €</strong>
       </div>
+
 
 
       <div class="recap-line">
@@ -32,10 +45,12 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="recap-line">
         <span>CB ANCV</span>
         <strong id="soir-recap-cb-ancv">0,00 €</strong>
       </div>
+
 
 
       <div class="recap-line">
@@ -44,16 +59,19 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="recap-line">
         <span>ANCV papier</span>
         <strong id="soir-recap-ancv-paper">0,00 €</strong>
       </div>
 
 
+
       <div class="recap-line">
         <span>Chèques</span>
         <strong id="soir-recap-checks">0,00 €</strong>
       </div>
+
 
 
       <div class="recap-line">
@@ -63,8 +81,10 @@ export const recapPageTemplate = `
     </fieldset>
 
 
+
     <fieldset>
       <legend>Écart</legend>
+
 
 
       <div class="recap-line">
@@ -73,10 +93,12 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="recap-line">
         <span>myPOS</span>
         <strong id="soir-recap-mypos-difference">0,00 €</strong>
       </div>
+
 
 
       <div class="recap-line">
@@ -86,8 +108,10 @@ export const recapPageTemplate = `
     </fieldset>
 
 
+
     <fieldset>
       <legend>Fréquentation</legend>
+
 
 
       <div class="form-field">
@@ -99,6 +123,7 @@ export const recapPageTemplate = `
           value="0"
         />
       </div>
+
 
 
       <div class="form-field">
@@ -113,8 +138,10 @@ export const recapPageTemplate = `
     </fieldset>
 
 
+
     <fieldset>
       <legend>TVA</legend>
+
 
 
       <div class="form-field">
@@ -128,6 +155,7 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="form-field">
         <label for="soir-recap-vat-10">Montant TTC 10 %</label>
         <input
@@ -137,6 +165,7 @@ export const recapPageTemplate = `
           placeholder="Montant TTC 10 %"
         />
       </div>
+
 
 
       <div class="form-field">
@@ -150,10 +179,12 @@ export const recapPageTemplate = `
       </div>
 
 
+
       <div class="recap-line">
         <span>Total TVA TTC</span>
         <strong id="soir-recap-vat-total">0,00 €</strong>
       </div>
+
 
 
       <div class="recap-line">
@@ -161,5 +192,16 @@ export const recapPageTemplate = `
         <strong id="soir-recap-coherence">—</strong>
       </div>
     </fieldset>
+
+
+
+      <button
+        type="submit"
+        id="soir-recap-validate-button"
+        class="button-primary"
+      >
+        Valider le Soir
+      </button>
+    </div>
   </form>
 `;

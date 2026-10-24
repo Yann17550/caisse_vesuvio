@@ -13,7 +13,10 @@
  * Le total des encaissements (paymentsTotal) exclut le myPOS.
  */
 
+
 import { getAmountFromText, getAmountFromInput } from '../../utils/amounts.js';
+import { getQuantityFromInput } from '../../utils/amounts.js';
+
 
 /**
  * Lit les totaux détaillés de la clôture du Soir.
@@ -32,7 +35,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   cash.difference = cash.countedTotal - cash.adipos;
+
 
   // --- CB classique ---
   const cardClassic = {
@@ -44,7 +49,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   cardClassic.total = cardClassic.contact + cardClassic.noContact;
+
 
   // --- CB Ticket Restaurant ---
   const cardTr = {
@@ -56,7 +63,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   cardTr.total = cardTr.contact + cardTr.noContact;
+
 
   // --- CB ANCV (télécollecte) ---
   const cardAncv = {
@@ -68,7 +77,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   cardAncv.total = cardAncv.contact + cardAncv.noContact;
+
 
   // --- AMEX ---
   const cardAmex = {
@@ -80,7 +91,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   cardAmex.total = cardAmex.contact + cardAmex.noContact;
+
 
   // --- myPOS ---
   const myPos = {
@@ -88,6 +101,7 @@ export function getSoirTotals() {
       document.getElementById('soir-card-mypos-total'),
     ),
   };
+
 
   // --- ANCV papier (par dénomination) ---
   const ancvPaper = {
@@ -97,9 +111,11 @@ export function getSoirTotals() {
     nb50: getAmountFromInput(document.getElementById('soir-ancv-nb-50')),
   };
 
+
   ancvPaper.total = getAmountFromText(
     document.getElementById('soir-ancv-grand-total'),
   );
+
 
   // --- Chèques ---
   const checks = {
@@ -110,6 +126,18 @@ export function getSoirTotals() {
       document.getElementById('soir-checks-count').textContent,
     ),
   };
+
+
+  // --- Fréquentation ---
+  const pizzas = {
+    dineIn: getQuantityFromInput(
+      document.getElementById('soir-recap-dine-in'),
+    ),
+    takeaway: getQuantityFromInput(
+      document.getElementById('soir-recap-takeaway'),
+    ),
+  };
+
 
   // --- TVA (montants TTC saisis) ---
   const vat = {
@@ -124,7 +152,9 @@ export function getSoirTotals() {
     ),
   };
 
+
   vat.total = vat.ttc55 + vat.ttc10 + vat.ttc20;
+
 
   // --- Totaux de contrôle ---
   // myPOS exclu du total des encaissements.
@@ -137,6 +167,7 @@ export function getSoirTotals() {
     ancvPaper.total +
     checks.total;
 
+
   return {
     cash,
     cardClassic,
@@ -146,10 +177,13 @@ export function getSoirTotals() {
     myPos,
     ancvPaper,
     checks,
+    pizzas,
     vat,
+
 
     paymentsTotal, // myPOS exclu
     vatTotal: vat.total,
+
 
     totalDifference: cash.difference + myPos.total,
   };
