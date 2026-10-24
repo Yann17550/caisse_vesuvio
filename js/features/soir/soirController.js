@@ -17,7 +17,7 @@ import { validateCashPage } from './pages/cashPage.js';
 
 
 const soirController = {
-  currentPage: 'cash',
+  currentPage: 'card',
 
 
   /**
@@ -33,7 +33,7 @@ const soirController = {
     this.bindNavigation();
 
 
-    this.showPage('cash');
+    this.showPage('card');
   },
 
 
