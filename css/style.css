@@ -296,3 +296,7 @@ button:hover {
   font-size: 0.85rem;
   margin-top: 4px;
 }
+
+.coherence-error {
+  color: #dc2626;
+}
