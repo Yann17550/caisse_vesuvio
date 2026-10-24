@@ -1,0 +1,81 @@
+/**
+ * Fichier : js/features/soir/soirController.js
+ * Rôle : coordonner la navigation et les pages du service Soir.
+ *
+ * Ce contrôleur ne contient ni calcul métier ni accès Supabase.
+ * Il délègue chaque page à son module dédié.
+ */
+
+import soirView from './soirView.js';
+import { initCashPage } from './pages/cashPage.js';
+import { initCardPage } from './pages/cardPage.js';
+import { initAncvPage } from './pages/ancvPage.js';
+import { initChecksPage } from './pages/checksPage.js';
+import { initRecapPage } from './pages/recapPage.js';
+
+const soirController = {
+  /**
+   * Initialise le service Soir.
+   *
+   * @returns {void}
+   */
+  init() {
+    soirView.init();
+
+    this.initPages();
+    this.bindNavigation();
+    soirView.showPage('cash');
+  },
+
+  /**
+   * Initialise les pages du service Soir.
+   *
+   * @returns {void}
+   */
+  initPages() {
+    const cashContainer = document.getElementById('soir-cash-page');
+
+    if (cashContainer) {
+      initCashPage(cashContainer);
+    }
+
+    const cardContainer = document.getElementById('soir-card-page');
+
+    if (cardContainer) {
+      initCardPage(cardContainer);
+    }
+
+    const ancvContainer = document.getElementById('soir-ancv-page');
+
+    if (ancvContainer) {
+      initAncvPage(ancvContainer);
+    }
+
+    const checksContainer = document.getElementById('soir-checks-page');
+
+    if (checksContainer) {
+      initChecksPage(checksContainer);
+    }
+
+    const recapContainer = document.getElementById('soir-recap-page');
+
+    if (recapContainer) {
+      initRecapPage(recapContainer);
+    }
+  },
+
+  /**
+   * Attache les écouteurs de navigation.
+   *
+   * @returns {void}
+   */
+  bindNavigation() {
+    soirView.elements.navButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        soirView.showPage(button.dataset.soirPage);
+      });
+    });
+  },
+};
+
+export default soirController;

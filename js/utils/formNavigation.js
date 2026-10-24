@@ -1,8 +1,10 @@
 /**
- * Fichier : js/features/midi/formNavigation.js
+ * Fichier : js/utils/formNavigation.js
  * Rôle : permettre à la touche Entrée de passer au champ suivant.
  *
- * Ce module sera réutilisable pour le service Soir.
+ * Cet utilitaire est partagé par :
+ * - le service Midi ;
+ * - le service Soir.
  */
 
 export function setupEnterNavigation(formElement, excludedInput) {

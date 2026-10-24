@@ -4,12 +4,10 @@
  *
  * Ce fichier coordonne uniquement les modules.
  * Il ne contient ni calcul métier, ni accès direct à Supabase.
- *
- * Dépendances :
- *  - js/features/midi/midiController.js
  */
 
 import midiController from './features/midi/midiController.js';
+import soirController from './features/soir/soirController.js';
 
 const serviceButtons = document.querySelectorAll('.service-button');
 const serviceSections = document.querySelectorAll('.service-section');
@@ -49,6 +47,8 @@ function initApp() {
   });
 
   midiController.init();
+  soirController.init();
+
   showService('midi');
 }
 
