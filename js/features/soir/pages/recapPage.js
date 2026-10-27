@@ -16,19 +16,21 @@
  * à chaque mise à jour.
  *
  * La validation est impossible si le contrôle de cohérence échoue.
- * Après un enregistrement réussi, l'interface est remise à zéro.
+ * Après un enregistrement réussi, les brouillons locaux sont effacés
+ * et l'interface est remise à zéro.
  */
-
-
-
 
 import { formatEuro } from '../../../utils/format.js';
 import { validateClosingTotals } from '../../../utils/closingValidation.js';
 import { getSoirTotals } from '../soirTotals.js';
 import {
   setupEnterNavigation,
-  setupSelectOnFocus,
 } from '../../../utils/formNavigation.js';
+import {
+  restoreFormDraft,
+  setupDraftAutosave,
+  clearSoirDrafts,
+} from '../../../utils/draftStorage.js';
 import { buildSoirClosingData } from '../../../validation/soirValidation.js';
 import {
   saveDailyClosing,
@@ -73,13 +75,17 @@ export function initRecapPage(container) {
   const tvaFieldsetElement = document.getElementById(
     'soir-recap-tva-fieldset',
   );
-  
+
   const recapVatTotalElement = document.getElementById(
     'soir-recap-vat-total',
   );
   const recapCoherenceElement = document.getElementById(
     'soir-recap-coherence',
   );
+
+  // Restaure les champs Fréquentation et TVA saisis avant
+  // un éventuel rafraîchissement accidentel.
+  restoreFormDraft(formElement);
 
   function showMessage(text, type = 'info') {
     messageElement.textContent = text;
@@ -99,11 +105,28 @@ export function initRecapPage(container) {
     messageElement.classList.remove('is-error', 'is-success');
   }
 
+  /**
+   * Détermine la date métier de la clôture.
+   *
+   * Une clôture réalisée entre minuit et 03:00 appartient
+   * au service de la veille : elle est rattachée à J-1.
+   *
+   * @returns {string} Date métier au format ISO : YYYY-MM-DD.
+   */
   function getBusinessDate() {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+
+    // Copie indépendante de la date courante.
+    const businessDate = new Date(now);
+
+    // Entre 00:00 et 02:59, le service concerne la veille.
+    if (now.getHours() < 3) {
+      businessDate.setDate(businessDate.getDate() - 1);
+    }
+
+    const year = businessDate.getFullYear();
+    const month = String(businessDate.getMonth() + 1).padStart(2, '0');
+    const day = String(businessDate.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
@@ -128,7 +151,6 @@ export function initRecapPage(container) {
 
   function updateRecap() {
     const totals = getSoirTotals();
-
 
     // --- Encaissements (masqués si 0) ---
     const encaissementLines = [
@@ -179,7 +201,6 @@ export function initRecapPage(container) {
       }
     });
 
-
     // --- Compteurs (masqués si 0) ---
     const ancvCountVisible = totals.ancvPaper.count !== 0;
 
@@ -221,20 +242,12 @@ export function initRecapPage(container) {
 
     recapVatTotalElement.textContent = formatEuro(totals.vatTotal);
 
-
-
-
-
     // Titre de page : TVA TTC + écart total.
     setTitleValue('soir-recap-title-vat', formatEuro(totals.vatTotal));
     setTitleValue(
       'soir-recap-title-ecart',
       formatEuro(totals.totalDifference),
     );
-
-
-
-
 
     if (result.isValid) {
       recapCoherenceElement.textContent = 'OK';
@@ -251,21 +264,11 @@ export function initRecapPage(container) {
     }
   }
 
-
-
-
-
   async function handleValidate(event) {
     event.preventDefault();
     clearMessage();
 
-
-
-
     const totals = getSoirTotals();
-
-
-
 
     // La validation est impossible si le contrôle de cohérence échoue.
     const coherence = validateClosingTotals({
@@ -289,8 +292,16 @@ export function initRecapPage(container) {
     try {
       showMessage('Enregistrement du Soir en cours…', 'info');
 
-      await saveDailyClosing(getBusinessDate(), 'soir', closingData);
-      await closeDailyClosing(getBusinessDate(), 'soir');
+      // La date métier est calculée une seule fois :
+      // sauvegarde et clôture doivent cibler exactement la même ligne.
+      const businessDate = getBusinessDate();
+
+      await saveDailyClosing(businessDate, 'soir', closingData);
+      await closeDailyClosing(businessDate, 'soir');
+
+      // Les chiffres sont désormais enregistrés dans Supabase :
+      // les brouillons locaux ne sont plus nécessaires.
+      clearSoirDrafts();
 
       showMessage(
         'Soir enregistré et validé dans Supabase.',
@@ -390,8 +401,14 @@ export function initRecapPage(container) {
     });
   });
 
-  // Touche Entrée : passe au champ suivant.
-  setupEnterNavigation(formElement);
+  // Sauvegarde automatique des champs Fréquentation et TVA.
+  setupDraftAutosave(formElement);
+
+  // Relie le bouton Valider à la fonction d’enregistrement.
+  // Sans cette ligne, le formulaire se recharge sans appeler Supabase.
+  formElement.addEventListener('submit', handleValidate);
+
+  updateRecap();
 
   updateRecap();
 }

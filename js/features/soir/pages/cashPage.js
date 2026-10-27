@@ -21,6 +21,9 @@
  * Au focus : efface le contenu du champ, quelle que soit sa valeur.
  * Au blur : restaure la valeur initiale si rien n'a été saisi,
  * puis recalcule le CA espèces.
+ *
+ * Les saisies sont conservées localement afin de survivre
+ * à un rafraîchissement accidentel de la page.
  */
 
 import {
@@ -30,6 +33,10 @@ import {
 } from '../../../utils/validation.js';
 import { formatEuro } from '../../../utils/format.js';
 import { getInputAmount } from '../../../utils/amounts.js';
+import {
+  restoreFormDraft,
+  setupDraftAutosave,
+} from '../../../utils/draftStorage.js';
 import { cashPageTemplate } from './templates/cashPageTemplate.js';
 
 export function initCashPage(container) {
@@ -52,6 +59,9 @@ export function initCashPage(container) {
     adipos: document.getElementById('soir-cash-adipos'),
     fund: document.getElementById('soir-cash-fund'),
   };
+
+  // Restaure les valeurs saisies avant un éventuel rafraîchissement.
+  restoreFormDraft(formElement);
 
   // Calcule le CA espèces et actualise ses deux affichages.
   function updateCountedTotal() {
@@ -124,6 +134,9 @@ export function initCashPage(container) {
   formElement.addEventListener('submit', (event) => {
     event.preventDefault();
   });
+
+  // Sauvegarde automatique du brouillon à chaque saisie.
+  setupDraftAutosave(formElement);
 
   // Navigation avec Entrée, Tab et les touches équivalentes sur mobile.
   formElement.addEventListener('keydown', (event) => {

@@ -16,39 +16,42 @@
  * Le total myPOS est écrit dans la légende de la page CB
  * et dans un span caché, lu par soirTotals.js depuis
  * n'importe quelle page du Soir.
+ *
+ * Les saisies et les paiements myPOS sont conservés localement
+ * afin de survivre à un rafraîchissement accidentel de la page.
  */
-
-
 
 import { createPaymentList } from '../../../utils/paymentList.js';
 import { setupEnterNavigation } from '../../../utils/formNavigation.js';
 import { formatEuro } from '../../../utils/format.js';
 import { getInputAmount } from '../../../utils/amounts.js';
+import {
+  restoreFormDraft,
+  saveFormDraft,
+  saveDraftSection,
+  getDraftSection,
+  setupDraftAutosave,
+} from '../../../utils/draftStorage.js';
 import { cardPageTemplate } from './templates/cardPageTemplate.js';
-
-
 
 export function initCardPage(container) {
   container.innerHTML = cardPageTemplate;
 
-
-
   const formElement = document.getElementById('soir-card-form');
-
-
 
   const myPosAmountInput = document.getElementById(
     'soir-card-mypos-amount',
   );
 
-
+  // Restaure les montants CB saisis avant un rafraîchissement.
+  restoreFormDraft(formElement);
 
   /**
    * Relie un couple contact / sans contact à son total affiché.
    *
    * @param {string} contactId - Identifiant du champ contact.
    * @param {string} noContactId - Identifiant du champ sans contact.
-   * @param {string} totalId - Identifiant de l'élément de total.
+   * @param {string} totalId - Identifiant de l’élément de total.
    * @returns {Function} Fonction de mise à jour du total.
    */
   function bindContactPair(contactId, noContactId, totalId) {
@@ -56,33 +59,21 @@ export function initCardPage(container) {
     const noContactInput = document.getElementById(noContactId);
     const totalElement = document.getElementById(totalId);
 
-
-
     function updateTotal() {
       const total =
         getInputAmount(contactInput) +
         getInputAmount(noContactInput);
 
-
-
       totalElement.textContent = formatEuro(total);
     }
-
-
 
     contactInput.addEventListener('input', updateTotal);
     noContactInput.addEventListener('input', updateTotal);
 
-
-
     updateTotal();
-
-
 
     return updateTotal;
   }
-
-
 
   bindContactPair(
     'soir-card-classic-contact',
@@ -90,15 +81,11 @@ export function initCardPage(container) {
     'soir-card-classic-total',
   );
 
-
-
   bindContactPair(
     'soir-card-tr-contact',
     'soir-card-tr-no-contact',
     'soir-card-tr-total',
   );
-
-
 
   bindContactPair(
     'soir-card-ancv-contact',
@@ -106,15 +93,11 @@ export function initCardPage(container) {
     'soir-card-ancv-total',
   );
 
-
-
   bindContactPair(
     'soir-card-amex-contact',
     'soir-card-amex-no-contact',
     'soir-card-amex-total',
   );
-
-
 
   // Le total myPOS vit dans la légende de la page CB, toujours
   // présente dans le conteneur de la page : on peut donc écrire
@@ -126,27 +109,36 @@ export function initCardPage(container) {
     'soir-card-mypos-total-value',
   );
 
-
-
   function updateMyPosHiddenTotal() {
     if (!myPosTotalElement || !myPosHiddenElement) {
       return;
     }
 
-
     myPosHiddenElement.textContent = myPosTotalElement.textContent;
   }
 
+  // Restaure les paiements myPOS enregistrés dans le brouillon.
+  const initialMyPosPayments =
+    getDraftSection('soir-card-mypos-payments') || [];
 
-
-  createPaymentList({
+  const myPosList = createPaymentList({
     amountInput: myPosAmountInput,
     addButton: document.getElementById('soir-card-mypos-add'),
     listElement: document.getElementById('soir-card-mypos-list'),
     totalElement: myPosTotalElement,
+    initialPayments: initialMyPosPayments,
     onChange: () => {
-      updateMyPosHiddenTotal();
+      // Chaque ajout ou suppression met à jour le brouillon local.
+      saveDraftSection(
+        'soir-card-mypos-payments',
+        myPosList.getPayments(),
+      );
 
+      // Enregistre aussi l’état des champs du formulaire :
+      // l’input MyPOS vient d’être remis à zéro.
+      saveFormDraft(formElement);
+
+      updateMyPosHiddenTotal();
 
       container.dispatchEvent(
         new CustomEvent('soir:payments-changed', { bubbles: true }),
@@ -154,11 +146,10 @@ export function initCardPage(container) {
     },
   });
 
-
+  // Sauvegarde automatique des champs CB à chaque saisie.
+  setupDraftAutosave(formElement);
 
   setupEnterNavigation(formElement, myPosAmountInput);
-
-
 
   updateMyPosHiddenTotal();
 }

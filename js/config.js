@@ -17,7 +17,7 @@
 
 export const APP_CONFIG = Object.freeze({
   supabase: {
-    url: 'http://127.0.0.1:54321',
+    url: 'http://192.168.1.10:54321',
     publishableKey: 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
   },
   cashFloat: {
