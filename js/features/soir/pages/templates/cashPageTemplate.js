@@ -3,168 +3,174 @@
  * Rôle : template HTML de la page Espèces du service Soir.
  *
  * Ce fichier ne contient que du HTML. Aucune logique.
+ *
+ * À l'ouverture, les coupures contiennent la répartition du fond
+ * de caisse habituel (134,00 €) : le CA espèces démarre donc à 0.
+ * Le CA espèces est calculé par cashPage.js :
+ * (coupures comptées, FDC inclus) - FDC.
  */
 
+
 export const cashPageTemplate = `
-  <h3>Espèces</h3>
-
-
   <form id="soir-cash-form" class="card" novalidate>
     <fieldset>
-      <legend>Fond de caisse</legend>
+      <legend>Billets et pièces</legend>
 
 
-      <div class="form-field">
-        <label for="soir-cash-fund">Fond de caisse</label>
-        <input
-          type="text"
-          id="soir-cash-fund"
-          inputmode="decimal"
-          value="134"
-        />
-      </div>
-    </fieldset>
-
-
-    <fieldset>
-      <legend>Billets</legend>
-
-
-      <div class="form-field">
-        <label for="soir-bill-100">Billets de 100 €</label>
+      <div class="soir-cash-grid">
+        <span class="soir-cash-label">100 €</span>
         <input
           type="text"
           id="soir-bill-100"
+          class="soir-cash-input"
           inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
           value="0"
         />
-      </div>
 
 
-      <div class="form-field">
-        <label for="soir-bill-50">Billets de 50 €</label>
-        <input
-          type="text"
-          id="soir-bill-50"
-          inputmode="numeric"
-          value="0"
-        />
-      </div>
-
-
-      <div class="form-field">
-        <label for="soir-bill-20">Billets de 20 €</label>
-        <input
-          type="text"
-          id="soir-bill-20"
-          inputmode="numeric"
-          value="0"
-        />
-      </div>
-
-
-      <div class="form-field">
-        <label for="soir-bill-10">Billets de 10 €</label>
-        <input
-          type="text"
-          id="soir-bill-10"
-          inputmode="numeric"
-          value="0"
-        />
-      </div>
-
-
-      <div class="form-field">
-        <label for="soir-bill-5">Billets de 5 €</label>
-        <input
-          type="text"
-          id="soir-bill-5"
-          inputmode="numeric"
-          value="0"
-        />
-      </div>
-    </fieldset>
-
-
-    <fieldset>
-      <legend>Pièces</legend>
-
-
-      <div class="form-field">
-        <label for="soir-coin-2">Pièces de 2 €</label>
+        <span class="soir-cash-label">2,00 €</span>
         <input
           type="text"
           id="soir-coin-2"
+          class="soir-cash-input"
           inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
+          value="10"
+        />
+
+
+        <span class="soir-cash-label">50 €</span>
+        <input
+          type="text"
+          id="soir-bill-50"
+          class="soir-cash-input"
+          inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
           value="0"
         />
-      </div>
 
 
-      <div class="form-field">
-        <label for="soir-coin-1">Pièces de 1 €</label>
+        <span class="soir-cash-label">1,00 €</span>
         <input
           type="text"
           id="soir-coin-1"
+          class="soir-cash-input"
           inputmode="numeric"
-          value="0"
+          maxlength="2"
+          enterkeyhint="next"
+          value="10"
         />
-      </div>
 
 
-      <div class="form-field">
-        <label for="soir-coin-050">Pièces de 0,50 €</label>
+        <span class="soir-cash-label">20 €</span>
+        <input
+          type="text"
+          id="soir-bill-20"
+          class="soir-cash-input"
+          inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
+          value="2"
+        />
+
+
+        <span class="soir-cash-label">0,50 €</span>
         <input
           type="text"
           id="soir-coin-050"
+          class="soir-cash-input"
           inputmode="numeric"
-          value="0"
+          maxlength="2"
+          enterkeyhint="next"
+          value="5"
         />
-      </div>
 
 
-      <div class="form-field">
-        <label for="soir-coin-020">Pièces de 0,20 €</label>
+        <span class="soir-cash-label">10 €</span>
+        <input
+          type="text"
+          id="soir-bill-10"
+          class="soir-cash-input"
+          inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
+          value="4"
+        />
+
+
+        <span class="soir-cash-label">0,20 €</span>
         <input
           type="text"
           id="soir-coin-020"
+          class="soir-cash-input"
           inputmode="numeric"
-          value="0"
+          maxlength="2"
+          enterkeyhint="next"
+          value="5"
         />
-      </div>
 
 
-      <div class="form-field">
-        <label for="soir-coin-010">Pièces de 0,10 €</label>
+        <span class="soir-cash-label">5 €</span>
+        <input
+          type="text"
+          id="soir-bill-5"
+          class="soir-cash-input"
+          inputmode="numeric"
+          maxlength="2"
+          enterkeyhint="next"
+          value="4"
+        />
+
+
+        <span class="soir-cash-label">0,10 €</span>
         <input
           type="text"
           id="soir-coin-010"
+          class="soir-cash-input"
           inputmode="numeric"
-          value="0"
+          maxlength="2"
+          enterkeyhint="next"
+          value="5"
         />
       </div>
     </fieldset>
 
 
     <fieldset>
-      <legend>Total</legend>
-
-
-      <div class="recap-line">
-        <span>Total espèces comptées</span>
-        <strong id="soir-cash-counted-total">0,00 €</strong>
-      </div>
+      <legend>Espèces Adipos</legend>
 
 
       <div class="form-field">
-        <label for="soir-cash-adipos">Espèces Adipos</label>
         <input
           type="text"
           id="soir-cash-adipos"
           inputmode="decimal"
           placeholder="Montant Adipos"
+          aria-label="Espèces Adipos"
         />
       </div>
     </fieldset>
+
+
+    <fieldset>
+      <legend>Fond de caisse</legend>
+
+
+      <div class="form-field">
+        <input
+          type="text"
+          id="soir-cash-fund"
+          inputmode="decimal"
+          value="134"
+          aria-label="Fond de caisse"
+        />
+      </div>
+    </fieldset>
+
+    <strong id="soir-cash-counted-value" hidden>0,00 €</strong>
   </form>
 `;

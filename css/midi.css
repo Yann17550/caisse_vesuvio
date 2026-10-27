@@ -1,0 +1,177 @@
+/* Fichier : css/midi.css
+   Rôle : styles spécifiques au service Midi.
+   Mise en page mobile : 2 colonnes, défilement minimal. */
+
+
+/* ============================================
+   FORMULAIRE MIDI (conteneur général)
+   ============================================ */
+
+/* Formulaire Midi : colonne unique, largeur max centrée */
+.midi-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+
+/* ============================================
+   GRILLE PRINCIPALE (champs en 2 colonnes)
+   ============================================ */
+
+/* Grille des champs : 2 colonnes côte à côte */
+.midi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+
+/* Champ classique de la grille (label + input empilés) */
+.midi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+/* Libellé d'un champ de la grille (ex. "CB Classique") */
+.midi-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+
+/* Champ de saisie de la grille (montant aligné à droite) */
+.midi-field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: right;
+}
+
+
+/* ============================================
+   LIGNE DES 3 TVA (5,5 % / 10 % / 20 %)
+   ============================================ */
+
+/* Rangée des 3 TVA : occupe toute la largeur, 3 colonnes */
+.midi-vat-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+
+/* ============================================
+   BLOC MYPOS (montant, bouton Ajouter, liste)
+   ============================================ */
+
+/* Conteneur du bloc MyPos : fond jaune (couleur du service Midi) */
+.midi-mypos {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background-color: var(--color-midi-mypos-soft);
+  border-radius: var(--radius);
+}
+
+
+/* Libellé "MyPos" du bloc */
+.midi-mypos label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+
+/* Rangée du bloc MyPos : champ montant + bouton Ajouter côte à côte */
+.midi-mypos-row {
+  display: flex;
+  gap: 8px;
+}
+
+
+/* Champ du montant MyPos : prend toute la place disponible */
+.midi-mypos-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: right;
+}
+
+
+/* Bouton "Ajouter" du MyPos : ambre foncé, texte blanc */
+.midi-mypos-row button {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-midi);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* Liste des paiements MyPos ajoutés : marges réduites */
+.midi-mypos .payment-list {
+  margin: 4px 0;
+}
+
+
+/* Ligne de total MyPos ("Total : xx €") : padding réduit */
+.midi-mypos .recap-line {
+  padding: 8px 10px;
+}
+
+
+/* ============================================
+   BOUTON VALIDER (enregistrement du Midi)
+   ============================================ */
+
+/* Bouton "Valider" : vert, grande hauteur */
+.midi-validate {
+  min-height: 52px;
+  border: none;
+  border-radius: var(--radius);
+  background-color: var(--color-success);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+/* Bouton "Valider" désactivé (pendant l'enregistrement) */
+.midi-validate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ============================================
+   ADAPTATION PC (écrans larges)
+   ============================================ */
+
+/* Desktop : on garde la grille 2 colonnes, plus aérée. */
+@media (min-width: 640px) {
+  .midi-grid {
+    gap: 14px;
+  }
+}

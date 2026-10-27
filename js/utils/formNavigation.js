@@ -43,3 +43,22 @@ export function setupEnterNavigation(formElement, excludedInput) {
     }
   });
 }
+
+/**
+ * Sélectionne le contenu d'un input lorsqu'il reçoit le focus.
+ *
+ * Ainsi, taper un chiffre remplace directement la valeur par défaut
+ * (par exemple le « 0 ») au lieu de s'ajouter après.
+ *
+ * @param {HTMLElement} formElement - Formulaire contenant les inputs.
+ * @returns {void}
+ */
+export function setupSelectOnFocus(formElement) {
+  formElement.addEventListener('focusin', (event) => {
+    const target = event.target;
+
+    if (target.tagName === 'INPUT' && !target.disabled) {
+      target.select();
+    }
+  });
+}

@@ -4,12 +4,13 @@
  *
  * Ce contrôleur ne contient ni validation métier,
  * ni gestion de liste MyPos, ni accès direct à Supabase.
+ *
+ * Le récapitulatif visuel a été supprimé au profit d’une
+ * saisie directe en 2 colonnes, sans défilement.
  */
-
 
 import midiView from './midiView.js';
 import { createPaymentList } from '../../utils/paymentList.js';
-import { createMidiRecap } from './midiRecap.js';
 import { setupEnterNavigation } from '../../utils/formNavigation.js';
 import {
   validateMidiRawData,
@@ -20,11 +21,9 @@ import {
   closeDailyClosing,
 } from '../../services/dailyClosingService.js';
 
-
 const midiController = {
   init() {
     midiView.init();
-
 
     this.myPos = createPaymentList({
       amountInput: midiView.elements.myPosAmount,
@@ -34,97 +33,23 @@ const midiController = {
       onChange: () => this.updateRecap(),
     });
 
-
-    this.recap = createMidiRecap([
-      {
-        element: midiView.elements.recapMyPos,
-        dataKey: 'myPosTotal',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapCbClassic,
-        dataKey: 'cbClassic',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapCbTicketResto,
-        dataKey: 'cbTicketResto',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapCashAdipos,
-        dataKey: 'cashAdipos',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapAncvPaper,
-        dataKey: 'ancvPaper',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapAncvConnect,
-        dataKey: 'ancvConnect',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapChecks,
-        dataKey: 'checks',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapVat55,
-        dataKey: 'vat55',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapVat10,
-        dataKey: 'vat10',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapVat20,
-        dataKey: 'vat20',
-        type: 'currency',
-      },
-      {
-        element: midiView.elements.recapPizzasDineIn,
-        dataKey: 'pizzasDineIn',
-        type: 'integer',
-      },
-      {
-        element: midiView.elements.recapPizzasTakeaway,
-        dataKey: 'pizzasTakeaway',
-        type: 'integer',
-      },
-    ]);
-
-
     setupEnterNavigation(
       midiView.elements.form,
       midiView.elements.myPosAmount,
     );
 
-
     midiView.elements.form.addEventListener('input', () => {
       this.updateRecap();
     });
-
 
     midiView.elements.form.addEventListener('submit', (event) => {
       event.preventDefault();
       this.handleValidate();
     });
 
-
-    midiView.elements.modifyButton.addEventListener('click', () => {
-      this.handleModify();
-    });
-
-
     midiView.setLocked(false);
     this.updateRecap();
   },
-
 
   getBusinessDate() {
     const now = new Date();
@@ -132,10 +57,8 @@ const midiController = {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
 
-
     return `${year}-${month}-${day}`;
   },
-
 
   getRawMidiData() {
     return {
@@ -154,26 +77,14 @@ const midiController = {
     };
   },
 
-
   updateRecap() {
     midiView.clearMessage();
-
-
-    const validation = validateMidiRawData(this.getRawMidiData());
-
-
-    if (validation.isValid) {
-      this.recap.update(validation.data);
-    }
   },
-
 
   async handleValidate() {
     midiView.clearMessage();
 
-
     const validation = validateMidiRawData(this.getRawMidiData());
-
 
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
@@ -181,17 +92,13 @@ const midiController = {
       return;
     }
 
-
     const closingData = buildMidiClosingData(validation.data);
-
 
     try {
       midiView.showMessage('Enregistrement du Midi en cours…', 'info');
 
-
       await saveDailyClosing(this.getBusinessDate(), 'midi', closingData);
       await closeDailyClosing(this.getBusinessDate(), 'midi');
-
 
       midiView.setLocked(true);
       midiView.showMessage(
@@ -203,13 +110,6 @@ const midiController = {
       midiView.showMessage(error.message, 'error');
     }
   },
-
-
-  handleModify() {
-    midiView.setLocked(false);
-    midiView.showMessage('Modification du Midi ouverte.', 'info');
-  },
 };
-
 
 export default midiController;

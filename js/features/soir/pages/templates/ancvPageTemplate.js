@@ -3,75 +3,71 @@
  * Rôle : template HTML de la page ANCV du service Soir.
  *
  * Ce fichier ne contient que du HTML. Aucune logique.
+ * Le total général est affiché dans le titre de page (h2),
+ * géré par soirController.js.
  */
 
 export const ancvPageTemplate = `
-  <h3>ANCV</h3>
-
-
   <form id="soir-ancv-form" class="card" novalidate>
-    <fieldset>
-      <legend>ANCV papier</legend>
+    <div class="soir-ancv-values">
+      <button
+        type="button"
+        class="soir-ancv-value-button is-active"
+        data-ancv-value="10"
+      >
+        10 €
+      </button>
 
+      <button
+        type="button"
+        class="soir-ancv-value-button"
+        data-ancv-value="20"
+      >
+        20 €
+      </button>
 
-      <div class="recap-line">
-        <span>ANCV</span>
-        <span>Total cumulé</span>
-      </div>
+      <button
+        type="button"
+        class="soir-ancv-value-button"
+        data-ancv-value="25"
+      >
+        25 €
+      </button>
 
+      <button
+        type="button"
+        class="soir-ancv-value-button"
+        data-ancv-value="50"
+      >
+        50 €
+      </button>
+    </div>
 
-      <div class="form-field">
-        <label for="soir-ancv-nb-10">ANCV 10 €</label>
-        <input
-          type="text"
-          id="soir-ancv-nb-10"
-          inputmode="numeric"
-          value="0"
-        />
-        <strong id="soir-ancv-total-10">0,00 €</strong>
-      </div>
+    <div class="soir-ancv-entry">
+      <input
+        type="text"
+        id="soir-ancv-nb"
+        inputmode="numeric"
+        maxlength="2"
+        enterkeyhint="next"
+        value="0"
+        aria-label="Nombre d'ANCV"
+      />
 
+      <button
+        type="button"
+        id="soir-ancv-add"
+        class="button"
+      >
+        Ajouter
+      </button>
+    </div>
 
-      <div class="form-field">
-        <label for="soir-ancv-nb-20">ANCV 20 €</label>
-        <input
-          type="text"
-          id="soir-ancv-nb-20"
-          inputmode="numeric"
-          value="0"
-        />
-        <strong id="soir-ancv-total-20">0,00 €</strong>
-      </div>
+    <ul id="soir-ancv-list"></ul>
 
-
-      <div class="form-field">
-        <label for="soir-ancv-nb-25">ANCV 25 €</label>
-        <input
-          type="text"
-          id="soir-ancv-nb-25"
-          inputmode="numeric"
-          value="0"
-        />
-        <strong id="soir-ancv-total-25">0,00 €</strong>
-      </div>
-
-
-      <div class="form-field">
-        <label for="soir-ancv-nb-50">ANCV 50 €</label>
-        <input
-          type="text"
-          id="soir-ancv-nb-50"
-          inputmode="numeric"
-          value="0"
-        />
-        <strong id="soir-ancv-total-50">0,00 €</strong>
-      </div>
-
-
-      <div class="recap-line">
-        <span>Total général ANCV</span>
-        <strong id="soir-ancv-grand-total">0,00 €</strong>
-      </div>
-    </fieldset>
+    <div class="recap-line">
+      <span>Nombre d'ANCV</span>
+      <strong id="soir-ancv-total-value" hidden>0,00 €</strong>
+    </div>
   </form>
 `;

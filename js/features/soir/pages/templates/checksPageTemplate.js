@@ -3,17 +3,17 @@
  * Rôle : template HTML de la page Chèques du service Soir.
  *
  * Ce fichier ne contient que du HTML. Aucune logique.
+ * Le total des chèques est affiché dans le titre de page (h2),
+ * géré par soirController.js.
+ * Le total est également écrit dans un span caché,
+ * lu par soirTotals.js depuis n'importe quelle page.
  */
 
+
+
 export const checksPageTemplate = `
-  <h3>Chèques</h3>
-
-
   <form id="soir-checks-form" class="card" novalidate>
-    <fieldset>
-      <legend>Chèques</legend>
-
-
+    <div class="soir-checks-row">
       <div class="form-field">
         <label for="soir-checks-amount">Montant du chèque</label>
         <input
@@ -30,23 +30,19 @@ export const checksPageTemplate = `
         id="soir-checks-add"
         class="button"
       >
-        Ajouter un chèque
+        Ajouter
       </button>
+    </div>
 
 
-      <ul id="soir-checks-list"></ul>
+    <ul id="soir-checks-list"></ul>
 
 
-      <div class="recap-line">
-        <span>Nombre de chèques</span>
-        <strong id="soir-checks-count">0</strong>
-      </div>
+    <div class="recap-line">
+      <span>Nombre de chèques</span>
+      <strong id="soir-checks-count">0</strong>
+    </div>
 
-
-      <div class="recap-line">
-        <span>Total chèques</span>
-        <strong id="soir-checks-total">0,00 €</strong>
-      </div>
-    </fieldset>
+    <strong id="soir-checks-total-value" hidden>0,00 €</strong>
   </form>
 `;

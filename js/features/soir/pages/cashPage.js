@@ -3,39 +3,42 @@
  * Rôle : logique de la page Espèces du service Soir.
  *
  * Cette page gère :
- * - le fond de caisse ;
  * - le décompte des billets et pièces ;
- * - le total des espèces comptées, correspondant au CA en espèces ;
- * - les espèces Adipos.
+ * - le CA espèces : (billets + pièces comptés, FDC inclus) - FDC ;
+ * - les espèces Adipos ;
+ * - le fond de caisse (134,00 € par défaut).
  *
- * Total espèces comptées = (billets + pièces) - fond de caisse.
- * Le résultat ne peut jamais être négatif : le fond de caisse
- * ne fait pas partie du chiffre d’affaires.
+ * Le CA espèces peut être négatif : par exemple, un pourboire réglé
+ * par CB et rendu en espèces peut faire descendre le comptage
+ * en dessous du fond de caisse.
  *
- * La touche Entrée permet de passer d’un champ au suivant.
+ * Le CA espèces est affiché dans le titre de page :
+ * « Espèces — X,XX € » (géré par soirController.js).
+ *
+ * La navigation clavier suit cet ordre :
+ * billets (100 à 5), pièces (2 à 0,10), espèces Adipos, fond de caisse.
+ *
+ * Au focus : efface le contenu du champ, quelle que soit sa valeur.
+ * Au blur : restaure la valeur initiale si rien n'a été saisi,
+ * puis recalcule le CA espèces.
  */
 
-
-
-import { isFilled, showFieldError, clearFieldError } from '../../../utils/validation.js';
-import { setupEnterNavigation } from '../../../utils/formNavigation.js';
+import {
+  isFilled,
+  showFieldError,
+  clearFieldError,
+} from '../../../utils/validation.js';
 import { formatEuro } from '../../../utils/format.js';
 import { getInputAmount } from '../../../utils/amounts.js';
 import { cashPageTemplate } from './templates/cashPageTemplate.js';
 
-
-
 export function initCashPage(container) {
   container.innerHTML = cashPageTemplate;
 
-
-
   const formElement = document.getElementById('soir-cash-form');
 
-
-
+  // Champs de comptage, espèces Adipos et fond de caisse.
   const inputs = {
-    fund: document.getElementById('soir-cash-fund'),
     bill100: document.getElementById('soir-bill-100'),
     bill50: document.getElementById('soir-bill-50'),
     bill20: document.getElementById('soir-bill-20'),
@@ -47,16 +50,10 @@ export function initCashPage(container) {
     coin020: document.getElementById('soir-coin-020'),
     coin010: document.getElementById('soir-coin-010'),
     adipos: document.getElementById('soir-cash-adipos'),
+    fund: document.getElementById('soir-cash-fund'),
   };
 
-
-
-  const countedTotalElement = document.getElementById(
-    'soir-cash-counted-total',
-  );
-
-
-
+  // Calcule le CA espèces et actualise ses deux affichages.
   function updateCountedTotal() {
     const cashOnHand =
       getInputAmount(inputs.bill100) * 100 +
@@ -70,36 +67,102 @@ export function initCashPage(container) {
       getInputAmount(inputs.coin020) * 0.2 +
       getInputAmount(inputs.coin010) * 0.1;
 
+    // CA espèces = comptage total, FDC inclus, moins le FDC.
+    // À l'ouverture : 134 - 134 = 0. Le résultat peut être négatif.
+    const countedTotal = cashOnHand - getInputAmount(inputs.fund);
 
+    // Titre visible, recréé par le contrôleur à chaque affichage.
+    const titleElement = document.getElementById('soir-cash-counted-total');
 
-    // CA en espèces : le fond de caisse est déduit du comptage
-    // physique, mais le résultat ne peut pas être négatif.
-    const countedTotal = Math.max(
-      0,
-      cashOnHand - getInputAmount(inputs.fund),
-    );
+    if (titleElement) {
+      titleElement.textContent = formatEuro(countedTotal);
+    }
 
+    // Valeur cachée utilisée comme source par soirTotals.js.
+    const hiddenElement = document.getElementById('soir-cash-counted-value');
 
-
-    countedTotalElement.textContent = formatEuro(countedTotal);
+    if (hiddenElement) {
+      hiddenElement.textContent = formatEuro(countedTotal);
+    }
   }
 
-
-
+  // Effacement à l'entrée et restauration si le champ est laissé vide.
   Object.values(inputs).forEach((input) => {
-    input.addEventListener('input', updateCountedTotal);
+    // Mémorise la valeur avant de vider le champ.
+    input.addEventListener('focus', () => {
+      input.dataset.previousValue = input.value;
+      input.value = '';
+    });
+
+    // Restaure si nécessaire, puis recalcule le CA espèces.
+    input.addEventListener('blur', () => {
+      if (input.value === '') {
+        input.value = input.dataset.previousValue || '0';
+      }
+
+      updateCountedTotal();
+    });
   });
 
+  // Ordre de passage : billets, pièces, Adipos, puis fond de caisse.
+  const navigationOrder = [
+    inputs.bill100,
+    inputs.bill50,
+    inputs.bill20,
+    inputs.bill10,
+    inputs.bill5,
+    inputs.coin2,
+    inputs.coin1,
+    inputs.coin050,
+    inputs.coin020,
+    inputs.coin010,
+    inputs.adipos,
+    inputs.fund,
+  ];
 
+  // Empêche la soumission du formulaire et le rechargement de page.
+  formElement.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
 
-  setupEnterNavigation(formElement);
+  // Navigation avec Entrée, Tab et les touches équivalentes sur mobile.
+  formElement.addEventListener('keydown', (event) => {
+    const isNavigationKey =
+      event.key === 'Enter' ||
+      event.key === 'Tab' ||
+      event.key === 'Go' ||
+      event.keyCode === 13 ||
+      event.keyCode === 9;
 
+    if (!isNavigationKey) {
+      return;
+    }
 
+    const currentIndex = navigationOrder.indexOf(event.target);
 
+    if (currentIndex === -1) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const nextInput = navigationOrder[currentIndex + 1];
+
+    if (nextInput) {
+      nextInput.focus();
+    }
+  });
+
+  // Actualise le titre lorsqu'on revient sur la page Espèces.
+  document.addEventListener('soir:page-shown', (event) => {
+    if (event.detail.page === 'cash') {
+      updateCountedTotal();
+    }
+  });
+
+  // Calcul initial au chargement de la page.
   updateCountedTotal();
 }
-
-
 
 /**
  * Valide la page Espèces du Soir.
@@ -110,11 +173,7 @@ export function initCashPage(container) {
 export function validateCashPage() {
   const adiposInput = document.getElementById('soir-cash-adipos');
 
-
-
   clearFieldError(adiposInput);
-
-
 
   if (!isFilled(adiposInput.value)) {
     showFieldError(
@@ -122,16 +181,10 @@ export function validateCashPage() {
       'Espèces Adipos obligatoire (0 autorisé).',
     );
 
-
-
     adiposInput.focus();
-
-
 
     return false;
   }
-
-
 
   return true;
 }

@@ -1,30 +1,55 @@
 /* Fichier : css/style.css
    Rôle : styles globaux de Caisse Vesuvio. */
 
+
+/* ============================================
+   VARIABLES GLOBALES (couleurs, arrondis, ombre)
+   ============================================ */
 :root {
-  --color-background: #f5f6f8;
-  --color-surface: #ffffff;
-  --color-text: #1f2933;
-  --color-muted: #6b7280;
-  --color-border: #d8dee4;
+  --color-background: #f5f6f8;      /* Fond général de la page */
+  --color-surface: #ffffff;         /* Fond des cartes / header */
+  --color-text: #1f2933;            /* Couleur du texte principal */
+  --color-muted: #6b7280;           /* Texte secondaire (labels, etc.) */
+  --color-border: #d8dee4;          /* Bordures des champs et boutons */
 
-  --color-midi: #2563eb;
-  --color-midi-soft: #dbeafe;
+  --color-midi: #b45309;            /* Ambre foncé du service Midi (boutons, titres) */
+  --color-midi-soft: #f79c47;       /* Fond jaune franc du service Midi */
+  --color-midi-mypos-soft: #f3edd5;  /* Fond jaune cassé du conteneur mypos */
 
-  --color-soir: #7c3aed;
-  --color-soir-soft: #ede9fe;
+  --color-soir: #2563eb;            /* Bleu du service Soir (boutons, titres) */
+  --color-soir-soft: #bfdbfe;       /* Fond bleu franc du service Soir */
 
-  --color-success: #15803d;
-  --color-danger: #b91c1c;
+  --color-success: #15803d;         /* Vert (bouton Valider) */
+  --color-danger: #b91c1c;          /* Rouge (bouton Supprimer) */
 
-  --radius: 12px;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --color-soir-card: #dbeafe;        /* Page CB : bleu clair */
+  --color-soir-cash: #dcfce7;        /* Page Espèces : vert clair */
+  --color-soir-ancv: #ffedd5;        /* Page ANCV : orange clair */
+  --color-soir-checks: #ede9fe;      /* Page Chèques : violet clair */
+  --color-soir-recap: #e5e7eb;       /* Page Récapitulatif : gris clair */
+
+  --color-soir-card-accent: #2563eb;   /* Accent page CB */
+  --color-soir-cash-accent: #15803d;   /* Accent page Espèces */
+  --color-soir-ancv-accent: #ea580c;   /* Accent page ANCV */
+  --color-soir-checks-accent: #7c3aed; /* Accent page Chèques */
+  --color-soir-recap-accent: #374151;  /* Accent page Récapitulatif */
+  
+  --radius: 12px;                   /* Arrondi global des cartes */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Ombre des cartes */
 }
 
+
+/* ============================================
+   RÉGLAGES GLOBAUX
+   ============================================ */
+
+/* Tous les éléments : inclut padding/border dans la largeur */
 * {
   box-sizing: border-box;
 }
 
+
+/* Corps de page : police, couleurs, fond selon le service actif */
 body {
   margin: 0;
   min-height: 100vh;
@@ -33,30 +58,47 @@ body {
   background-color: var(--color-background);
 }
 
+
+/* Fond bleu franc quand le service Midi est actif */
 body.service-midi {
   background-color: var(--color-midi-soft);
 }
 
+
+/* Fond jaune franc quand le service Soir est actif */
 body.service-soir {
   background-color: var(--color-soir-soft);
 }
 
+
+/* ============================================
+   HEADER (bandeau en haut de page)
+   ============================================ */
+
+/* Bandeau header : contient le titre et les boutons Midi/Soir */
 .app-header {
   padding: 16px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
 
+
+/* Titre "Caisse Vesuvio" dans le header : centré horizontalement */
 .app-header h1 {
   margin: 0 0 12px;
   font-size: 1.4rem;
+  text-align: center;
 }
 
+
+/* Navigation Midi/Soir : les deux boutons côte à côte */
 .service-switch {
   display: flex;
   gap: 8px;
 }
 
+
+/* Boutons "Midi" et "Soir" du header */
 .service-button {
   flex: 1;
   padding: 10px 16px;
@@ -69,28 +111,44 @@ body.service-soir {
   cursor: pointer;
 }
 
+
+/* Bouton actif (celui du service affiché) : texte blanc */
 .service-button.is-active {
   color: #ffffff;
   border-color: transparent;
 }
 
+
+/* Bouton "Midi" actif : fond bleu */
 body.service-midi .service-button[data-service="midi"].is-active {
   background-color: var(--color-midi);
 }
 
+
+/* Bouton "Soir" actif : fond ambre foncé (lisible avec texte blanc) */
 body.service-soir .service-button[data-service="soir"].is-active {
   background-color: var(--color-soir);
 }
 
+
+/* ============================================
+   CONTENU PRINCIPAL (sous le header)
+   ============================================ */
+
+/* Zone principale sous le header */
 .app-main {
   padding: 16px;
 }
 
+
+/* Conteneur des pages Midi/Soir : largeur max centrée */
 .app-pages {
   max-width: 720px;
   margin: 0 auto;
 }
 
+
+/* Carte blanche de chaque service (Midi ou Soir) */
 .service-section {
   background-color: var(--color-surface);
   border-radius: var(--radius);
@@ -98,28 +156,44 @@ body.service-soir .service-button[data-service="soir"].is-active {
   padding: 16px;
 }
 
+
+/* Titre "Service Midi" ou "Service Soir" dans la carte */
 .service-section h2 {
   margin-top: 0;
 }
 
+
+/* Titre "Service Midi" en bleu */
 .service-section[data-service="midi"] h2 {
   color: var(--color-midi);
 }
 
+
+/* Titre "Service Soir" en ambre foncé */
 .service-section[data-service="soir"] h2 {
   color: var(--color-soir);
 }
 
+
+/* Classe utilitaire : masque un élément (ex. section Soir quand Midi actif) */
 .is-hidden {
   display: none !important;
 }
 
+
+/* ============================================
+   FORMULAIRES (champs, labels, inputs)
+   ============================================ */
+
+/* Carte de formulaire générique */
 .card {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+
+/* Groupes de champs (fieldset) */
 fieldset {
   margin: 0;
   padding: 12px;
@@ -127,11 +201,15 @@ fieldset {
   border-radius: var(--radius);
 }
 
+
+/* Titre d'un fieldset */
 legend {
   padding: 0 6px;
   font-weight: 700;
 }
 
+
+/* Champ de formulaire classique (label + input empilés) */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -139,10 +217,14 @@ legend {
   margin-bottom: 12px;
 }
 
+
+/* Libellés des champs */
 label {
   font-weight: 600;
 }
 
+
+/* Champs de saisie (inputs) */
 input {
   width: 100%;
   padding: 10px;
@@ -151,11 +233,15 @@ input {
   font-size: 1rem;
 }
 
+
+/* Champ de saisie lorsqu'il a le focus */
 input:focus {
   outline: 2px solid var(--color-midi);
   outline-offset: 1px;
 }
 
+
+/* Boutons génériques (Ajouter, Valider, etc.) */
 button {
   padding: 10px 14px;
   border: none;
@@ -167,16 +253,26 @@ button {
   cursor: pointer;
 }
 
+
+/* Boutons au survol (PC) */
 button:hover {
   filter: brightness(0.95);
 }
 
+
+/* ============================================
+   LISTE DES PAIEMENTS MYPOS (Midi et Soir)
+   ============================================ */
+
+/* Liste des paiements ajoutés (sous le champ MyPos) */
 .payment-list {
   margin: 8px 0;
   padding: 0;
   list-style: none;
 }
 
+
+/* Ligne d'un paiement : montant à gauche, bouton Supprimer à droite */
 .payment-list li {
   display: flex;
   align-items: center;
@@ -188,11 +284,19 @@ button:hover {
   border-radius: 8px;
 }
 
+
+/* Bouton "Supprimer" d'un paiement */
 .payment-remove-button {
   background-color: var(--color-danger);
   padding: 6px 10px;
 }
 
+
+/* ============================================
+   RÉCAPITULATIFS (totaux, lignes de contrôle)
+   ============================================ */
+
+/* Ligne de total (ex. "Total MyPos : 12,00 €") */
 .recap-line {
   display: flex;
   justify-content: space-between;
@@ -203,21 +307,29 @@ button:hover {
   font-weight: 700;
 }
 
+
+/* Section de récapitulatif (séparée par un trait) */
 .recap-section {
   padding-top: 8px;
   border-top: 1px solid var(--color-border);
 }
 
+
+/* Titre d'une section de récapitulatif */
 .recap-section h3 {
   margin-top: 0;
 }
 
+
+/* Liste de récapitulatif (lignes label/valeur) */
 .recap-list {
   margin: 0;
   display: grid;
   gap: 8px;
 }
 
+
+/* Ligne d'un récapitulatif : libellé à gauche, valeur à droite */
 .recap-list > div {
   display: flex;
   justify-content: space-between;
@@ -227,76 +339,120 @@ button:hover {
   border-radius: 8px;
 }
 
+
+/* Libellé d'une ligne de récapitulatif */
 .recap-list dt {
   color: var(--color-muted);
 }
 
+
+/* Valeur d'une ligne de récapitulatif */
 .recap-list dd {
   margin: 0;
   font-weight: 700;
 }
 
+
+/* ============================================
+   MESSAGES ET ACTIONS DE VALIDATION
+   ============================================ */
+
+/* Zone de message (erreur, succès, info) sous le formulaire */
 .form-message {
   min-height: 20px;
   margin: 12px 0;
   font-weight: 600;
 }
 
+
+/* Message d'erreur en rouge */
 .form-message.is-error {
   color: var(--color-danger);
 }
 
+
+/* Message de succès en vert */
 .form-message.is-success {
   color: var(--color-success);
 }
 
+
+/* Rangée de boutons d'action (ex. Valider) */
 .form-actions {
   display: flex;
   gap: 8px;
 }
 
+
+/* Boutons d'action : prennent toute la largeur disponible */
 .form-actions button {
   flex: 1;
 }
 
+
+/* Bouton de validation (type="submit") en vert */
 .form-actions button[type="submit"] {
   background-color: var(--color-success);
 }
 
+
+/* Bouton désactivé (pendant l'enregistrement) */
 .form-actions button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
+
+/* ============================================
+   ADAPTATION PC (écrans larges)
+   ============================================ */
 @media (min-width: 640px) {
+
+  /* Header plus aéré sur PC */
   .app-header {
     padding: 20px 24px;
   }
 
+
+  /* Contenu principal plus aéré sur PC */
   .app-main {
     padding: 24px;
   }
 
+
+  /* Carte de service plus aérée sur PC */
   .service-section {
     padding: 24px;
   }
 
+
+  /* Récapitulatifs sur 2 colonnes sur PC */
   .recap-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+
+/* ============================================
+   ERREURS DE VALIDATION (champ en rouge, etc.)
+   ============================================ */
+
+/* Champ invalide : bordure et fond rouges */
 .input-error {
   border-color: #dc2626 !important;
   background-color: #fef2f2;
 }
 
+
+/* Message d'erreur sous un champ */
 .field-error {
   color: #dc2626;
   font-size: 0.85rem;
   margin-top: 4px;
 }
 
+
+/* Message d'erreur de cohérence (totaux incohérents) */
 .coherence-error {
   color: #dc2626;
 }

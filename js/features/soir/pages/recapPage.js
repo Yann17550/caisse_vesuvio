@@ -6,20 +6,29 @@
  * contrôle la cohérence TVA / encaissements (closingValidation.js)
  * et enregistre la clôture du Soir dans Supabase.
  *
- * La validation est impossible si le contrôle de cohérence échoue.
- * Après un enregistrement réussi, l’interface est remise à zéro.
+ * Les lignes d'encaissements et les compteurs sont masquées
+ * lorsque leur valeur est à 0. Les lignes d'écart restent
+ * toujours visibles (un écart peut être négatif).
  *
- * Le Soir correspond à la clôture de la journée entière :
- * les montants saisis dans les autres pages sont déjà les
- * totaux absolus de la journée.
+ * Le titre de page affiche la TVA TTC totale et l'écart total.
+ * Il est recréé par soirController.js à chaque affichage :
+ * les valeurs du titre sont donc recherchées dans le DOM
+ * à chaque mise à jour.
+ *
+ * La validation est impossible si le contrôle de cohérence échoue.
+ * Après un enregistrement réussi, l'interface est remise à zéro.
  */
+
 
 
 
 import { formatEuro } from '../../../utils/format.js';
 import { validateClosingTotals } from '../../../utils/closingValidation.js';
 import { getSoirTotals } from '../soirTotals.js';
-import { setupEnterNavigation } from '../../../utils/formNavigation.js';
+import {
+  setupEnterNavigation,
+  setupSelectOnFocus,
+} from '../../../utils/formNavigation.js';
 import { buildSoirClosingData } from '../../../validation/soirValidation.js';
 import {
   saveDailyClosing,
@@ -27,21 +36,11 @@ import {
 } from '../../../services/dailyClosingService.js';
 import { recapPageTemplate } from './templates/recapPageTemplate.js';
 
-
-
-
 export function initRecapPage(container) {
   container.innerHTML = recapPageTemplate;
 
-
-
-
   const formElement = document.getElementById('soir-recap-form');
   const messageElement = document.getElementById('soir-recap-message');
-  const validateButton = document.getElementById('soir-recap-validate-button');
-
-
-
 
   const recapAdiposElement = document.getElementById('soir-recap-adipos');
   const recapCbClassicAmexElement = document.getElementById(
@@ -53,13 +52,13 @@ export function initRecapPage(container) {
   const recapAncvPaperElement = document.getElementById(
     'soir-recap-ancv-paper',
   );
+  const recapAncvCountElement = document.getElementById(
+    'soir-recap-ancv-count',
+  );
   const recapChecksElement = document.getElementById('soir-recap-checks');
   const recapChecksCountElement = document.getElementById(
     'soir-recap-checks-count',
   );
-
-
-
 
   const recapCashDifferenceElement = document.getElementById(
     'soir-recap-cash-difference',
@@ -71,9 +70,10 @@ export function initRecapPage(container) {
     'soir-recap-total-difference',
   );
 
-
-
-
+  const tvaFieldsetElement = document.getElementById(
+    'soir-recap-tva-fieldset',
+  );
+  
   const recapVatTotalElement = document.getElementById(
     'soir-recap-vat-total',
   );
@@ -81,34 +81,23 @@ export function initRecapPage(container) {
     'soir-recap-coherence',
   );
 
-
-
-
   function showMessage(text, type = 'info') {
     messageElement.textContent = text;
     messageElement.classList.remove('is-error', 'is-success');
 
-
-
     if (type === 'error') {
       messageElement.classList.add('is-error');
     }
-
-
 
     if (type === 'success') {
       messageElement.classList.add('is-success');
     }
   }
 
-
-
   function clearMessage() {
     messageElement.textContent = '';
     messageElement.classList.remove('is-error', 'is-success');
   }
-
-
 
   function getBusinessDate() {
     const now = new Date();
@@ -116,87 +105,113 @@ export function initRecapPage(container) {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
 
-
-
     return `${year}-${month}-${day}`;
   }
 
+  // Masque ou affiche une ligne selon la valeur à 0 ou non.
+  function toggleLine(lineId, isVisible) {
+    const lineElement = document.getElementById(lineId);
 
+    if (lineElement) {
+      lineElement.hidden = !isVisible;
+    }
+  }
+
+  // Écrit une valeur dans le titre de page, recréé à chaque affichage.
+  function setTitleValue(elementId, value) {
+    const element = document.getElementById(elementId);
+
+    if (element) {
+      element.textContent = value;
+    }
+  }
 
   function updateRecap() {
     const totals = getSoirTotals();
 
 
+    // --- Encaissements (masqués si 0) ---
+    const encaissementLines = [
+      {
+        lineId: 'soir-recap-line-adipos',
+        element: recapAdiposElement,
+        value: totals.cash.adipos,
+      },
+      {
+        lineId: 'soir-recap-line-cb-classic-amex',
+        element: recapCbClassicAmexElement,
+        value: totals.cardClassic.total + totals.cardAmex.total,
+      },
+      {
+        lineId: 'soir-recap-line-cb-tr',
+        element: recapCbTrElement,
+        value: totals.cardTr.total,
+      },
+      {
+        lineId: 'soir-recap-line-cb-ancv',
+        element: recapCbAncvElement,
+        value: totals.cardAncv.total,
+      },
+      {
+        lineId: 'soir-recap-line-mypos',
+        element: recapMyPosElement,
+        value: totals.myPos.total,
+      },
+      {
+        lineId: 'soir-recap-line-ancv-paper',
+        element: recapAncvPaperElement,
+        value: totals.ancvPaper.total,
+      },
+      {
+        lineId: 'soir-recap-line-checks',
+        element: recapChecksElement,
+        value: totals.checks.total,
+      },
+    ];
+
+    encaissementLines.forEach((line) => {
+      const isVisible = line.value !== 0;
+
+      toggleLine(line.lineId, isVisible);
+
+      if (isVisible) {
+        line.element.textContent = formatEuro(line.value);
+      }
+    });
 
 
-    recapAdiposElement.textContent = formatEuro(totals.cash.adipos);
+    // --- Compteurs (masqués si 0) ---
+    const ancvCountVisible = totals.ancvPaper.count !== 0;
 
+    toggleLine('soir-recap-line-ancv-count', ancvCountVisible);
 
+    if (ancvCountVisible) {
+      recapAncvCountElement.textContent = String(totals.ancvPaper.count);
+    }
 
+    const checksCountVisible = totals.checks.count !== 0;
 
-    recapCbClassicAmexElement.textContent = formatEuro(
-      totals.cardClassic.total + totals.cardAmex.total,
-    );
+    toggleLine('soir-recap-line-checks-count', checksCountVisible);
 
+    if (checksCountVisible) {
+      recapChecksCountElement.textContent = String(totals.checks.count);
+    }
 
-
-
-    recapCbTrElement.textContent = formatEuro(totals.cardTr.total);
-
-
-
-
-    recapCbAncvElement.textContent = formatEuro(totals.cardAncv.total);
-
-
-
-
-    recapMyPosElement.textContent = formatEuro(totals.myPos.total);
-
-
-
-
-    recapAncvPaperElement.textContent = formatEuro(totals.ancvPaper.total);
-
-
-
-
-    recapChecksElement.textContent = formatEuro(totals.checks.total);
-
-
-
-
-    recapChecksCountElement.textContent = String(totals.checks.count);
-
-
-
-
+    // --- Écarts (toujours visibles, peuvent être négatifs) ---
     recapCashDifferenceElement.textContent = formatEuro(
       totals.cash.difference,
     );
-
-
-
 
     recapMyPosDifferenceElement.textContent = formatEuro(
       totals.myPos.total,
     );
 
-
-
-
     recapTotalDifferenceElement.textContent = formatEuro(
       totals.totalDifference,
     );
 
-
-
-
     updateCoherence(totals);
   }
-
-
-
 
   function updateCoherence(totals) {
     const result = validateClosingTotals({
@@ -204,10 +219,19 @@ export function initRecapPage(container) {
       actualTotal: totals.paymentsTotal,
     });
 
-
-
-
     recapVatTotalElement.textContent = formatEuro(totals.vatTotal);
+
+
+
+
+
+    // Titre de page : TVA TTC + écart total.
+    setTitleValue('soir-recap-title-vat', formatEuro(totals.vatTotal));
+    setTitleValue(
+      'soir-recap-title-ecart',
+      formatEuro(totals.totalDifference),
+    );
+
 
 
 
@@ -215,13 +239,18 @@ export function initRecapPage(container) {
     if (result.isValid) {
       recapCoherenceElement.textContent = 'OK';
       recapCoherenceElement.classList.remove('coherence-error');
+      tvaFieldsetElement.classList.add('tva-ok');
+      tvaFieldsetElement.classList.remove('tva-error');
     } else {
       recapCoherenceElement.textContent = `Écart : ${formatEuro(
         result.difference,
       )}`;
       recapCoherenceElement.classList.add('coherence-error');
+      tvaFieldsetElement.classList.remove('tva-ok');
+      tvaFieldsetElement.classList.add('tva-error');
     }
   }
+
 
 
 
@@ -232,7 +261,9 @@ export function initRecapPage(container) {
 
 
 
+
     const totals = getSoirTotals();
+
 
 
 
@@ -242,8 +273,6 @@ export function initRecapPage(container) {
       actualTotal: totals.paymentsTotal,
     });
 
-
-
     if (!coherence.isValid) {
       showMessage(
         `Validation impossible : écart de ${formatEuro(
@@ -252,35 +281,23 @@ export function initRecapPage(container) {
         'error',
       );
 
-
-
       return;
     }
 
-
-
     const closingData = buildSoirClosingData(totals);
-
-
 
     try {
       showMessage('Enregistrement du Soir en cours…', 'info');
 
-
-
       await saveDailyClosing(getBusinessDate(), 'soir', closingData);
       await closeDailyClosing(getBusinessDate(), 'soir');
-
-
 
       showMessage(
         'Soir enregistré et validé dans Supabase.',
         'success',
       );
 
-
-
-      // Toutes les données sont en base : remise à zéro de l’interface.
+      // Toutes les données sont en base : remise à zéro de l'interface.
       setTimeout(() => {
         window.location.reload();
       }, 1200);
@@ -288,8 +305,6 @@ export function initRecapPage(container) {
       showMessage(error.message, 'error');
     }
   }
-
-
 
   const watchedInputIds = [
     'soir-cash-adipos',
@@ -311,10 +326,6 @@ export function initRecapPage(container) {
     'soir-card-ancv-no-contact',
     'soir-card-amex-contact',
     'soir-card-amex-no-contact',
-    'soir-ancv-nb-10',
-    'soir-ancv-nb-20',
-    'soir-ancv-nb-25',
-    'soir-ancv-nb-50',
     'soir-recap-dine-in',
     'soir-recap-takeaway',
     'soir-recap-vat-55',
@@ -322,62 +333,65 @@ export function initRecapPage(container) {
     'soir-recap-vat-20',
   ];
 
-
-
-
   watchedInputIds.forEach((inputId) => {
     const input = document.getElementById(inputId);
-
-
-
 
     if (input) {
       input.addEventListener('input', updateRecap);
     }
   });
 
-
-
-
   const myPosListElement = document.getElementById('soir-card-mypos-list');
   const checksListElement = document.getElementById('soir-checks-list');
-
-
-
 
   if (myPosListElement) {
     myPosListElement.addEventListener('input', updateRecap);
     myPosListElement.addEventListener('click', updateRecap);
   }
 
-
-
-
   if (checksListElement) {
     checksListElement.addEventListener('input', updateRecap);
     checksListElement.addEventListener('click', updateRecap);
   }
-
-
-
 
   document.addEventListener(
     'soir:payments-changed',
     updateRecap,
   );
 
+  // Le titre de page est recréé à chaque affichage :
+  // on recalcule pour remplir TVA TTC et écart dans le titre.
+  document.addEventListener('soir:page-shown', (event) => {
+    if (event.detail.page === 'recap') {
+      updateRecap();
+    }
+  });
 
-
-
-  formElement.addEventListener('submit', handleValidate);
-
-
-
-
+  // Touche Entrée : passe au champ suivant.
   setupEnterNavigation(formElement);
 
+  // Fréquentation et TVA : même comportement que la page Espèces.
+  const recapInputs = formElement.querySelectorAll('input');
 
+  recapInputs.forEach((input) => {
+    // Au focus : mémorise la valeur et vide réellement le champ.
+    input.addEventListener('focus', () => {
+      input.dataset.previousValue = input.value;
+      input.value = '';
+    });
 
+    // Au blur : restaure si aucune saisie, puis actualise le Récap.
+    input.addEventListener('blur', () => {
+      if (input.value === '') {
+        input.value = input.dataset.previousValue || '0';
+      }
+
+      updateRecap();
+    });
+  });
+
+  // Touche Entrée : passe au champ suivant.
+  setupEnterNavigation(formElement);
 
   updateRecap();
 }

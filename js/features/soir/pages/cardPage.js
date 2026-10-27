@@ -10,9 +10,14 @@
  * - la CB AMEX (contact et sans contact).
  *
  * Chaque type de paiement possède son propre cumul.
- * La touche Entrée permet de passer d’un champ au suivant,
+ * La touche Entrée permet de passer d'un champ au suivant,
  * sauf dans le champ myPOS où Entrée ajoute un paiement.
+ *
+ * Le total myPOS est écrit dans la légende de la page CB
+ * et dans un span caché, lu par soirTotals.js depuis
+ * n'importe quelle page du Soir.
  */
+
 
 
 import { createPaymentList } from '../../../utils/paymentList.js';
@@ -22,16 +27,20 @@ import { getInputAmount } from '../../../utils/amounts.js';
 import { cardPageTemplate } from './templates/cardPageTemplate.js';
 
 
+
 export function initCardPage(container) {
   container.innerHTML = cardPageTemplate;
+
 
 
   const formElement = document.getElementById('soir-card-form');
 
 
+
   const myPosAmountInput = document.getElementById(
     'soir-card-mypos-amount',
   );
+
 
 
   /**
@@ -48,25 +57,31 @@ export function initCardPage(container) {
     const totalElement = document.getElementById(totalId);
 
 
+
     function updateTotal() {
       const total =
         getInputAmount(contactInput) +
         getInputAmount(noContactInput);
 
 
+
       totalElement.textContent = formatEuro(total);
     }
+
 
 
     contactInput.addEventListener('input', updateTotal);
     noContactInput.addEventListener('input', updateTotal);
 
 
+
     updateTotal();
+
 
 
     return updateTotal;
   }
+
 
 
   bindContactPair(
@@ -76,11 +91,13 @@ export function initCardPage(container) {
   );
 
 
+
   bindContactPair(
     'soir-card-tr-contact',
     'soir-card-tr-no-contact',
     'soir-card-tr-total',
   );
+
 
 
   bindContactPair(
@@ -90,6 +107,7 @@ export function initCardPage(container) {
   );
 
 
+
   bindContactPair(
     'soir-card-amex-contact',
     'soir-card-amex-no-contact',
@@ -97,12 +115,39 @@ export function initCardPage(container) {
   );
 
 
+
+  // Le total myPOS vit dans la légende de la page CB, toujours
+  // présente dans le conteneur de la page : on peut donc écrire
+  // directement dans les deux éléments (légende + span caché).
+  const myPosTotalElement = document.getElementById(
+    'soir-card-mypos-total',
+  );
+  const myPosHiddenElement = document.getElementById(
+    'soir-card-mypos-total-value',
+  );
+
+
+
+  function updateMyPosHiddenTotal() {
+    if (!myPosTotalElement || !myPosHiddenElement) {
+      return;
+    }
+
+
+    myPosHiddenElement.textContent = myPosTotalElement.textContent;
+  }
+
+
+
   createPaymentList({
     amountInput: myPosAmountInput,
     addButton: document.getElementById('soir-card-mypos-add'),
     listElement: document.getElementById('soir-card-mypos-list'),
-    totalElement: document.getElementById('soir-card-mypos-total'),
+    totalElement: myPosTotalElement,
     onChange: () => {
+      updateMyPosHiddenTotal();
+
+
       container.dispatchEvent(
         new CustomEvent('soir:payments-changed', { bubbles: true }),
       );
@@ -110,5 +155,10 @@ export function initCardPage(container) {
   });
 
 
+
   setupEnterNavigation(formElement, myPosAmountInput);
+
+
+
+  updateMyPosHiddenTotal();
 }

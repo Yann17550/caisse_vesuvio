@@ -1,0 +1,331 @@
+/* Fichier : css/soir.css
+   Rôle : styles spécifiques au service Soir.
+   Pages : CB, Espèces, ANCV, Chèques, Récapitulatif. */
+
+/* ============================================
+   NAVIGATION DU SOIR
+   ============================================ */
+
+/* Barre de navigation : les 5 boutons sur une seule ligne. */
+.soir-navigation {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* Boutons : largeur identique et texte sur une seule ligne. */
+.soir-nav-button {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Navigation déplacée dans le header : espace sous Midi/Soir. */
+.app-header .soir-navigation {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   COULEURS DES PAGES ET DES BOUTONS ACTIFS
+   Variables définies dans style.css.
+   ============================================ */
+
+/* Page CB : fond bleu clair. */
+.soir-page[data-soir-page="card"] {
+  background-color: var(--color-soir-card);
+}
+
+/* Page Espèces : fond vert clair. */
+.soir-page[data-soir-page="cash"] {
+  background-color: var(--color-soir-cash);
+}
+
+/* Page ANCV : fond orange clair. */
+.soir-page[data-soir-page="ancv"] {
+  background-color: var(--color-soir-ancv);
+}
+
+/* Page Chèques : fond violet clair. */
+.soir-page[data-soir-page="checks"] {
+  background-color: var(--color-soir-checks);
+}
+
+/* Page Récapitulatif : fond gris clair. */
+.soir-page[data-soir-page="recap"] {
+  background-color: var(--color-soir-recap);
+}
+
+/* Bouton CB actif : bleu. */
+.soir-nav-button.is-active[data-soir-page="card"] {
+  background-color: var(--color-soir-card-accent);
+}
+
+/* Bouton Espèces actif : vert. */
+.soir-nav-button.is-active[data-soir-page="cash"] {
+  background-color: var(--color-soir-cash-accent);
+}
+
+/* Bouton ANCV actif : orange. */
+.soir-nav-button.is-active[data-soir-page="ancv"] {
+  background-color: var(--color-soir-ancv-accent);
+}
+
+/* Bouton Chèques actif : violet. */
+.soir-nav-button.is-active[data-soir-page="checks"] {
+  background-color: var(--color-soir-checks-accent);
+}
+
+/* Bouton Récapitulatif actif : gris foncé. */
+.soir-nav-button.is-active[data-soir-page="recap"] {
+  background-color: var(--color-soir-recap-accent);
+}
+
+/* ============================================
+   PAGE CB
+   ============================================ */
+
+/* Champs Contact et Sans contact : deux colonnes égales. */
+.soir-card-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Champs CB : la grille gère l'espacement vertical. */
+.soir-card-pair .form-field {
+  margin-bottom: 0;
+}
+
+/* Saisie myPOS : montant et bouton Ajouter côte à côte. */
+.soir-card-mypos-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Champ myPOS : occupe la largeur disponible. */
+.soir-card-mypos-row .form-field {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+/* Bouton Ajouter myPOS : largeur selon son contenu, hauteur tactile. */
+.soir-card-mypos-row .button {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+}
+
+/* ============================================
+   PAGE ESPÈCES
+   ============================================ */
+
+/* Grille : libellé billet, saisie billet, libellé pièce, saisie pièce.
+   Les libellés prennent leur largeur naturelle, les saisies le reste. */
+.soir-cash-grid {
+  display: grid;
+  grid-template-columns:
+    max-content
+    minmax(0, 1fr)
+    max-content
+    minmax(0, 1fr);
+  row-gap: 8px;
+  column-gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+/* Séparation centrale : sur le libellé des pièces, en 3e colonne. */
+.soir-cash-grid > :nth-child(4n + 3) {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+}
+
+/* Libellés des billets et pièces : texte compact, aligné à gauche. */
+.soir-cash-label {
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+/* Saisies des quantités : largeur adaptée et valeurs centrées. */
+.soir-cash-input {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 6px 2px;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   PAGE ANCV
+   ============================================ */
+
+/* Boutons de valeur : répartis sur toute la largeur. */
+.soir-ancv-values {
+  display: flex;
+  gap: 2%;
+  margin-bottom: 12px;
+}
+
+/* Bouton non sélectionné : fond blanc et texte sombre. */
+.soir-ancv-value-button {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 1rem;
+}
+
+/* Bouton sélectionné : fond bleu et texte blanc. */
+.soir-ancv-value-button.is-active {
+  background: #0066cc;
+  color: #fff;
+  border-color: #0066cc;
+}
+
+/* Saisie ANCV et bouton Ajouter : sur une même ligne. */
+.soir-ancv-entry {
+  display: flex;
+  gap: 2%;
+  margin-bottom: 12px;
+}
+
+/* Champ ANCV : occupe l'espace disponible, valeur centrée. */
+.soir-ancv-entry input {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+/* Bouton Ajouter ANCV : occupe 30 % de la ligne. */
+.soir-ancv-entry .button {
+  flex: 0 0 30%;
+}
+
+/* ============================================
+   PAGE CHÈQUES
+   ============================================ */
+
+/* Saisie du chèque et bouton Ajouter : côte à côte. */
+.soir-checks-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Champ montant : occupe la largeur disponible. */
+.soir-checks-row .form-field {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+/* Bouton Ajouter : largeur selon son contenu, hauteur tactile. */
+.soir-checks-row .button {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+}
+
+/* ============================================
+   PAGE RÉCAPITULATIF : ESPACEMENT ET GRILLES
+   ============================================ */
+
+/* Message vide : aucune place réservée au-dessus d'Encaissements.
+   La zone réapparaît dès que le JavaScript y écrit un message. */
+#soir-recap-message:empty {
+  display: none;
+}
+
+/* Lignes à zéro : respecte hidden malgré le display:flex global. */
+.recap-line[hidden] {
+  display: none;
+}
+
+/* Fréquentation : couverts et pizzas sur deux colonnes égales. */
+.soir-recap-grid.deux {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* TVA : les trois taux sur trois colonnes égales. */
+.soir-recap-grid.trois {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Champs du Récap : la grille gère l'espacement vertical. */
+.soir-recap-grid .form-field {
+  margin-bottom: 0;
+}
+
+/* Saisies du Récap : largeur adaptée et valeurs centrées. */
+.soir-recap-grid input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* ============================================
+   PAGE RÉCAPITULATIF : COULEURS DES BLOCS
+   Ordre du template : Encaissements, Écart,
+   Fréquentation, TVA.
+   ============================================ */
+
+/* Encaissements : bleu doux. */
+#soir-recap-form > fieldset:nth-of-type(1) {
+  background-color: #eaf2fb;
+  border-color: #b9d4ee;
+}
+
+/* Écart : jaune doux. */
+#soir-recap-form > fieldset:nth-of-type(2) {
+  background-color: #fdf6e3;
+  border-color: #f0e0b0;
+}
+
+/* Fréquentation : violet doux, distinct du vert de validation TVA. */
+#soir-recap-form > fieldset:nth-of-type(3) {
+  background-color: #f1edf8;
+  border-color: #d8cceb;
+}
+
+/* TVA : fond neutre avant l'application de l'état de contrôle. */
+#soir-recap-tva-fieldset {
+  background-color: #f4f4f4;
+  border-color: #d9d9d9;
+}
+
+/* TVA cohérente : fond vert clair. */
+#soir-recap-tva-fieldset.tva-ok {
+  background-color: #d4edda;
+  border-color: #a3cfaf;
+}
+
+/* TVA incohérente : fond rouge vif.
+   Les saisies et les lignes de totaux gardent leur propre fond clair. */
+#soir-recap-tva-fieldset.tva-error {
+  background-color: #dc2626;
+  border-color: #b91c1c;
+}
+
+/* Sur fond rouge : titre et libellés des saisies en blanc.
+   Les textes des inputs et des lignes de totaux restent inchangés. */
+#soir-recap-tva-fieldset.tva-error > legend,
+#soir-recap-tva-fieldset.tva-error label {
+  color: #fff;
+}

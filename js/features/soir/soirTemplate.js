@@ -11,8 +11,7 @@
 
 
 export const soirTemplate = `
-  <h2>Service Soir</h2>
-
+  <h2 id="soir-page-title">CB</h2>
 
   <nav class="soir-navigation" aria-label="Pages du service Soir">
     <button
@@ -23,7 +22,6 @@ export const soirTemplate = `
       CB
     </button>
 
-
     <button
       type="button"
       class="soir-nav-button"
@@ -31,7 +29,6 @@ export const soirTemplate = `
     >
       Espèces
     </button>
-
 
     <button
       type="button"
@@ -41,7 +38,6 @@ export const soirTemplate = `
       ANCV
     </button>
 
-
     <button
       type="button"
       class="soir-nav-button"
@@ -50,16 +46,14 @@ export const soirTemplate = `
       Chèques
     </button>
 
-
     <button
       type="button"
       class="soir-nav-button"
       data-soir-page="recap"
     >
-      Récapitulatif
+      Récap
     </button>
   </nav>
-
 
   <div id="soir-pages" class="soir-pages">
     <section
@@ -68,13 +62,11 @@ export const soirTemplate = `
       data-soir-page="card"
     ></section>
 
-
     <section
       id="soir-cash-page"
       class="soir-page is-hidden"
       data-soir-page="cash"
     ></section>
-
 
     <section
       id="soir-ancv-page"
@@ -82,13 +74,11 @@ export const soirTemplate = `
       data-soir-page="ancv"
     ></section>
 
-
     <section
       id="soir-checks-page"
       class="soir-page is-hidden"
       data-soir-page="checks"
     ></section>
-
 
     <section
       id="soir-recap-page"
