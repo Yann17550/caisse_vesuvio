@@ -9,6 +9,7 @@
  * saisie directe en 2 colonnes, sans défilement.
  */
 
+
 import midiView from './midiView.js';
 import { createPaymentList } from '../../utils/paymentList.js';
 import { setupEnterNavigation } from '../../utils/formNavigation.js';
@@ -21,9 +22,11 @@ import {
   closeDailyClosing,
 } from '../../services/dailyClosingService.js';
 
+
 const midiController = {
   init() {
     midiView.init();
+
 
     this.myPos = createPaymentList({
       amountInput: midiView.elements.myPosAmount,
@@ -33,23 +36,28 @@ const midiController = {
       onChange: () => this.updateRecap(),
     });
 
+
     setupEnterNavigation(
       midiView.elements.form,
       midiView.elements.myPosAmount,
     );
 
+
     midiView.elements.form.addEventListener('input', () => {
       this.updateRecap();
     });
+
 
     midiView.elements.form.addEventListener('submit', (event) => {
       event.preventDefault();
       this.handleValidate();
     });
 
+
     midiView.setLocked(false);
     this.updateRecap();
   },
+
 
   getBusinessDate() {
     const now = new Date();
@@ -57,8 +65,10 @@ const midiController = {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
 
+
     return `${year}-${month}-${day}`;
   },
+
 
   getRawMidiData() {
     return {
@@ -77,14 +87,18 @@ const midiController = {
     };
   },
 
+
   updateRecap() {
     midiView.clearMessage();
   },
 
+
   async handleValidate() {
     midiView.clearMessage();
 
+
     const validation = validateMidiRawData(this.getRawMidiData());
+
 
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
@@ -92,15 +106,25 @@ const midiController = {
       return;
     }
 
+
     const closingData = buildMidiClosingData(validation.data);
+
 
     try {
       midiView.showMessage('Enregistrement du Midi en cours…', 'info');
 
+
       await saveDailyClosing(this.getBusinessDate(), 'midi', closingData);
       await closeDailyClosing(this.getBusinessDate(), 'midi');
 
+
+      // La clôture est enregistrée : la saisie repart de zéro
+      // pour la prochaine utilisation, formulaire verrouillé.
+      this.myPos.clear();
+      midiView.reset();
       midiView.setLocked(true);
+
+
       midiView.showMessage(
         'Midi enregistré et validé dans Supabase.',
         'success',
@@ -111,5 +135,6 @@ const midiController = {
     }
   },
 };
+
 
 export default midiController;

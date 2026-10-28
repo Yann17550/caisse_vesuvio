@@ -17,8 +17,10 @@
  * afin de restaurer un brouillon après rafraîchissement.
  */
 
+
 import { validatePositiveAmount } from '../validation/amountValidation.js';
 import { formatEuro } from './format.js';
+
 
 function createPaymentId() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -27,6 +29,7 @@ function createPaymentId() {
 
   return 'payment-' + Date.now() + '-' + Math.random().toString(16).slice(2);
 }
+
 
 /**
  * Transforme des paiements enregistrés en liste exploitable.
@@ -61,6 +64,7 @@ function sanitizeInitialPayments(initialPayments) {
     .filter(Boolean);
 }
 
+
 /**
  * Crée une liste de paiements avec ajout, suppression et total.
  *
@@ -83,31 +87,39 @@ export function createPaymentList({
 }) {
   const payments = sanitizeInitialPayments(initialPayments);
 
+
   function render() {
     listElement.innerHTML = '';
+
 
     payments.forEach((payment) => {
       const listItem = document.createElement('li');
       listItem.dataset.paymentId = payment.id;
 
+
       const amount = document.createElement('span');
       amount.textContent = formatEuro(payment.amount);
+
 
       const removeButton = document.createElement('button');
       removeButton.type = 'button';
       removeButton.className = 'payment-remove-button';
       removeButton.textContent = 'Supprimer';
 
+
       removeButton.addEventListener('click', () => {
         remove(payment.id);
       });
+
 
       listItem.append(amount, removeButton);
       listElement.appendChild(listItem);
     });
 
+
     totalElement.textContent = formatEuro(getTotal());
   }
+
 
   function getTotal() {
     return payments.reduce((total, payment) => {
@@ -115,9 +127,11 @@ export function createPaymentList({
     }, 0);
   }
 
+
   function getCount() {
     return payments.length;
   }
+
 
   /**
    * Retourne une copie des paiements courants.
@@ -134,40 +148,61 @@ export function createPaymentList({
     }));
   }
 
+
   function add() {
     const validation = validatePositiveAmount(amountInput.value.trim());
+
 
     if (!validation.isValid) {
       return validation;
     }
+
 
     payments.push({
       id: createPaymentId(),
       amount: validation.value,
     });
 
+
     amountInput.value = '';
     amountInput.focus();
     render();
     onChange();
 
+
     return validation;
   }
+
 
   function remove(paymentId) {
     const index = payments.findIndex((payment) => {
       return payment.id === paymentId;
     });
 
+
     if (index !== -1) {
       payments.splice(index, 1);
     }
+
 
     render();
     onChange();
   }
 
+
+  /**
+   * Vide entièrement la liste : paiements, champ de saisie et total.
+   * Utilisée après l’enregistrement réussi d’une clôture.
+   */
+  function clear() {
+    payments.length = 0;
+    amountInput.value = '';
+    render();
+  }
+
+
   addButton.addEventListener('click', add);
+
 
   amountInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
@@ -176,14 +211,17 @@ export function createPaymentList({
     }
   });
 
+
   // Affiche les paiements restaurés sans déclencher onChange :
   // la restauration initiale ne doit pas écraser le brouillon.
   render();
+
 
   return {
     getTotal,
     getCount,
     getPayments,
     render,
+    clear,
   };
 }

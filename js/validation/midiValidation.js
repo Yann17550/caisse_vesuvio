@@ -10,14 +10,19 @@
  * Outputs :
  *  - Résultat structuré : validité, données normalisées et erreurs par champ.
  *
+ * Contrôle de cohérence :
+ *  - CA encaissé (hors MyPOS) = somme des TVA TTC.
+ *
  * Dépendances :
  *  - js/utils/calculations.js
  */
+
 
 import {
   parseAmount,
   roundToTwoDecimals,
 } from '../utils/calculations.js';
+
 
 const AMOUNT_FIELDS = [
   'cbClassic',
@@ -31,10 +36,12 @@ const AMOUNT_FIELDS = [
   'vat20',
 ];
 
+
 const INTEGER_FIELDS = [
   'pizzasDineIn',
   'pizzasTakeaway',
 ];
+
 
 const FIELD_LABELS = {
   myPosTotal: 'CB MyPos',
@@ -51,6 +58,10 @@ const FIELD_LABELS = {
   pizzasTakeaway: 'Pizzas à emporter',
 };
 
+// Tolérance : les montants sont arrondis à 2 décimales.
+const COHERENCE_TOLERANCE = 0.005;
+
+
 /**
  * Valide un montant positif ou nul.
  *
@@ -66,7 +77,9 @@ function validateAmount(rawValue, fieldLabel) {
     };
   }
 
+
   const parsedValue = parseAmount(rawValue);
+
 
   if (parsedValue === null) {
     return {
@@ -75,6 +88,7 @@ function validateAmount(rawValue, fieldLabel) {
     };
   }
 
+
   if (parsedValue < 0) {
     return {
       value: null,
@@ -82,11 +96,13 @@ function validateAmount(rawValue, fieldLabel) {
     };
   }
 
+
   return {
     value: roundToTwoDecimals(parsedValue),
     error: null,
   };
 }
+
 
 /**
  * Valide un nombre entier positif ou nul.
@@ -103,7 +119,9 @@ function validateInteger(rawValue, fieldLabel) {
     };
   }
 
+
   const parsedValue = parseAmount(rawValue);
+
 
   if (parsedValue === null) {
     return {
@@ -112,12 +130,14 @@ function validateInteger(rawValue, fieldLabel) {
     };
   }
 
+
   if (!Number.isInteger(parsedValue)) {
     return {
       value: null,
       error: `${fieldLabel} : la valeur doit être un nombre entier.`,
     };
   }
+
 
   if (parsedValue < 0) {
     return {
@@ -126,11 +146,13 @@ function validateInteger(rawValue, fieldLabel) {
     };
   }
 
+
   return {
     value: parsedValue,
     error: null,
   };
 }
+
 
 /**
  * Valide les données brutes du service Midi.
@@ -158,7 +180,9 @@ export function validateMidiRawData(rawData) {
   const errors = {};
   const normalizedData = {};
 
+
   const myPosTotal = Number(rawData.myPosTotal);
+
 
   if (!Number.isFinite(myPosTotal) || myPosTotal < 0) {
     errors.myPosTotal =
@@ -167,11 +191,13 @@ export function validateMidiRawData(rawData) {
     normalizedData.myPosTotal = roundToTwoDecimals(myPosTotal);
   }
 
+
   AMOUNT_FIELDS.forEach((field) => {
     const result = validateAmount(
       rawData[field],
       FIELD_LABELS[field],
     );
+
 
     if (result.error) {
       errors[field] = result.error;
@@ -179,6 +205,7 @@ export function validateMidiRawData(rawData) {
       normalizedData[field] = result.value;
     }
   });
+
 
   INTEGER_FIELDS.forEach((field) => {
     const result = validateInteger(
@@ -186,6 +213,7 @@ export function validateMidiRawData(rawData) {
       FIELD_LABELS[field],
     );
 
+
     if (result.error) {
       errors[field] = result.error;
     } else {
@@ -193,7 +221,39 @@ export function validateMidiRawData(rawData) {
     }
   });
 
+
+  // Contrôle de cohérence : CA encaissé (hors MyPOS) = TVA TTC.
+  // Il n’est évalué que si aucun montant n’est invalide.
+  if (Object.keys(errors).length === 0) {
+    const revenueTotal =
+      normalizedData.cbClassic +
+      normalizedData.cbTicketResto +
+      normalizedData.cashAdipos +
+      normalizedData.ancvPaper +
+      normalizedData.ancvConnect +
+      normalizedData.checks;
+
+
+    const vatTotal =
+      normalizedData.vat55 +
+      normalizedData.vat10 +
+      normalizedData.vat20;
+
+
+    const difference = revenueTotal - vatTotal;
+
+
+    if (Math.abs(difference) > COHERENCE_TOLERANCE) {
+      errors.vatCoherence =
+        `Incohérence : CA encaissé ${roundToTwoDecimals(revenueTotal).toFixed(2)} € ` +
+        `≠ TVA TTC ${roundToTwoDecimals(vatTotal).toFixed(2)} € ` +
+        `(écart ${roundToTwoDecimals(difference).toFixed(2)} €).`;
+    }
+  }
+
+
   const isValid = Object.keys(errors).length === 0;
+
 
   return {
     isValid,
@@ -201,6 +261,7 @@ export function validateMidiRawData(rawData) {
     errors,
   };
 }
+
 
 /**
  * Construit les données à enregistrer dans Supabase.
