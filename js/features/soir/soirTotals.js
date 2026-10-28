@@ -12,44 +12,32 @@
  * Le total des encaissements (paymentsTotal) exclut le myPOS.
  */
 
-
 import { getAmountFromText, getAmountFromInput } from '../../utils/amounts.js';
 import { getQuantityFromInput } from '../../utils/amounts.js';
-
-
 
 // Lit un montant depuis un span caché ; retourne 0 si absent.
 function getHiddenAmount(elementId) {
   const element = document.getElementById(elementId);
 
-
   if (!element) {
     return 0;
   }
 
-
   return getAmountFromText(element);
 }
-
-
 
 // Lit un compteur depuis un span ; retourne 0 si absent.
 function getHiddenCount(elementId) {
   const element = document.getElementById(elementId);
 
-
   if (!element) {
     return 0;
   }
 
-
   const value = Number(element.textContent);
-
 
   return Number.isFinite(value) ? value : 0;
 }
-
-
 
 /**
  * Lit les totaux détaillés de la clôture du Soir.
@@ -66,11 +54,7 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   cash.difference = cash.countedTotal - cash.adipos;
-
-
 
   // --- CB classique ---
   const cardClassic = {
@@ -82,11 +66,7 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   cardClassic.total = cardClassic.contact + cardClassic.noContact;
-
-
 
   // --- CB Ticket Restaurant ---
   const cardTr = {
@@ -98,11 +78,7 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   cardTr.total = cardTr.contact + cardTr.noContact;
-
-
 
   // --- ANCV connecté (télécollecte) : cumul contact + sans contact ---
   const cardAncv = {
@@ -114,11 +90,7 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   cardAncv.total = cardAncv.contact + cardAncv.noContact;
-
-
 
   // --- AMEX ---
   const cardAmex = {
@@ -130,34 +102,35 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   cardAmex.total = cardAmex.contact + cardAmex.noContact;
 
-
-
   // --- myPOS ---
+  // Le nombre de paiements est lu directement dans la liste :
+  // chaque ligne correspond à un paiement MyPOS.
+  const myPosListElement = document.getElementById('soir-card-mypos-list');
+
   const myPos = {
     total: getHiddenAmount('soir-card-mypos-total-value'),
+    count: myPosListElement
+      ? myPosListElement.querySelectorAll('li').length
+      : 0,
   };
-
-
 
   // --- ANCV papier ---
   const ancvPaper = {
-    count: getHiddenCount('soir-ancv-count'),
-    total: getHiddenAmount('soir-ancv-total-value'),
+    count: getHiddenCount('soir-ancv-count-value'),
+    total: getHiddenAmount('soir-ancv-paper-total-value'),
+    nb10: getHiddenCount('soir-ancv-nb-10'),
+    nb20: getHiddenCount('soir-ancv-nb-20'),
+    nb25: getHiddenCount('soir-ancv-nb-25'),
+    nb50: getHiddenCount('soir-ancv-nb-50'),
   };
-
-
 
   // --- Chèques ---
   const checks = {
     total: getHiddenAmount('soir-checks-total-value'),
     count: getHiddenCount('soir-checks-count'),
   };
-
-
 
   // --- Fréquentation ---
   const pizzas = {
@@ -168,8 +141,6 @@ export function getSoirTotals() {
       document.getElementById('soir-recap-takeaway'),
     ),
   };
-
-
 
   // --- TVA (montants TTC saisis) ---
   const vat = {
@@ -184,11 +155,7 @@ export function getSoirTotals() {
     ),
   };
 
-
-
   vat.total = vat.ttc55 + vat.ttc10 + vat.ttc20;
-
-
 
   // --- Totaux de contrôle ---
   // myPOS exclu du total des encaissements.
@@ -200,8 +167,6 @@ export function getSoirTotals() {
     cardAmex.total +
     ancvPaper.total +
     checks.total;
-
-
 
   return {
     cash,
@@ -215,12 +180,8 @@ export function getSoirTotals() {
     pizzas,
     vat,
 
-
-
     paymentsTotal, // myPOS exclu
     vatTotal: vat.total,
-
-
 
     totalDifference: cash.difference + myPos.total,
   };

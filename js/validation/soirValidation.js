@@ -4,13 +4,13 @@
  *
  * Les totaux sont recalculés à partir des valeurs détaillées :
  * - CB classique / TR / AMEX / CB ANCV : contact + sans contact ;
- * - ANCV papier : nombre de titres par dénomination.
+ * - ANCV papier : nombre de titres par dénomination ;
+ * - MyPOS et chèques : montant total et nombre de paiements.
  *
  * total_revenue correspond à la somme des montants TVA TTC.
  *
  * Ce module ne dépend ni du DOM ni de Supabase.
  */
-
 
 /**
  * Construit les données à enregistrer dans Supabase.
@@ -44,6 +44,7 @@ export function buildSoirClosingData(totals) {
 
     // Agrégats
     mypos: totals.myPos.total,
+    mypos_count: totals.myPos.count,
     cb_classic: totals.cardClassic.total,
     cb_ticket_resto: totals.cardTr.total,
     cb_amex: totals.cardAmex.total,
@@ -53,6 +54,7 @@ export function buildSoirClosingData(totals) {
     cash_delta: totals.cash.difference,
     ancv_paper: totals.ancvPaper.total,
     checks_total: totals.checks.total,
+    checks_count: totals.checks.count,
     vat_5_5: totals.vat.ttc55,
     vat_10: totals.vat.ttc10,
     vat_20: totals.vat.ttc20,

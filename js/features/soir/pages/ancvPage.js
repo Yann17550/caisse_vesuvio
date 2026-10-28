@@ -91,11 +91,42 @@ export function initAncvPage(container) {
       grandTotalElement.textContent = formatEuro(grandTotal);
     }
 
-    const countElement = getCountElement();
+    const hiddenTotalElement = document.getElementById(
+      'soir-ancv-paper-total-value',
+    );
+
+    if (hiddenTotalElement) {
+      hiddenTotalElement.textContent = formatEuro(grandTotal);
+    }
+
+    const countElement = document.getElementById('soir-ancv-count-value');
 
     if (countElement) {
       countElement.textContent = String(totalCount);
     }
+
+    // Nombre de titres par dénomination, lu par soirTotals.js
+    // puis enregistré dans Supabase.
+    const denominationCounts = {
+      10: 0,
+      20: 0,
+      25: 0,
+      50: 0,
+    };
+
+    entries.forEach((entry) => {
+      if (denominationCounts[entry.value] !== undefined) {
+        denominationCounts[entry.value] += entry.quantity;
+      }
+    });
+
+    Object.entries(denominationCounts).forEach(([value, count]) => {
+      const element = document.getElementById(`soir-ancv-nb-${value}`);
+
+      if (element) {
+        element.textContent = String(count);
+      }
+    });
   }
 
   function renderList() {

@@ -213,6 +213,13 @@
   flex: 0 0 30%;
 }
 
+/* Spans techniques de la page ANCV : montant total et
+   compteurs par dénomination, lus par soirTotals.js.
+   Ils ne doivent jamais être visibles à l'écran. */
+.hidden-value {
+  display: none;
+}
+
 /* ============================================
    PAGE CHÈQUES
    ============================================ */

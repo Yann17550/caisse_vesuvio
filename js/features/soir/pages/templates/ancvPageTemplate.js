@@ -3,8 +3,13 @@
  * Rôle : template HTML de la page ANCV du service Soir.
  *
  * Ce fichier ne contient que du HTML. Aucune logique.
- * Le total général est affiché dans le titre de page (h2),
- * géré par soirController.js.
+ *
+ * Le montant total est affiché dans le titre de page :
+ * « ANCV — X,XX € », géré par soirController.js.
+ *
+ * Un span caché conserve également le montant total :
+ * il est lu par soirTotals.js, y compris lorsque la page Récap
+ * est affichée.
  */
 
 export const ancvPageTemplate = `
@@ -67,7 +72,18 @@ export const ancvPageTemplate = `
 
     <div class="recap-line">
       <span>Nombre d'ANCV</span>
-      <strong id="soir-ancv-total-value" hidden>0,00 €</strong>
+      <strong id="soir-ancv-count-value">0</strong>
     </div>
+
+    <span
+      id="soir-ancv-paper-total-value"
+      class="hidden-value"
+      aria-hidden="true"
+    >0,00 €</span>
+
+    <span id="soir-ancv-nb-10" class="hidden-value" aria-hidden="true">0</span>
+    <span id="soir-ancv-nb-20" class="hidden-value" aria-hidden="true">0</span>
+    <span id="soir-ancv-nb-25" class="hidden-value" aria-hidden="true">0</span>
+    <span id="soir-ancv-nb-50" class="hidden-value" aria-hidden="true">0</span>
   </form>
 `;
