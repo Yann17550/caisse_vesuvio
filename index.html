@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Caisse Vesuvio</title>
+  <title>Clôtures Vesuvio</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/midi.css" />
-  <link rel="stylesheet" href="css/soir.css" />
+  <link rel="stylesheet" href="css/accueil.css" />
 </head>
-<body class="service-midi">
+<body class="accueil-actif">
   <header class="app-header">
-    <h1>Caisse Vesuvio</h1>
+    <h1>Clôtures Vesuvio</h1>
 
-    <nav class="service-switch" aria-label="Choix du service">
+    <nav
+      id="service-switch"
+      class="service-switch is-hidden"
+      aria-label="Choix du service"
+    >
       <button
         type="button"
         id="service-midi-button"
-        class="service-button is-active"
+        class="service-button"
         data-service="midi"
       >
         Midi
@@ -35,33 +38,84 @@
 
   <main class="app-main">
     <div id="app-pages" class="app-pages">
-      <section
-        id="midi-section"
-        class="service-section"
-        data-service="midi"
-      ></section>
 
       <section
-        id="soir-section"
-        class="service-section is-hidden"
-        data-service="soir"
+        id="accueil-section"
+        class="accueil-section"
       >
-        <h2>Service </h2>
+        <h2>Accueil</h2>
 
-        <nav
-          id="soir-navigation"
-          class="soir-navigation"
-          aria-label="Pages du service Soir"
-        ></nav>
+        <div class="accueil-applications">
+          <button
+            type="button"
+            id="accueil-bouton-clotures"
+            class="accueil-bouton-application"
+          >
+            Clôtures
+          </button>
+        </div>
 
-        <div id="soir-pages" class="soir-pages"></div>
+        <div
+          id="accueil-choix-etablissement"
+          class="accueil-choix-etablissement is-hidden"
+        >
+          <h3>Choisir l’établissement</h3>
+
+          <div
+            id="accueil-liste-etablissements"
+            class="accueil-liste-etablissements"
+          ></div>
+
+          <button
+            type="button"
+            id="accueil-bouton-retour"
+            class="accueil-bouton-retour"
+          >
+            Retour à l’accueil
+          </button>
+        </div>
+
+        <div
+          id="accueil-message"
+          class="accueil-message is-hidden"
+          role="status"
+        ></div>
       </section>
+
+      <section
+        id="clotures-vesuvio-section"
+        class="clotures-vesuvio-section is-hidden"
+      >
+        <div id="app-pages-clotures-vesuvio" class="app-pages">
+
+          <section
+            id="midi-section"
+            class="service-section is-hidden"
+            data-service="midi"
+          ></section>
+
+          <section
+            id="soir-section"
+            class="service-section is-hidden"
+            data-service="soir"
+          >
+            <h2>Service</h2>
+
+            <nav
+              id="soir-navigation"
+              class="soir-navigation"
+              aria-label="Pages du service Soir"
+            ></nav>
+
+            <div id="soir-pages" class="soir-pages"></div>
+          </section>
+
+        </div>
+      </section>
+
     </div>
   </main>
 
-  <script type="module" src="js/main.js"></script>
-
-</script>
-
+  <script type="module" src="accueil/demarrageApplication.js"></script>
 </body>
 </html>

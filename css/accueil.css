@@ -1,0 +1,139 @@
+/**
+ * Fichier : css/accueil.css
+ * Rôle : styles de la page d’accueil.
+ *
+ * Ces styles concernent uniquement :
+ * - l’écran d’accueil ;
+ * - le choix de l’établissement ;
+ * - les messages d’accueil ;
+ * - la section des clôtures Vesuvio.
+ *
+ * Ils ne modifient pas les styles du Midi ou du Soir.
+ */
+
+/* ---------------------------------------------
+   Page d’accueil
+--------------------------------------------- */
+
+.accueil-section {
+  padding: 16px;
+}
+
+.accueil-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.accueil-applications {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.accueil-bouton-application {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.accueil-bouton-application:active {
+  background: #f0f0f0;
+}
+
+/* ---------------------------------------------
+   Choix de l’établissement
+--------------------------------------------- */
+
+.accueil-choix-etablissement {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.accueil-choix-etablissement h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.accueil-liste-etablissements {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accueil-bouton-etablissement {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.accueil-bouton-etablissement:active {
+  background: #f0f0f0;
+}
+
+.accueil-bouton-retour {
+  padding: 12px;
+  font-size: 1rem;
+  color: #111;
+  background: #f5f5f5;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.accueil-bouton-retour:active {
+  background: #e8e8e8;
+}
+
+/* ---------------------------------------------
+   Messages
+--------------------------------------------- */
+
+.accueil-message {
+  padding: 12px;
+  font-size: 1rem;
+  color: #0b4f8a;
+  background: #eef6ff;
+  border-radius: 10px;
+}
+
+.accueil-message-erreur {
+  color: #a10000;
+  background: #ffecec;
+}
+
+/* ---------------------------------------------
+   Clôtures Vesuvio
+--------------------------------------------- */
+
+.clotures-vesuvio-section {
+  padding: 0;
+}
+
+.clotures-vesuvio-section.is-hidden {
+  display: none;
+}
+
+/* ---------------------------------------------
+   Utilitaires
+--------------------------------------------- */
+
+.is-hidden {
+  display: none !important;
+}
