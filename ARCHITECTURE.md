@@ -46,6 +46,19 @@ Le nom fonctionnel des modules applicatifs est en revanche
 
 ## 4. État fonctionnel validé
 
+### Page d’accueil
+
+- L’application démarre sur la page d’accueil.
+- Le bouton « Clôtures » ouvre le choix de l’établissement.
+- Le choix « Le Vesuvio » ouvre les clôtures Vesuvio.
+- Le choix « Pizza d’Oléron » affiche « Application non disponible ».
+- La navigation Midi / Soir est masquée tant que les clôtures Vesuvio
+  ne sont pas ouvertes.
+- Les clôtures Vesuvio s’ouvrent sur le service Midi.
+- Le passage Midi / Soir fonctionne.
+- Le retour à l’accueil depuis une clôture n’est pas encore implémenté.
+- Un rafraîchissement de la page permet actuellement de revenir à l’accueil.
+
 ### Midi — Le Vesuvio
 
 - Saisie des encaissements et de la TVA.
@@ -86,11 +99,56 @@ Le nom fonctionnel des modules applicatifs est en revanche
 - Le multi-établissement passe par la page d’accueil et la configuration.
 - Les pages ne doivent jamais coder en dur un `etablissement_id`.
 
-### Arborescence cible
+### Règle pendant la phase d’accueil
+
+- Le dossier `js/` correspond à l’ancien code fonctionnel.
+- Pendant la phase d’accueil, aucun fichier de `js/` ne doit être modifié.
+- Le nouveau point d’entrée est `accueil/demarrageApplication.js`.
+- `index.html` est la nouvelle page d’accueil.
+- `index-initial.html` est une sauvegarde temporaire locale,
+  non commitée, conservée jusqu’à validation complète de la nouvelle
+  navigation.
+
+### Arborescence actuelle validée
+
+```text
+index.html
+index-initial.html
+
+accueil/
+  demarrageApplication.js
+  pageAccueil.js
+  vueAccueil.js
+  selectionEtablissement.js
+  navigationApplications.js
+
+css/
+  accueil.css
+  style.css
+  midi.css
+  soir.css
+
+core/
+  configuration/
+    configurationEtablissements.js
+
+js/
+  main.js
+  config.js
+  supabaseClient.js
+  features/
+  services/
+  utils/
+  validation/
+```
+
+### Arborescence cible à terme
 
 ```text
 accueil/
+  demarrageApplication.js
   pageAccueil.js
+  vueAccueil.js
   selectionEtablissement.js
   navigationApplications.js
 
@@ -123,23 +181,24 @@ clotures-pizz-doleron/
 | `core/interface/` | UX, DOM, navigation, formatage, erreurs, listes |
 | `clotures-vesuvio/` | Application de clôture du Vesuvio |
 | `clotures-pizz-doleron/` | Future application de clôture de Pizza d’Oléron |
+| `js/` | Ancien code fonctionnel, à migrer progressivement vers `clotures-vesuvio/` |
 
-## 6. Page d’accueil — première tâche
+## 6. Page d’accueil — phase 1
 
 La création de la page d’accueil est la **première tâche du projet**,
 avant toute refactorisation du code existant.
 
-### Objectif
+### Comportement validé
 
-Créer un point d’entrée unique permettant :
-
-- d’afficher les applications disponibles ;
-- d’accéder à Clôtures Vesuvio ;
-- d’accéder à Clôtures Pizza d’Oléron ;
-- d’accéder aux futurs modules : facturation, TVA, etc. ;
-- de sélectionner l’établissement actif ;
-- de mémoriser l’établissement actif pendant la session ;
-- de transmettre l’établissement actif aux applications de clôture.
+1. L’application s’ouvre sur l’accueil.
+2. L’utilisateur clique sur « Clôtures ».
+3. L’accueil affiche le choix de l’établissement.
+4. Le choix « Le Vesuvio » ouvre les clôtures Vesuvio.
+5. Le choix « Pizza d’Oléron » affiche « Application non disponible ».
+6. Les clôtures Vesuvio s’ouvrent sur le service Midi.
+7. La navigation Midi / Soir devient disponible.
+8. Le retour à l’accueil depuis une clôture sera ajouté dans une étape
+   ultérieure.
 
 ### Règle multi-établissement
 
@@ -149,30 +208,32 @@ Créer un point d’entrée unique permettant :
 - Aucune page de clôture ne doit contenir de valeur codée en dur
   telle que `etablissement_id: 2`.
 
-### Structure cible
+### Structure validée
 
 ```text
 accueil/
+  demarrageApplication.js
   pageAccueil.js
+  vueAccueil.js
   selectionEtablissement.js
   navigationApplications.js
 ```
 
 | Fichier | Responsabilité |
 |---|---|
-| `pageAccueil.js` | Afficher la page d’accueil et orchestrer ses modules |
-| `selectionEtablissement.js` | Sélectionner, valider et mémoriser l’établissement actif |
-| `navigationApplications.js` | Gérer les boutons et la navigation vers les applications |
+| `demarrageApplication.js` | Point d’entrée unique : démarre l’accueil, puis les clôtures Vesuvio |
+| `pageAccueil.js` | Orchestre la page d’accueil, sans manipuler le DOM |
+| `vueAccueil.js` | Manipule le DOM de l’accueil |
+| `selectionEtablissement.js` | Sélectionne, valide et mémorise l’établissement actif |
+| `navigationApplications.js` | Définit les applications et détermine la destination |
 
-### Ordre de réalisation
+### Séparation des responsabilités
 
-1. Lire `index.html`, `js/main.js` et `js/config.js`.
-2. Créer la page d’accueil.
-3. Créer la sélection d’établissement.
-4. Créer la navigation vers les applications.
-5. Créer `core/configuration/configurationEtablissements.js`.
-6. Tester la navigation et la sélection d’établissement sur téléphone.
-7. Commit et push après validation.
+- `pageAccueil.js` ne touche pas directement au DOM.
+- `vueAccueil.js` ne contient aucune règle métier.
+- `selectionEtablissement.js` ne touche pas au DOM.
+- `navigationApplications.js` ne touche pas au DOM.
+- `demarrageApplication.js` ne contient aucune logique métier.
 
 ## 7. Structure Vesuvio cible
 
@@ -235,7 +296,7 @@ de l’application Pizza d’Oléron.
 - Noms de fichiers et de fonctions en français.
 - Pas de noms vagues : `utils`, `helpers`, `controller` sont proscrits.
 - Le nom décrit la responsabilité métier réelle.
-- Le DOM est isolé dans `core/interface/`.
+- Le DOM est isolé dans les modules de vue.
 - Les règles métier Vesuvio restent dans `clotures-vesuvio/`.
 - Les règles métier Oléron resteront dans `clotures-pizz-doleron/`.
 
@@ -337,12 +398,25 @@ et les futures applications.
 ### Phase 1 — Page d’accueil
 
 1. Lire `index.html`, `js/main.js` et `js/config.js`.
-2. Créer la page d’accueil.
-3. Créer la sélection d’établissement.
-4. Créer la navigation vers les applications.
-5. Créer `core/configuration/configurationEtablissements.js`.
-6. Tester la navigation et la sélection d’établissement sur téléphone.
-7. Commit et push après validation.
+2. Créer `core/configuration/configurationEtablissements.js`.
+3. Créer `accueil/selectionEtablissement.js`.
+4. Créer `accueil/navigationApplications.js`.
+5. Créer `accueil/pageAccueil.js`.
+6. Créer `accueil/vueAccueil.js`.
+7. Refactorer `accueil/pageAccueil.js` pour déléguer le DOM à `vueAccueil.js`.
+8. Créer `accueil/demarrageApplication.js`.
+9. Remplacer `index.html` par la page d’accueil.
+10. Créer `css/accueil.css`.
+11. Tester la navigation et la sélection d’établissement sur téléphone.
+12. Commit et push après validation.
+
+### Phase 1 bis — Retour à l’accueil
+
+1. Ajouter un bouton « Accueil » visible lorsque les clôtures Vesuvio
+   sont ouvertes.
+2. Permettre le retour à l’accueil sans rafraîchir la page.
+3. Tester sur téléphone.
+4. Commit et push après validation.
 
 ### Phase 2 — Refactorisation du tronc commun
 
@@ -381,6 +455,7 @@ et les futures applications.
 - Test sur téléphone après chaque étape.
 - Commit et push après chaque étape validée.
 - Ne rien supprimer sans validation explicite.
+- Pendant la phase d’accueil, ne pas modifier le dossier `js/`.
 - Penser aux répercussions transverses :
   - Page d’accueil
   - Récapitulatifs
@@ -392,12 +467,19 @@ et les futures applications.
 ## 14. État de la migration
 
 - [x] Création du fichier `ARCHITECTURE.md`.
-- [ ] Lecture de `index.html`, `js/main.js` et `js/config.js`.
-- [ ] Création de la page d’accueil.
-- [ ] Création de la sélection d’établissement.
-- [ ] Création de la navigation vers les applications.
-- [ ] Création de `core/configuration/configurationEtablissements.js`.
-- [ ] Test navigation et sélection d’établissement sur téléphone.
+- [x] Lecture de `index.html`, `js/main.js` et `js/config.js`.
+- [x] Création de `core/configuration/configurationEtablissements.js`.
+- [x] Création de `accueil/selectionEtablissement.js`.
+- [x] Création de `accueil/navigationApplications.js`.
+- [x] Création de `accueil/pageAccueil.js`.
+- [x] Création de `accueil/vueAccueil.js`.
+- [x] Refactorisation de `accueil/pageAccueil.js`.
+- [x] Création de `accueil/demarrageApplication.js`.
+- [x] Remplacement de `index.html` par la page d’accueil.
+- [x] Création de `css/accueil.css`.
+- [x] Test navigation et sélection d’établissement sur téléphone.
+- [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
+- [ ] Suppression de `index-initial.html` après validation complète.
 - [ ] Création de `core/montants/conversionMontants.js`.
 - [ ] Façade temporaire pour `js/utils/calculations.js`.
 - [ ] Création de `core/montants/operationsMontants.js`.
@@ -411,13 +493,52 @@ et les futures applications.
 - [ ] Migration du service de clôture.
 - [ ] Suppression des anciens fichiers.
 
-## 15. Dernier commit validé
+## 15. Commits validés
+
+```text
+feat(midi): contrôle cohérence TVA et remise à zéro après validation
+```
 
 ```text
 docs: ajouter ARCHITECTURE.md comme référence de migration multi-applications
 ```
 
+```text
+docs: planifier la création de la page d’accueil avant la refactorisation
+```
+
+```text
+feat(configuration): ajouter la configuration des établissements
+```
+
+```text
+feat(accueil): ajouter la sélection de l’établissement actif
+```
+
+```text
+feat(accueil): ajouter la navigation vers les applications
+```
+
+```text
+feat(accueil): ajouter la page d’accueil et la navigation vers les clôtures
+```
+
+```text
+feat(accueil): ajouter la vue de la page d’accueil
+```
+
+```text
+refactor(accueil): déléguer le DOM de l’accueil à vueAccueil
+```
+
+```text
+feat(accueil): ajouter le point d’entrée de l’application
+```
+
+```text
+feat(accueil): intégrer la page d’accueil et ses styles
+```
+
 - Branche : `feature/midi-mobile-layout`
-- Commit : `88097a1`
 - Dépôt : `Yann17550/caisse_vesuvio`
-- Fichier : `ARCHITECTURE.md`
+- Dernier commit accueil : intégration de la page d’accueil et de ses styles.
