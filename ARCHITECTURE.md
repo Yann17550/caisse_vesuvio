@@ -21,6 +21,7 @@ Les applications sont donc nommées :
 - Comptabilités séparées par établissement.
 - Consolidation possible au niveau de l’EIRL.
 - Objectif long terme : plusieurs applications partageant un tronc commun :
+  - Page d’accueil
   - Clôtures Vesuvio
   - Clôtures Pizza d’Oléron
   - Facturation
@@ -41,7 +42,7 @@ Les applications sont donc nommées :
 
 Le nom du dépôt GitHub peut rester `caisse_vesuvio` pour l’instant.
 Le nom fonctionnel des modules applicatifs est en revanche
-`clotures-vesuvio` et `clotures-pizz-doleron`.
+`accueil`, `clotures-vesuvio` et `clotures-pizz-doleron`.
 
 ## 4. État fonctionnel validé
 
@@ -69,8 +70,8 @@ Le nom fonctionnel des modules applicatifs est en revanche
   `etablissement_id = 2` (Le Vesuvio).
 - Cette valeur est actuellement définie par défaut dans
   `js/services/dailyClosingService.js`.
-- À terme, l’établissement doit provenir de la configuration,
-  jamais d’une valeur codée en dur dans une page.
+- À terme, l’établissement actif proviendra de la page d’accueil
+  et de la configuration.
 
 ## 5. Architecture cible
 
@@ -78,15 +79,21 @@ Le nom fonctionnel des modules applicatifs est en revanche
 
 - Pas de dossier `apps/`.
 - Structure plate.
-- `core/` est au même niveau que les applications.
+- `accueil/`, `core/`, `clotures-vesuvio/` et
+  `clotures-pizz-doleron/` sont au même niveau.
 - `core/` contient uniquement des briques génériques.
 - Aucune règle métier de clôture ne doit se trouver dans `core/`.
-- Le multi-établissement passe par la configuration.
+- Le multi-établissement passe par la page d’accueil et la configuration.
 - Les pages ne doivent jamais coder en dur un `etablissement_id`.
 
 ### Arborescence cible
 
 ```text
+accueil/
+  pageAccueil.js
+  selectionEtablissement.js
+  navigationApplications.js
+
 core/
   configuration/
   base-de-donnees/
@@ -108,6 +115,7 @@ clotures-pizz-doleron/
 
 | Dossier | Rôle |
 |---|---|
+| `accueil/` | Point d’entrée, sélection d’établissement, navigation entre applications |
 | `core/configuration/` | Configuration application, établissements, environnement |
 | `core/base-de-donnees/` | Client Supabase, accès générique, brouillons |
 | `core/montants/` | Conversion, arrondi, opérations sur montants |
@@ -116,7 +124,57 @@ clotures-pizz-doleron/
 | `clotures-vesuvio/` | Application de clôture du Vesuvio |
 | `clotures-pizz-doleron/` | Future application de clôture de Pizza d’Oléron |
 
-## 6. Structure Vesuvio cible
+## 6. Page d’accueil — première tâche
+
+La création de la page d’accueil est la **première tâche du projet**,
+avant toute refactorisation du code existant.
+
+### Objectif
+
+Créer un point d’entrée unique permettant :
+
+- d’afficher les applications disponibles ;
+- d’accéder à Clôtures Vesuvio ;
+- d’accéder à Clôtures Pizza d’Oléron ;
+- d’accéder aux futurs modules : facturation, TVA, etc. ;
+- de sélectionner l’établissement actif ;
+- de mémoriser l’établissement actif pendant la session ;
+- de transmettre l’établissement actif aux applications de clôture.
+
+### Règle multi-établissement
+
+- L’établissement actif est sélectionné depuis la page d’accueil.
+- Les applications de clôture lisent l’établissement actif
+  depuis la configuration ou l’état de session.
+- Aucune page de clôture ne doit contenir de valeur codée en dur
+  telle que `etablissement_id: 2`.
+
+### Structure cible
+
+```text
+accueil/
+  pageAccueil.js
+  selectionEtablissement.js
+  navigationApplications.js
+```
+
+| Fichier | Responsabilité |
+|---|---|
+| `pageAccueil.js` | Afficher la page d’accueil et orchestrer ses modules |
+| `selectionEtablissement.js` | Sélectionner, valider et mémoriser l’établissement actif |
+| `navigationApplications.js` | Gérer les boutons et la navigation vers les applications |
+
+### Ordre de réalisation
+
+1. Lire `index.html`, `js/main.js` et `js/config.js`.
+2. Créer la page d’accueil.
+3. Créer la sélection d’établissement.
+4. Créer la navigation vers les applications.
+5. Créer `core/configuration/configurationEtablissements.js`.
+6. Tester la navigation et la sélection d’établissement sur téléphone.
+7. Commit et push après validation.
+
+## 7. Structure Vesuvio cible
 
 ```text
 clotures-vesuvio/
@@ -144,7 +202,7 @@ clotures-vesuvio/
     serviceClotureJournaliere.js
 ```
 
-## 7. Structure Oléron future
+## 8. Structure Oléron future
 
 Pizza d’Oléron n’a pas de service du Midi.
 
@@ -170,7 +228,7 @@ clotures-pizz-doleron/
 Ces fichiers ne seront créés que lors de la migration réelle
 de l’application Pizza d’Oléron.
 
-## 8. Nomenclature validée
+## 9. Nomenclature validée
 
 ### Règles
 
@@ -214,7 +272,7 @@ de l’application Pizza d’Oléron.
 | `validateNonNegativeInteger` | `validerEntierPositifOuNul` |
 | `getSoirTotals` | `collecterDonneesClotureSoir` |
 
-## 9. Doublons identifiés
+## 10. Doublons identifiés
 
 ### `parseAmount`
 
@@ -257,9 +315,9 @@ Décision :
 - À terme, introduire un état de clôture du Soir
   afin de ne plus utiliser le DOM comme source de vérité.
 
-## 10. Briques UX globales
+## 11. Briques UX globales
 
-Ces briques doivent être réutilisables par Midi, Soir
+Ces briques doivent être réutilisables par l’accueil, le Midi, le Soir
 et les futures applications.
 
 | Brique | Fichier cible |
@@ -274,7 +332,19 @@ et les futures applications.
 | Erreurs de champs | `core/interface/erreursChamps.js` |
 | Lecture des montants dans le DOM | `core/interface/champsMontants.js` |
 
-## 11. Ordre de migration
+## 12. Déroulement des tâches
+
+### Phase 1 — Page d’accueil
+
+1. Lire `index.html`, `js/main.js` et `js/config.js`.
+2. Créer la page d’accueil.
+3. Créer la sélection d’établissement.
+4. Créer la navigation vers les applications.
+5. Créer `core/configuration/configurationEtablissements.js`.
+6. Tester la navigation et la sélection d’établissement sur téléphone.
+7. Commit et push après validation.
+
+### Phase 2 — Refactorisation du tronc commun
 
 1. Créer `core/montants/conversionMontants.js`.
 2. Transformer `js/utils/calculations.js` en façade temporaire.
@@ -286,12 +356,22 @@ et les futures applications.
 8. Créer `core/interface/comportementChampTexte.js`.
 9. Créer `core/interface/navigationFormulaire.js`.
 10. Créer `core/interface/listesPaiements.js`.
-11. Migrer le Midi vers `clotures-vesuvio/midi/`.
-12. Migrer le Soir vers `clotures-vesuvio/soir/`.
-13. Migrer le service de clôture vers `clotures-vesuvio/services/`.
-14. Supprimer les anciens fichiers, uniquement après validation complète.
 
-## 12. Méthode de travail imposée
+### Phase 3 — Migration des clôtures Vesuvio
+
+1. Migrer le Midi vers `clotures-vesuvio/midi/`.
+2. Migrer le Soir vers `clotures-vesuvio/soir/`.
+3. Migrer le service de clôture vers `clotures-vesuvio/services/`.
+4. Supprimer les anciens fichiers, uniquement après validation complète.
+
+### Phase 4 — Clôtures Pizza d’Oléron
+
+1. Créer `clotures-pizz-doleron/`.
+2. Créer le module Soir.
+3. Créer le service de clôture.
+4. Utiliser l’établissement actif sélectionné depuis l’accueil.
+
+## 13. Méthode de travail imposée
 
 - Aucune supposition : demander à voir un fichier avant tout diagnostic
   ou modification.
@@ -302,16 +382,22 @@ et les futures applications.
 - Commit et push après chaque étape validée.
 - Ne rien supprimer sans validation explicite.
 - Penser aux répercussions transverses :
+  - Page d’accueil
   - Récapitulatifs
   - Supabase
   - Midi / Soir
   - Établissements
   - Futures applications
 
-## 13. État de la migration
+## 14. État de la migration
 
-- [ ] Lecture complète des fichiers restants.
-- [ ] Validation du tableau de migration fichier par fichier.
+- [x] Création du fichier `ARCHITECTURE.md`.
+- [ ] Lecture de `index.html`, `js/main.js` et `js/config.js`.
+- [ ] Création de la page d’accueil.
+- [ ] Création de la sélection d’établissement.
+- [ ] Création de la navigation vers les applications.
+- [ ] Création de `core/configuration/configurationEtablissements.js`.
+- [ ] Test navigation et sélection d’établissement sur téléphone.
 - [ ] Création de `core/montants/conversionMontants.js`.
 - [ ] Façade temporaire pour `js/utils/calculations.js`.
 - [ ] Création de `core/montants/operationsMontants.js`.
@@ -325,13 +411,13 @@ et les futures applications.
 - [ ] Migration du service de clôture.
 - [ ] Suppression des anciens fichiers.
 
-## 14. Dernier commit validé
+## 15. Dernier commit validé
 
 ```text
-feat(midi): contrôle cohérence TVA et remise à zéro après validation
+docs: ajouter ARCHITECTURE.md comme référence de migration multi-applications
 ```
 
 - Branche : `feature/midi-mobile-layout`
-- Commit : `f3caa88`
+- Commit : `88097a1`
 - Dépôt : `Yann17550/caisse_vesuvio`
-- Push effectué avec succès.
+- Fichier : `ARCHITECTURE.md`
