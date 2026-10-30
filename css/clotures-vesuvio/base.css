@@ -1,0 +1,190 @@
+/* Fichier : css/clotures-vesuvio/base.css
+   Rôle : styles communs aux modules Midi et Soir.
+   Référence visuelle : css/midi.css et css/soir.css de l’ancien code. */
+
+/* ============================================
+   CHAMPS DE FORMULAIRE
+   ============================================ */
+
+/* Champ standard : libellé au-dessus de la saisie. */
+.champ-formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Libellé : texte secondaire compact. */
+.champ-formulaire label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* Saisie : hauteur tactile, bordure arrondie, texte lisible. */
+.champ-formulaire input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Montants : alignés à droite pour faciliter la lecture. */
+.champ-formulaire input[inputmode="decimal"] {
+  text-align: right;
+}
+
+/* Quantités : centrées. */
+.champ-formulaire input[inputmode="numeric"] {
+  text-align: center;
+}
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+
+/* Bouton standard : hauteur tactile et rayon cohérent. */
+button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Bouton désactivé : feedback visuel clair. */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   LISTES DE PAIEMENTS
+   ============================================ */
+
+/* Liste des paiements ajoutés : MyPOS, chèques, etc. */
+.payment-list,
+#midi-myPosListe,
+#soir-mypos-liste,
+#soir-cheques-liste {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+/* ============================================
+   MESSAGES
+   ============================================ */
+
+/* Message : masqué lorsqu’il est vide. */
+.message:empty {
+  display: none;
+}
+
+/* Message d’information. */
+.message-info {
+  color: var(--color-muted);
+}
+
+/* Message de succès. */
+.message-succes {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+/* Message d’erreur. */
+.message-erreur {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* ============================================
+   NAVIGATION DU SOIR
+   ============================================ */
+
+/* Barre de navigation : boutons sur une seule ligne. */
+.soir-navigation {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* Boutons de navigation : largeur identique, texte sur une ligne. */
+.soir-nav-button {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Bouton actif : état visuel par défaut, personnalisé par page. */
+.soir-nav-button.is-active {
+  font-weight: 700;
+}
+
+/* ============================================
+   PAGES DU SOIR
+   ============================================ */
+
+/* Pages : espacement vertical régulier. */
+.soir-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Page masquée : retirée du flux. */
+.soir-page.is-hidden {
+  display: none;
+}
+
+/* ============================================
+   RÉCAPITULATIF
+   ============================================ */
+
+/* Bloc récapitulatif : fond clair et bordure douce. */
+.recap-bloc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border: 1px solid #dddddd;
+  border-radius: var(--radius);
+}
+
+/* Ligne récapitulative : libellé à gauche, montant à droite. */
+.recap-ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Montant du récapitulatif : mis en valeur. */
+.recap-ligne strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   ADAPTATION PC
+   ============================================ */
+
+/* Desktop : espacements légèrement plus importants. */
+@media (min-width: 640px) {
+  .champ-formulaire {
+    gap: 6px;
+  }
+
+  .soir-navigation {
+    gap: 8px;
+  }
+
+  .soir-page {
+    gap: 16px;
+  }
+}
