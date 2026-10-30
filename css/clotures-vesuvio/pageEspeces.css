@@ -1,0 +1,24 @@
+/* Fichier : css/clotures-vesuvio/pageEspeces.css
+   Rôle : styles de la page Espèces du Soir. */
+
+#soir-page-especes {
+  background-color: var(--color-soir-cash);
+}
+
+.soir-nav-button.is-active[data-soir-page="especes"] {
+  background-color: var(--color-soir-cash-accent);
+  color: #ffffff;
+}
+
+#soir-page-especes .champ-formulaire {
+  max-width: 420px;
+}
+
+#soir-especes-ecart {
+  margin: 0;
+  padding: 10px;
+  background-color: #fdf6e3;
+  border: 1px solid #f0e0b0;
+  border-radius: var(--radius);
+  font-weight: 600;
+}

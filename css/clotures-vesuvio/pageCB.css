@@ -1,0 +1,81 @@
+/* Fichier : css/clotures-vesuvio/pageCB.css
+   Rôle : styles de la page CB et MyPOS du Soir. */
+
+#soir-page-cartes {
+  background-color: var(--color-soir-card);
+}
+
+.soir-nav-button.is-active[data-soir-page="cartes"] {
+  background-color: var(--color-soir-card-accent);
+  color: #ffffff;
+}
+
+/* Groupes de cartes */
+.bloc-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.bloc-carte h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Contact et sans contact : deux colonnes */
+.bloc-carte .champ-formulaire {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.bloc-carte .champ-formulaire label {
+  grid-column: 1 / -1;
+}
+
+.bloc-carte p {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* MyPOS */
+#soir-page-cartes .bloc-mypos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background-color: #fff8e1;
+  border: 1px solid #f0e0b0;
+  border-radius: var(--radius);
+}
+
+#soir-page-cartes .bloc-mypos h3 {
+  margin: 0;
+}
+
+#soir-page-cartes .bloc-mypos .champ-formulaire {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+#soir-page-cartes .bloc-mypos input {
+  flex: 1;
+  min-width: 0;
+}
+
+#soir-mypos-ajouter {
+  flex: 0 0 auto;
+  min-height: 48px;
+  background-color: var(--color-soir-card-accent);
+  color: #ffffff;
+}
+
+#soir-mypos-total {
+  margin: 0;
+  font-weight: 600;
+}

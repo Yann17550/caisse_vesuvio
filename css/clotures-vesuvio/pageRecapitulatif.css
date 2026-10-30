@@ -1,0 +1,48 @@
+/* Fichier : css/clotures-vesuvio/pageRecapitulatif.css
+   Rôle : styles de la page Récapitulatif du Soir. */
+
+#soir-page-recapitulatif {
+  background-color: var(--color-soir-recap);
+}
+
+.soir-nav-button.is-active[data-soir-page="recapitulatif"] {
+  background-color: var(--color-soir-recap-accent);
+  color: #ffffff;
+}
+
+/* Pizzas : deux colonnes */
+#soir-page-recapitulatif .champ-formulaire:nth-of-type(1),
+#soir-page-recapitulatif .champ-formulaire:nth-of-type(2) {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* TVA : trois colonnes */
+#soir-page-recapitulatif .champ-formulaire:nth-of-type(3),
+#soir-page-recapitulatif .champ-formulaire:nth-of-type(4),
+#soir-page-recapitulatif .champ-formulaire:nth-of-type(5) {
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Conteneur du récapitulatif */
+#soir-recap-conteneur {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Message et bouton de validation */
+#soir-message:empty {
+  display: none;
+}
+
+#soir-valider {
+  min-height: 52px;
+  background-color: var(--color-success);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+}

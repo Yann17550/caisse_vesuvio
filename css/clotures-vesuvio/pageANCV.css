@@ -1,0 +1,31 @@
+/* Fichier : css/clotures-vesuvio/pageANCV.css
+   Rôle : styles de la page ANCV papier du Soir. */
+
+#soir-page-ancv {
+  background-color: var(--color-soir-ancv);
+}
+
+.soir-nav-button.is-active[data-soir-page="ancv"] {
+  background-color: var(--color-soir-ancv-accent);
+  color: #ffffff;
+}
+
+/* Compteurs : deux colonnes sur mobile */
+#soir-page-ancv .champ-formulaire {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#soir-page-ancv .champ-formulaire label {
+  grid-column: 1 / -1;
+}
+
+#soir-ancv-total {
+  margin: 0;
+  padding: 10px;
+  background-color: #fff4e5;
+  border: 1px solid #f5d9ae;
+  border-radius: var(--radius);
+  font-weight: 600;
+}

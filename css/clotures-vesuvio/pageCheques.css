@@ -1,0 +1,39 @@
+/* Fichier : css/clotures-vesuvio/pageCheques.css
+   Rôle : styles de la page Chèques du Soir. */
+
+#soir-page-cheques {
+  background-color: var(--color-soir-checks);
+}
+
+.soir-nav-button.is-active[data-soir-page="cheques"] {
+  background-color: var(--color-soir-checks-accent);
+  color: #ffffff;
+}
+
+/* Montant et bouton Ajouter sur la même ligne */
+#soir-page-cheques .champ-formulaire {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+#soir-page-cheques .champ-formulaire label {
+  flex: 0 0 100%;
+}
+
+#soir-cheques-montant {
+  flex: 1;
+  min-width: 0;
+}
+
+#soir-cheques-ajouter {
+  flex: 0 0 auto;
+  min-height: 48px;
+  background-color: var(--color-soir-checks-accent);
+  color: #ffffff;
+}
+
+#soir-cheques-total {
+  margin: 0;
+  font-weight: 600;
+}
