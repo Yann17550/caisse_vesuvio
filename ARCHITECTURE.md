@@ -99,6 +99,20 @@ Le nom fonctionnel des modules applicatifs est en revanche
 - Le multi-établissement passe par la page d’accueil et la configuration.
 - Les pages ne doivent jamais coder en dur un `etablissement_id`.
 
+### Règle absolue pendant la refactorisation
+
+- Le dossier `js/` correspond à l’ancien code fonctionnel.
+- **Aucun fichier du dossier `js/` ne doit être modifié tant que
+  la refactorisation n’est pas complète et validée.**
+- Pendant la refactorisation, on crée uniquement des fichiers dans `core/`.
+- Les nouveaux modules `core/` ne sont pas encore importés par l’ancien code.
+- Les imports de `js/` vers `core/` seront migrés uniquement après
+  création et validation complète des modules `core/`.
+- Les anciens fichiers `js/` pourront ensuite devenir des façades
+  temporaires, uniquement après validation de la migration des imports.
+- Les anciens fichiers seront supprimés uniquement après validation
+  complète de l’application.
+
 ### Règle pendant la phase d’accueil
 
 - Le dossier `js/` correspond à l’ancien code fonctionnel.
@@ -181,7 +195,7 @@ clotures-pizz-doleron/
 | `core/interface/` | UX, DOM, navigation, formatage, erreurs, listes |
 | `clotures-vesuvio/` | Application de clôture du Vesuvio |
 | `clotures-pizz-doleron/` | Future application de clôture de Pizza d’Oléron |
-| `js/` | Ancien code fonctionnel, à migrer progressivement vers `clotures-vesuvio/` |
+| `js/` | Ancien code fonctionnel, intact jusqu’à la fin de la refactorisation |
 
 ## 6. Page d’accueil — phase 1
 
@@ -347,9 +361,14 @@ elle gère les espaces, le symbole euro, la virgule et le point.
 
 Décision :
 
-- Conserver une seule fonction : `convertirEnMontant`.
-- La placer dans `core/montants/conversionMontants.js`.
-- Faire dépendre toutes les validations de cette fonction unique.
+- Créer `convertirEnMontant` dans
+  `core/montants/conversionMontants.js`.
+- Ne pas modifier `js/utils/calculations.js` pendant la création
+  des modules `core/`.
+- Migrer les imports vers `core/` uniquement après validation complète
+  des modules `core/`.
+- Transformer ensuite les anciens fichiers en façades temporaires,
+  puis les supprimer après validation complète.
 
 ### Validation des montants
 
@@ -359,11 +378,12 @@ Décision :
 
 Décision :
 
-- Conserver les fonctions structurées de
-  `js/validation/amountValidation.js`.
-- Les migrer vers `core/validation/reglesMontants.js`.
-- `isValidAmount` pourra devenir un raccourci ou disparaître
-  après migration complète des usages.
+- Créer les fonctions structurées dans
+  `core/validation/reglesMontants.js`.
+- Ne pas modifier `js/utils/validation.js` ni
+  `js/validation/amountValidation.js` pendant la création des modules
+  `core/`.
+- Migrer les imports uniquement après validation complète.
 
 ### Lecture DOM
 
@@ -372,7 +392,9 @@ Décision :
 
 Décision :
 
-- Isoler la lecture DOM dans `core/interface/champsMontants.js`.
+- Créer `core/interface/champsMontants.js` pour isoler la lecture DOM.
+- Ne pas modifier `js/utils/amounts.js` pendant la création des modules
+  `core/`.
 - À terme, introduire un état de clôture du Soir
   afin de ne plus utiliser le DOM comme source de vérité.
 
@@ -418,27 +440,35 @@ et les futures applications.
 3. Tester sur téléphone.
 4. Commit et push après validation.
 
-### Phase 2 — Refactorisation du tronc commun
+### Phase 2 — Création du tronc commun
 
 1. Créer `core/montants/conversionMontants.js`.
-2. Transformer `js/utils/calculations.js` en façade temporaire.
-3. Créer `core/montants/operationsMontants.js`.
-4. Créer `core/validation/reglesMontants.js`.
-5. Créer `core/validation/reglesSaisies.js`.
-6. Créer `core/interface/champsMontants.js`.
-7. Créer `core/interface/erreursChamps.js`.
-8. Créer `core/interface/comportementChampTexte.js`.
-9. Créer `core/interface/navigationFormulaire.js`.
-10. Créer `core/interface/listesPaiements.js`.
+2. Créer `core/montants/operationsMontants.js`.
+3. Créer `core/validation/reglesMontants.js`.
+4. Créer `core/validation/reglesSaisies.js`.
+5. Créer `core/interface/champsMontants.js`.
+6. Créer `core/interface/erreursChamps.js`.
+7. Créer `core/interface/comportementChampTexte.js`.
+8. Créer `core/interface/navigationFormulaire.js`.
+9. Créer `core/interface/listesPaiements.js`.
+10. Ne modifier aucun fichier de `js/` pendant cette phase.
 
-### Phase 3 — Migration des clôtures Vesuvio
+### Phase 3 — Migration des imports
+
+1. Migrer les imports de `js/` vers `core/`, fichier par fichier.
+2. Tester Midi et Soir après chaque migration.
+3. Transformer les anciens fichiers `js/` en façades temporaires,
+   uniquement lorsque tous leurs usages ont été migrés.
+4. Supprimer les anciens fichiers, uniquement après validation complète.
+
+### Phase 4 — Migration des clôtures Vesuvio
 
 1. Migrer le Midi vers `clotures-vesuvio/midi/`.
 2. Migrer le Soir vers `clotures-vesuvio/soir/`.
 3. Migrer le service de clôture vers `clotures-vesuvio/services/`.
 4. Supprimer les anciens fichiers, uniquement après validation complète.
 
-### Phase 4 — Clôtures Pizza d’Oléron
+### Phase 5 — Clôtures Pizza d’Oléron
 
 1. Créer `clotures-pizz-doleron/`.
 2. Créer le module Soir.
@@ -455,7 +485,8 @@ et les futures applications.
 - Test sur téléphone après chaque étape.
 - Commit et push après chaque étape validée.
 - Ne rien supprimer sans validation explicite.
-- Pendant la phase d’accueil, ne pas modifier le dossier `js/`.
+- **Ne modifier aucun fichier de `js/` tant que la refactorisation
+  n’est pas complète et validée.**
 - Penser aux répercussions transverses :
   - Page d’accueil
   - Récapitulatifs
@@ -481,13 +512,13 @@ et les futures applications.
 - [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
 - [ ] Suppression de `index-initial.html` après validation complète.
 - [ ] Création de `core/montants/conversionMontants.js`.
-- [ ] Façade temporaire pour `js/utils/calculations.js`.
 - [ ] Création de `core/montants/operationsMontants.js`.
 - [ ] Création de `core/validation/reglesMontants.js`.
 - [ ] Création de `core/validation/reglesSaisies.js`.
 - [ ] Création de `core/interface/champsMontants.js`.
 - [ ] Création de `core/interface/erreursChamps.js`.
 - [ ] Création de `core/interface/comportementChampTexte.js`.
+- [ ] Migration des imports de `js/` vers `core/`.
 - [ ] Migration du Midi.
 - [ ] Migration du Soir.
 - [ ] Migration du service de clôture.
