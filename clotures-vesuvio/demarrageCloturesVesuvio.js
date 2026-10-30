@@ -12,8 +12,8 @@
 import { initialiserPageAccueil } from '../accueil/pageAccueil.js';
 import { obtenirEtablissementActif } from '../accueil/selectionEtablissement.js';
 
-import { initialiserMidi } from './midi/gestionClotureMidi.js';
-import { initialiserSoir } from './soir/gestionClotureSoir.js';
+import { initialiserPageMidi } from './midi/pageMidi.js';
+import { initialiserPageSoir } from './soir/pageSoir.js';
 
 /**
  * Indique si les clôtures Vesuvio ont déjà été initialisées.
@@ -70,7 +70,7 @@ function initialiserCloturesVesuvio() {
   const sectionSoir = document.getElementById('soir-section');
 
   if (sectionMidi) {
-    initialiserMidi({
+    initialiserPageMidi({
       conteneur: sectionMidi,
       etablissementId: etablissement.id,
     });
