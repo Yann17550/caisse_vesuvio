@@ -164,11 +164,15 @@ core/
     configurationEtablissements.js
 
   interface/
+    affichageLignesNonNulles.js
     champsMontants.js
     comportementChampTexte.js
     erreursChamps.js
+    formatageEntier.js
+    formatageEuro.js
     listesPaiements.js
     navigationFormulaire.js
+    remiseAZeroFormulaire.js
 
   montants/
     conversionMontants.js
@@ -436,10 +440,10 @@ et les futures applications.
 | Effacer au focus, restaurer au blur | `core/interface/comportementChampTexte.js` | Créé |
 | Navigation Entrée / Tab | `core/interface/navigationFormulaire.js` | Créé |
 | Listes de paiements | `core/interface/listesPaiements.js` | Créé |
-| Remise à zéro après validation réussie | `core/interface/remiseAZeroFormulaire.js` | À créer |
-| Masquage des lignes à zéro | `core/interface/affichageLignesNonNulles.js` | À créer |
-| Formatage euro | `core/interface/formatageEuro.js` | À créer |
-| Formatage entier | `core/interface/formatageEntier.js` | À créer |
+| Remise à zéro après validation réussie | `core/interface/remiseAZeroFormulaire.js` | Créé |
+| Masquage des lignes à zéro | `core/interface/affichageLignesNonNulles.js` | Créé |
+| Formatage euro | `core/interface/formatageEuro.js` | Créé |
+| Formatage entier | `core/interface/formatageEntier.js` | Créé |
 | Erreurs de champs | `core/interface/erreursChamps.js` | Créé |
 | Lecture des montants dans le DOM | `core/interface/champsMontants.js` | Créé |
 
@@ -468,7 +472,7 @@ et les futures applications.
 3. Tester sur téléphone.
 4. Commit et push après validation.
 
-### Phase 2 — Création du tronc commun
+### Phase 2 — Création du tronc commun : terminée
 
 1. Créer `core/montants/conversionMontants.js`.
 2. Créer `core/montants/operationsMontants.js`.
@@ -482,7 +486,11 @@ et les futures applications.
 10. Créer `core/configuration/configurationApplication.js`.
 11. Créer `core/base-de-donnees/clientSupabase.js`.
 12. Créer `core/base-de-donnees/accesCloturesJournalieres.js`.
-13. Ne modifier aucun fichier de `js/` pendant cette phase.
+13. Créer `core/interface/remiseAZeroFormulaire.js`.
+14. Créer `core/interface/affichageLignesNonNulles.js`.
+15. Créer `core/interface/formatageEuro.js`.
+16. Créer `core/interface/formatageEntier.js`.
+17. Ne modifier aucun fichier de `js/` pendant cette phase.
 
 ### Phase 3 — Étude de migration
 
@@ -556,14 +564,15 @@ et les futures applications.
 - [x] Création de `core/configuration/configurationApplication.js`.
 - [x] Création de `core/base-de-donnees/clientSupabase.js`.
 - [x] Création de `core/base-de-donnees/accesCloturesJournalieres.js`.
+- [x] Création de `core/interface/remiseAZeroFormulaire.js`.
+- [x] Création de `core/interface/affichageLignesNonNulles.js`.
+- [x] Création de `core/interface/formatageEuro.js`.
+- [x] Création de `core/interface/formatageEntier.js`.
 - [x] Revert de la façade temporaire `js/utils/calculations.js`.
 - [x] Vérification syntaxique de tous les fichiers `core/`.
+- [x] **Phase 2 — Création du tronc commun : terminée.**
 - [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
 - [ ] Suppression de `index-initial.html` après validation complète.
-- [ ] Création de `core/interface/remiseAZeroFormulaire.js`.
-- [ ] Création de `core/interface/affichageLignesNonNulles.js`.
-- [ ] Création de `core/interface/formatageEuro.js`.
-- [ ] Création de `core/interface/formatageEntier.js`.
 - [ ] Étude de migration des imports de `js/` vers `core/`.
 - [ ] Migration du Midi.
 - [ ] Migration du Soir.
@@ -648,6 +657,14 @@ feat(base-de-donnees): ajouter la configuration application et le client Supabas
 feat(base-de-donnees): ajouter l’accès générique aux clôtures journalières
 ```
 
+```text
+feat(interface): ajouter la remise à zéro des formulaires
+```
+
+```text
+feat(interface): ajouter le masquage des lignes et le formatage euro et entier
+```
+
 - Branche : `feature/midi-mobile-layout`
 - Dépôt : `Yann17550/caisse_vesuvio`
-- Dernier commit : accès générique aux clôtures journalières.
+- Dernier commit : masquage des lignes et formatage euro et entier.
