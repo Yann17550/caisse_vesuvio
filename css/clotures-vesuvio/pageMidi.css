@@ -1,0 +1,204 @@
+/* Fichier : css/clotures-vesuvio/pageMidi.css
+   Rôle : styles de la page Midi de la nouvelle application Vesuvio.
+   Référence visuelle : css/midi.css de l’ancien code. */
+
+/* ============================================
+   FORMULAIRE MIDI
+   ============================================ */
+
+/* Formulaire Midi : colonne unique, largeur maximale centrée. */
+#formulaire-midi {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Sections du formulaire : espacement régulier. */
+#formulaire-midi section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Titres de section : hiérarchie visuelle compacte. */
+#formulaire-midi h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* ============================================
+   CHAMPS DE SAISIE
+   ============================================ */
+
+/* Champ classique : libellé au-dessus de la saisie. */
+#formulaire-midi .champ-formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Libellés : texte secondaire, lisible sur mobile. */
+#formulaire-midi .champ-formulaire label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* Saisies : hauteur tactile et montants alignés à droite. */
+#formulaire-midi .champ-formulaire input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: right;
+}
+
+/* ============================================
+   PAIEMENTS : GRILLE À DEUX COLONNES
+   ============================================ */
+
+/* Bloc paiements : les champs principaux sont en deux colonnes. */
+#formulaire-midi .bloc-paiements .champ-formulaire {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Le champ MyPos occupe toute la largeur. */
+#formulaire-midi .bloc-paiements .champ-formulaire:first-child {
+  display: flex;
+}
+
+/* ============================================
+   TVA : TROIS COLONNES
+   ============================================ */
+
+/* Les trois TVA sont alignées sur une même ligne. */
+#formulaire-midi .bloc-tva {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Le titre TVA occupe toute la largeur. */
+#formulaire-midi .bloc-tva h2 {
+  grid-column: 1 / -1;
+}
+
+/* ============================================
+   PIZZAS : DEUX COLONNES
+   ============================================ */
+
+/* Pizzas sur place et à emporter : deux colonnes égales. */
+#formulaire-midi .bloc-pizzas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Le titre Pizzas occupe toute la largeur. */
+#formulaire-midi .bloc-pizzas h2 {
+  grid-column: 1 / -1;
+}
+
+/* ============================================
+   BLOC MYPOS
+   ============================================ */
+
+/* Bloc MyPOS : fond jaune doux, comme dans l’ancien Midi. */
+#formulaire-midi .bloc-mypos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background-color: var(--color-midi-mypos-soft);
+  border-radius: var(--radius);
+}
+
+/* Titre MyPOS : compact. */
+#formulaire-midi .bloc-mypos h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Rangée MyPOS : champ et bouton côte à côte. */
+#formulaire-midi .bloc-mypos .champ-formulaire {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Champ MyPOS : occupe l’espace disponible. */
+#formulaire-midi .bloc-mypos input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Bouton Ajouter : ambre foncé, texte blanc. */
+#midi-myPosAjouter {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-midi);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Liste des paiements MyPOS : marges réduites. */
+#midi-myPosListe {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+/* Total MyPOS : ligne compacte. */
+#midi-myPosTotal {
+  margin: 0;
+  padding: 8px 10px;
+  font-weight: 600;
+}
+
+/* ============================================
+   MESSAGE ET VALIDATION
+   ============================================ */
+
+/* Message : masqué lorsqu’il est vide. */
+#midi-message:empty {
+  display: none;
+}
+
+/* Bouton Valider : vert, grande hauteur tactile. */
+#midi-valider {
+  min-height: 52px;
+  border: none;
+  border-radius: var(--radius);
+  background-color: var(--color-success);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Bouton Valider désactivé pendant l’enregistrement. */
+#midi-valider:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   ADAPTATION PC
+   ============================================ */
+
+/* Desktop : grille plus aérée. */
+@media (min-width: 640px) {
+  #formulaire-midi .bloc-paiements .champ-formulaire {
+    gap: 14px;
+  }
+}
