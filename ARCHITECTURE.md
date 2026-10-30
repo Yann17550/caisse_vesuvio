@@ -86,49 +86,46 @@ Le nom fonctionnel des modules applicatifs est en revanche
 - À terme, l’établissement actif proviendra de la page d’accueil
   et de la configuration.
 
-## 5. Architecture cible
+## 5. Stratégie retenue : construction parallèle
 
-### Principe général
+### Décision validée
 
-- Pas de dossier `apps/`.
-- Structure plate.
-- `accueil/`, `core/`, `clotures-vesuvio/` et
-  `clotures-pizz-doleron/` sont au même niveau.
-- `core/` contient uniquement des briques génériques.
+- **La migration du dossier `js/` est abandonnée.**
+- `js/` reste le code historique qui assure actuellement
+  le fonctionnement du Midi et du Soir.
+- `js/` n’est plus modifié, ni refactorisé, ni migré.
+- La nouvelle application Vesuvio est construite en parallèle
+  dans `core/` et `clotures-vesuvio/`.
+- `core/` fournit les briques génériques réutilisables.
+- `clotures-vesuvio/` contiendra la nouvelle application de clôture.
+- La bascule vers la nouvelle application se fera uniquement
+  lorsqu’elle sera complète, testée et validée.
+- `js/` sera supprimé uniquement après la bascule finale.
+
+### Règle absolue
+
+- **Aucun fichier du dossier `js/` ne doit être modifié.**
+- Aucune façade temporaire ne doit être créée dans `js/`.
+- Aucun import de `js/` ne doit être modifié.
+- Toute nouvelle fonctionnalité se construit dans `core/`
+  ou dans `clotures-vesuvio/`.
 - Aucune règle métier de clôture ne doit se trouver dans `core/`.
-- Le multi-établissement passe par la page d’accueil et la configuration.
 - Les pages ne doivent jamais coder en dur un `etablissement_id`.
-
-### Règle absolue pendant la refactorisation
-
-- Le dossier `js/` correspond à l’ancien code fonctionnel.
-- **Aucun fichier du dossier `js/` ne doit être modifié tant que
-  la refactorisation n’est pas complète et validée.**
-- Pendant la refactorisation, on crée uniquement des fichiers dans `core/`.
-- Les nouveaux modules `core/` ne sont pas encore importés par l’ancien code.
-- **Aucune façade temporaire ne doit être créée dans `js/`**
-  tant que la refactorisation `core/` n’est pas complète,
-  validée et explicitement déclarée comme terminée.
-- **Aucune migration d’import de `js/` vers `core/` ne doit être
-  réalisée sans validation explicite de Yann, fichier par fichier.**
-- Les anciens fichiers seront supprimés uniquement après validation
-  complète de l’application.
 
 ### Leçon validée
 
-- Une façade temporaire a été créée dans `js/utils/calculations.js`
-  avant la fin de la refactorisation `core/`.
-- Cette modification a été testée, puis annulée par le commit
-  `e871add` : `Revert "feat(interface): ajouter la lecture des montants
-  dans le DOM"`.
-- Le dossier `js/` est de nouveau strictement intact.
-- Toute future modification de `js/` devra être explicitement validée
-  par Yann avant d’être proposée.
+- Une tentative de modification de `js/utils/calculations.js`
+  a été réalisée puis annulée par le commit `e871add`.
+- Cette expérience confirme que la modification de `js/`
+  pendant la construction de la nouvelle architecture
+  crée un risque de mélange des méthodes.
+- La stratégie retenue est donc la construction parallèle,
+  sans toucher à `js/`.
 
 ### Règle pendant la phase d’accueil
 
-- Le dossier `js/` correspond à l’ancien code fonctionnel.
-- Pendant la phase d’accueil, aucun fichier de `js/` ne doit être modifié.
+- Le dossier `js/` correspond au code historique.
+- Aucun fichier de `js/` ne doit être modifié.
 - Le nouveau point d’entrée est `accueil/demarrageApplication.js`.
 - `index.html` est la nouvelle page d’accueil.
 - `index-initial.html` est une sauvegarde temporaire locale,
@@ -192,7 +189,7 @@ js/
   validation/
 ```
 
-### Arborescence cible à terme
+### Arborescence cible
 
 ```text
 accueil/
@@ -229,14 +226,14 @@ clotures-pizz-doleron/
 | `core/montants/` | Conversion, arrondi, opérations sur montants |
 | `core/validation/` | Règles de validation génériques, sans DOM |
 | `core/interface/` | UX, DOM, navigation, formatage, erreurs, listes |
-| `clotures-vesuvio/` | Application de clôture du Vesuvio |
+| `clotures-vesuvio/` | Nouvelle application de clôture du Vesuvio |
 | `clotures-pizz-doleron/` | Future application de clôture de Pizza d’Oléron |
-| `js/` | Ancien code fonctionnel, strictement intact pendant la refactorisation |
+| `js/` | Code historique, non modifiable, à supprimer après bascule |
 
 ## 6. Page d’accueil — phase 1
 
 La création de la page d’accueil est la **première tâche du projet**,
-avant toute refactorisation du code existant.
+avant la construction de la nouvelle application Vesuvio.
 
 ### Comportement validé
 
@@ -285,7 +282,10 @@ accueil/
 - `navigationApplications.js` ne touche pas au DOM.
 - `demarrageApplication.js` ne contient aucune logique métier.
 
-## 7. Structure Vesuvio cible
+## 7. Nouvelle application Vesuvio
+
+La nouvelle application Vesuvio sera construite dans
+`clotures-vesuvio/`, en utilisant les briques de `core/`.
 
 ```text
 clotures-vesuvio/
@@ -313,7 +313,10 @@ clotures-vesuvio/
     serviceClotureJournaliere.js
 ```
 
-## 8. Structure Oléron future
+Ces fichiers seront créés progressivement,
+sans modifier `js/`.
+
+## 8. Application Oléron future
 
 Pizza d’Oléron n’a pas de service du Midi.
 
@@ -336,7 +339,7 @@ clotures-pizz-doleron/
     serviceClotureJournaliere.js
 ```
 
-Ces fichiers ne seront créés que lors de la migration réelle
+Ces fichiers seront créés lors de la construction réelle
 de l’application Pizza d’Oléron.
 
 ## 9. Nomenclature validée
@@ -350,23 +353,9 @@ de l’application Pizza d’Oléron.
 - Les règles métier Vesuvio restent dans `clotures-vesuvio/`.
 - Les règles métier Oléron resteront dans `clotures-pizz-doleron/`.
 
-### Correspondances validées
-
-| Fichier actuel | Nom cible | Destination |
-|---|---|---|
-| `js/features/midi/midiController.js` | `gestionClotureMidi.js` | `clotures-vesuvio/midi/` |
-| `js/features/midi/midiRecap.js` | `affichageRecapitulatifMidi.js` | `clotures-vesuvio/midi/` |
-| `js/features/midi/midiTemplate.js` | `modeleVueMidi.js` | `clotures-vesuvio/midi/` |
-| `js/features/midi/midiView.js` | `vueMidi.js` | `clotures-vesuvio/midi/` |
-| `js/features/soir/soirController.js` | `navigationServiceSoir.js` | `clotures-vesuvio/soir/` |
-| `js/features/soir/soirTotals.js` | `collecteDonneesClotureSoir.js` | `clotures-vesuvio/soir/` |
-| `js/features/soir/soirTemplate.js` | `modeleVueSoir.js` | `clotures-vesuvio/soir/` |
-| `js/features/soir/soirView.js` | `vueSoir.js` | `clotures-vesuvio/soir/` |
-| `js/services/dailyClosingService.js` | `serviceClotureJournaliere.js` | `clotures-vesuvio/services/` |
-
 ### Fonctions validées
 
-| Fonction actuelle | Nom cible |
+| Fonction historique | Nom cible |
 |---|---|
 | `parseAmount` | `convertirEnMontant` |
 | `roundToTwoDecimals` | `arrondirADeuxDecimales` |
@@ -383,56 +372,20 @@ de l’application Pizza d’Oléron.
 | `validateNonNegativeInteger` | `validerEntierPositifOuNul` |
 | `getSoirTotals` | `collecterDonneesClotureSoir` |
 
-## 10. Doublons identifiés
+## 10. Doublons historiques
 
-### `parseAmount`
+Les doublons présents dans `js/` sont conservés tels quels.
+Ils ne seront pas corrigés, car `js/` n’est plus modifié.
 
-Deux implémentations existent :
+La nouvelle application utilisera uniquement les modules `core/` :
 
-- `js/utils/validation.js`
-- `js/utils/calculations.js`
-
-La version de `js/utils/calculations.js` est la plus robuste :
-elle gère les espaces, le symbole euro, la virgule et le point.
-
-Décision :
-
-- `convertirEnMontant` est disponible dans
-  `core/montants/conversionMontants.js`.
-- `js/utils/calculations.js` et `js/utils/validation.js` restent intacts.
-- Aucune migration d’import ne sera réalisée sans validation explicite
-  de Yann, fichier par fichier.
-
-### Validation des montants
-
-- `js/utils/validation.js` contient `isValidAmount`.
-- `js/validation/amountValidation.js` contient
-  `validateNonNegativeAmount` et `validatePositiveAmount`.
-
-Décision :
-
-- Les règles génériques sont disponibles dans
-  `core/validation/reglesMontants.js`.
-- `js/utils/validation.js` et `js/validation/amountValidation.js`
-  restent intacts.
-- La migration des imports sera étudiée fichier par fichier,
-  après validation explicite.
-
-### Lecture DOM
-
-- `js/utils/amounts.js` mélange conversion et accès DOM.
-- `soirTotals.js` lit directement le DOM, y compris des spans cachés.
-
-Décision :
-
-- `core/interface/champsMontants.js` isole la lecture DOM.
-- `js/utils/amounts.js` reste intact.
-- À terme, introduire un état de clôture du Soir
-  afin de ne plus utiliser le DOM comme source de vérité.
+- `core/montants/conversionMontants.js` pour la conversion ;
+- `core/validation/reglesMontants.js` pour la validation ;
+- `core/interface/champsMontants.js` pour la lecture DOM.
 
 ## 11. Briques UX globales
 
-Ces briques doivent être réutilisables par l’accueil, le Midi, le Soir
+Ces briques sont disponibles pour la nouvelle application Vesuvio
 et les futures applications.
 
 | Brique | Fichier cible | État |
@@ -449,20 +402,17 @@ et les futures applications.
 
 ## 12. Déroulement des tâches
 
-### Phase 1 — Page d’accueil
+### Phase 1 — Page d’accueil : terminée
 
-1. Lire `index.html`, `js/main.js` et `js/config.js`.
-2. Créer `core/configuration/configurationEtablissements.js`.
-3. Créer `accueil/selectionEtablissement.js`.
-4. Créer `accueil/navigationApplications.js`.
-5. Créer `accueil/pageAccueil.js`.
-6. Créer `accueil/vueAccueil.js`.
-7. Refactorer `accueil/pageAccueil.js` pour déléguer le DOM à `vueAccueil.js`.
-8. Créer `accueil/demarrageApplication.js`.
-9. Remplacer `index.html` par la page d’accueil.
-10. Créer `css/accueil.css`.
-11. Tester la navigation et la sélection d’établissement sur téléphone.
-12. Commit et push après validation.
+1. Créer `core/configuration/configurationEtablissements.js`.
+2. Créer `accueil/selectionEtablissement.js`.
+3. Créer `accueil/navigationApplications.js`.
+4. Créer `accueil/pageAccueil.js`.
+5. Créer `accueil/vueAccueil.js`.
+6. Créer `accueil/demarrageApplication.js`.
+7. Remplacer `index.html` par la page d’accueil.
+8. Créer `css/accueil.css`.
+9. Tester la navigation et la sélection d’établissement sur téléphone.
 
 ### Phase 1 bis — Retour à l’accueil
 
@@ -472,44 +422,33 @@ et les futures applications.
 3. Tester sur téléphone.
 4. Commit et push après validation.
 
-### Phase 2 — Création du tronc commun : terminée
+### Phase 2 — Tronc commun : terminée
 
-1. Créer `core/montants/conversionMontants.js`.
-2. Créer `core/montants/operationsMontants.js`.
-3. Créer `core/validation/reglesMontants.js`.
-4. Créer `core/validation/reglesSaisies.js`.
-5. Créer `core/interface/champsMontants.js`.
-6. Créer `core/interface/erreursChamps.js`.
-7. Créer `core/interface/comportementChampTexte.js`.
-8. Créer `core/interface/navigationFormulaire.js`.
-9. Créer `core/interface/listesPaiements.js`.
-10. Créer `core/configuration/configurationApplication.js`.
-11. Créer `core/base-de-donnees/clientSupabase.js`.
-12. Créer `core/base-de-donnees/accesCloturesJournalieres.js`.
-13. Créer `core/interface/remiseAZeroFormulaire.js`.
-14. Créer `core/interface/affichageLignesNonNulles.js`.
-15. Créer `core/interface/formatageEuro.js`.
-16. Créer `core/interface/formatageEntier.js`.
-17. Ne modifier aucun fichier de `js/` pendant cette phase.
+1. Créer les modules `core/montants/`.
+2. Créer les modules `core/validation/`.
+3. Créer les modules `core/interface/`.
+4. Créer les modules `core/base-de-donnees/`.
+5. Ne modifier aucun fichier de `js/`.
 
-### Phase 3 — Étude de migration
+### Phase 3 — Nouvelle application Vesuvio
 
-1. Lire les fichiers `js/` concernés, un par un.
-2. Identifier précisément les fonctions utilisées.
-3. Proposer un plan de migration fichier par fichier.
-4. **Ne modifier aucun fichier `js/` sans validation explicite de Yann.**
-5. Après validation explicite, migrer un seul fichier à la fois.
-6. Tester Midi et Soir après chaque migration.
+1. Créer `clotures-vesuvio/midi/`.
+2. Créer `clotures-vesuvio/soir/`.
+3. Créer `clotures-vesuvio/services/`.
+4. Utiliser les modules `core/`.
+5. Ne modifier aucun fichier de `js/`.
+6. Tester chaque étape sur téléphone.
 7. Commit et push après chaque étape validée.
 
-### Phase 4 — Migration des clôtures Vesuvio
+### Phase 4 — Bascule finale
 
-1. Migrer le Midi vers `clotures-vesuvio/midi/`.
-2. Migrer le Soir vers `clotures-vesuvio/soir/`.
-3. Migrer le service de clôture vers `clotures-vesuvio/services/`.
-4. Supprimer les anciens fichiers, uniquement après validation complète.
+1. Vérifier que la nouvelle application Vesuvio couvre
+   toutes les fonctions de `js/`.
+2. Tester complètement Midi et Soir.
+3. Basculer `index.html` vers la nouvelle application.
+4. Supprimer `js/` uniquement après validation complète.
 
-### Phase 5 — Clôtures Pizza d’Oléron
+### Phase 5 — Application Oléron
 
 1. Créer `clotures-pizz-doleron/`.
 2. Créer le module Soir.
@@ -526,10 +465,7 @@ et les futures applications.
 - Test sur téléphone après chaque étape.
 - Commit et push après chaque étape validée.
 - Ne rien supprimer sans validation explicite.
-- **Ne modifier aucun fichier de `js/` tant que la refactorisation
-  n’est pas complète et validée.**
-- **Toute modification de `js/` nécessite une validation explicite
-  de Yann, fichier par fichier.**
+- **Ne jamais modifier un fichier de `js/`.**
 - Penser aux répercussions transverses :
   - Page d’accueil
   - Récapitulatifs
@@ -538,7 +474,7 @@ et les futures applications.
   - Établissements
   - Futures applications
 
-## 14. État de la migration
+## 14. État du projet
 
 - [x] Création du fichier `ARCHITECTURE.md`.
 - [x] Lecture de `index.html`, `js/main.js` et `js/config.js`.
@@ -568,16 +504,16 @@ et les futures applications.
 - [x] Création de `core/interface/affichageLignesNonNulles.js`.
 - [x] Création de `core/interface/formatageEuro.js`.
 - [x] Création de `core/interface/formatageEntier.js`.
-- [x] Revert de la façade temporaire `js/utils/calculations.js`.
+- [x] Revert de la tentative de modification de `js/utils/calculations.js`.
 - [x] Vérification syntaxique de tous les fichiers `core/`.
-- [x] **Phase 2 — Création du tronc commun : terminée.**
+- [x] **Phase 2 — Tronc commun : terminée.**
 - [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
 - [ ] Suppression de `index-initial.html` après validation complète.
-- [ ] Étude de migration des imports de `js/` vers `core/`.
-- [ ] Migration du Midi.
-- [ ] Migration du Soir.
-- [ ] Migration du service de clôture.
-- [ ] Suppression des anciens fichiers.
+- [ ] Création de `clotures-vesuvio/midi/`.
+- [ ] Création de `clotures-vesuvio/soir/`.
+- [ ] Création de `clotures-vesuvio/services/`.
+- [ ] Bascule finale vers la nouvelle application Vesuvio.
+- [ ] Suppression de `js/` après bascule.
 
 ## 15. Commits validés
 
