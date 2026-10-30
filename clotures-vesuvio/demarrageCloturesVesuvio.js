@@ -77,7 +77,7 @@ function initialiserCloturesVesuvio() {
   }
 
   if (sectionSoir) {
-    initialiserSoir({
+    initialiserPageSoir({
       conteneur: sectionSoir,
       etablissementId: etablissement.id,
     });
