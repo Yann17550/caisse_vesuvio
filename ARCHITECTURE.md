@@ -106,12 +106,24 @@ Le nom fonctionnel des modules applicatifs est en revanche
   la refactorisation n’est pas complète et validée.**
 - Pendant la refactorisation, on crée uniquement des fichiers dans `core/`.
 - Les nouveaux modules `core/` ne sont pas encore importés par l’ancien code.
-- Les imports de `js/` vers `core/` seront migrés uniquement après
-  création et validation complète des modules `core/`.
-- Les anciens fichiers `js/` pourront ensuite devenir des façades
-  temporaires, uniquement après validation de la migration des imports.
+- **Aucune façade temporaire ne doit être créée dans `js/`**
+  tant que la refactorisation `core/` n’est pas complète,
+  validée et explicitement déclarée comme terminée.
+- **Aucune migration d’import de `js/` vers `core/` ne doit être
+  réalisée sans validation explicite de Yann, fichier par fichier.**
 - Les anciens fichiers seront supprimés uniquement après validation
   complète de l’application.
+
+### Leçon validée
+
+- Une façade temporaire a été créée dans `js/utils/calculations.js`
+  avant la fin de la refactorisation `core/`.
+- Cette modification a été testée, puis annulée par le commit
+  `e871add` : `Revert "feat(interface): ajouter la lecture des montants
+  dans le DOM"`.
+- Le dossier `js/` est de nouveau strictement intact.
+- Toute future modification de `js/` devra être explicitement validée
+  par Yann avant d’être proposée.
 
 ### Règle pendant la phase d’accueil
 
@@ -143,8 +155,28 @@ css/
   soir.css
 
 core/
+  base-de-donnees/
+    accesCloturesJournalieres.js
+    clientSupabase.js
+
   configuration/
+    configurationApplication.js
     configurationEtablissements.js
+
+  interface/
+    champsMontants.js
+    comportementChampTexte.js
+    erreursChamps.js
+    listesPaiements.js
+    navigationFormulaire.js
+
+  montants/
+    conversionMontants.js
+    operationsMontants.js
+
+  validation/
+    reglesMontants.js
+    reglesSaisies.js
 
 js/
   main.js
@@ -195,7 +227,7 @@ clotures-pizz-doleron/
 | `core/interface/` | UX, DOM, navigation, formatage, erreurs, listes |
 | `clotures-vesuvio/` | Application de clôture du Vesuvio |
 | `clotures-pizz-doleron/` | Future application de clôture de Pizza d’Oléron |
-| `js/` | Ancien code fonctionnel, intact jusqu’à la fin de la refactorisation |
+| `js/` | Ancien code fonctionnel, strictement intact pendant la refactorisation |
 
 ## 6. Page d’accueil — phase 1
 
@@ -361,14 +393,11 @@ elle gère les espaces, le symbole euro, la virgule et le point.
 
 Décision :
 
-- Créer `convertirEnMontant` dans
+- `convertirEnMontant` est disponible dans
   `core/montants/conversionMontants.js`.
-- Ne pas modifier `js/utils/calculations.js` pendant la création
-  des modules `core/`.
-- Migrer les imports vers `core/` uniquement après validation complète
-  des modules `core/`.
-- Transformer ensuite les anciens fichiers en façades temporaires,
-  puis les supprimer après validation complète.
+- `js/utils/calculations.js` et `js/utils/validation.js` restent intacts.
+- Aucune migration d’import ne sera réalisée sans validation explicite
+  de Yann, fichier par fichier.
 
 ### Validation des montants
 
@@ -378,12 +407,12 @@ Décision :
 
 Décision :
 
-- Créer les fonctions structurées dans
+- Les règles génériques sont disponibles dans
   `core/validation/reglesMontants.js`.
-- Ne pas modifier `js/utils/validation.js` ni
-  `js/validation/amountValidation.js` pendant la création des modules
-  `core/`.
-- Migrer les imports uniquement après validation complète.
+- `js/utils/validation.js` et `js/validation/amountValidation.js`
+  restent intacts.
+- La migration des imports sera étudiée fichier par fichier,
+  après validation explicite.
 
 ### Lecture DOM
 
@@ -392,9 +421,8 @@ Décision :
 
 Décision :
 
-- Créer `core/interface/champsMontants.js` pour isoler la lecture DOM.
-- Ne pas modifier `js/utils/amounts.js` pendant la création des modules
-  `core/`.
+- `core/interface/champsMontants.js` isole la lecture DOM.
+- `js/utils/amounts.js` reste intact.
 - À terme, introduire un état de clôture du Soir
   afin de ne plus utiliser le DOM comme source de vérité.
 
@@ -403,17 +431,17 @@ Décision :
 Ces briques doivent être réutilisables par l’accueil, le Midi, le Soir
 et les futures applications.
 
-| Brique | Fichier cible |
-|---|---|
-| Effacer au focus, restaurer au blur | `core/interface/comportementChampTexte.js` |
-| Navigation Entrée / Tab | `core/interface/navigationFormulaire.js` |
-| Listes de paiements | `core/interface/listesPaiements.js` |
-| Remise à zéro après validation réussie | `core/interface/remiseAZeroFormulaire.js` |
-| Masquage des lignes à zéro | `core/interface/affichageLignesNonNulles.js` |
-| Formatage euro | `core/interface/formatageEuro.js` |
-| Formatage entier | `core/interface/formatageEntier.js` |
-| Erreurs de champs | `core/interface/erreursChamps.js` |
-| Lecture des montants dans le DOM | `core/interface/champsMontants.js` |
+| Brique | Fichier cible | État |
+|---|---|---|
+| Effacer au focus, restaurer au blur | `core/interface/comportementChampTexte.js` | Créé |
+| Navigation Entrée / Tab | `core/interface/navigationFormulaire.js` | Créé |
+| Listes de paiements | `core/interface/listesPaiements.js` | Créé |
+| Remise à zéro après validation réussie | `core/interface/remiseAZeroFormulaire.js` | À créer |
+| Masquage des lignes à zéro | `core/interface/affichageLignesNonNulles.js` | À créer |
+| Formatage euro | `core/interface/formatageEuro.js` | À créer |
+| Formatage entier | `core/interface/formatageEntier.js` | À créer |
+| Erreurs de champs | `core/interface/erreursChamps.js` | Créé |
+| Lecture des montants dans le DOM | `core/interface/champsMontants.js` | Créé |
 
 ## 12. Déroulement des tâches
 
@@ -451,15 +479,20 @@ et les futures applications.
 7. Créer `core/interface/comportementChampTexte.js`.
 8. Créer `core/interface/navigationFormulaire.js`.
 9. Créer `core/interface/listesPaiements.js`.
-10. Ne modifier aucun fichier de `js/` pendant cette phase.
+10. Créer `core/configuration/configurationApplication.js`.
+11. Créer `core/base-de-donnees/clientSupabase.js`.
+12. Créer `core/base-de-donnees/accesCloturesJournalieres.js`.
+13. Ne modifier aucun fichier de `js/` pendant cette phase.
 
-### Phase 3 — Migration des imports
+### Phase 3 — Étude de migration
 
-1. Migrer les imports de `js/` vers `core/`, fichier par fichier.
-2. Tester Midi et Soir après chaque migration.
-3. Transformer les anciens fichiers `js/` en façades temporaires,
-   uniquement lorsque tous leurs usages ont été migrés.
-4. Supprimer les anciens fichiers, uniquement après validation complète.
+1. Lire les fichiers `js/` concernés, un par un.
+2. Identifier précisément les fonctions utilisées.
+3. Proposer un plan de migration fichier par fichier.
+4. **Ne modifier aucun fichier `js/` sans validation explicite de Yann.**
+5. Après validation explicite, migrer un seul fichier à la fois.
+6. Tester Midi et Soir après chaque migration.
+7. Commit et push après chaque étape validée.
 
 ### Phase 4 — Migration des clôtures Vesuvio
 
@@ -487,6 +520,8 @@ et les futures applications.
 - Ne rien supprimer sans validation explicite.
 - **Ne modifier aucun fichier de `js/` tant que la refactorisation
   n’est pas complète et validée.**
+- **Toute modification de `js/` nécessite une validation explicite
+  de Yann, fichier par fichier.**
 - Penser aux répercussions transverses :
   - Page d’accueil
   - Récapitulatifs
@@ -509,16 +544,27 @@ et les futures applications.
 - [x] Remplacement de `index.html` par la page d’accueil.
 - [x] Création de `css/accueil.css`.
 - [x] Test navigation et sélection d’établissement sur téléphone.
+- [x] Création de `core/montants/conversionMontants.js`.
+- [x] Création de `core/montants/operationsMontants.js`.
+- [x] Création de `core/validation/reglesMontants.js`.
+- [x] Création de `core/validation/reglesSaisies.js`.
+- [x] Création de `core/interface/champsMontants.js`.
+- [x] Création de `core/interface/erreursChamps.js`.
+- [x] Création de `core/interface/comportementChampTexte.js`.
+- [x] Création de `core/interface/navigationFormulaire.js`.
+- [x] Création de `core/interface/listesPaiements.js`.
+- [x] Création de `core/configuration/configurationApplication.js`.
+- [x] Création de `core/base-de-donnees/clientSupabase.js`.
+- [x] Création de `core/base-de-donnees/accesCloturesJournalieres.js`.
+- [x] Revert de la façade temporaire `js/utils/calculations.js`.
+- [x] Vérification syntaxique de tous les fichiers `core/`.
 - [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
 - [ ] Suppression de `index-initial.html` après validation complète.
-- [ ] Création de `core/montants/conversionMontants.js`.
-- [ ] Création de `core/montants/operationsMontants.js`.
-- [ ] Création de `core/validation/reglesMontants.js`.
-- [ ] Création de `core/validation/reglesSaisies.js`.
-- [ ] Création de `core/interface/champsMontants.js`.
-- [ ] Création de `core/interface/erreursChamps.js`.
-- [ ] Création de `core/interface/comportementChampTexte.js`.
-- [ ] Migration des imports de `js/` vers `core/`.
+- [ ] Création de `core/interface/remiseAZeroFormulaire.js`.
+- [ ] Création de `core/interface/affichageLignesNonNulles.js`.
+- [ ] Création de `core/interface/formatageEuro.js`.
+- [ ] Création de `core/interface/formatageEntier.js`.
+- [ ] Étude de migration des imports de `js/` vers `core/`.
 - [ ] Migration du Midi.
 - [ ] Migration du Soir.
 - [ ] Migration du service de clôture.
@@ -570,6 +616,38 @@ feat(accueil): ajouter le point d’entrée de l’application
 feat(accueil): intégrer la page d’accueil et ses styles
 ```
 
+```text
+feat(core): ajouter la conversion, les opérations et la validation des montants
+```
+
+```text
+feat(validation): ajouter les règles génériques de validation des saisies
+```
+
+```text
+feat(interface): ajouter la lecture des montants dans le DOM
+```
+
+```text
+feat(interface): ajouter la gestion des erreurs de champs
+```
+
+```text
+feat(interface): ajouter les comportements de champs, la navigation clavier et les listes de paiements
+```
+
+```text
+Revert "feat(interface): ajouter la lecture des montants dans le DOM"
+```
+
+```text
+feat(base-de-donnees): ajouter la configuration application et le client Supabase
+```
+
+```text
+feat(base-de-donnees): ajouter l’accès générique aux clôtures journalières
+```
+
 - Branche : `feature/midi-mobile-layout`
 - Dépôt : `Yann17550/caisse_vesuvio`
-- Dernier commit accueil : intégration de la page d’accueil et de ses styles.
+- Dernier commit : accès générique aux clôtures journalières.
