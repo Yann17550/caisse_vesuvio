@@ -5,145 +5,20 @@
  * Reprend l’ancien récapitulatif : lignes à zéro masquées,
  * contrôle TVA et bouton Valider.
  * Les lignes d’écart à zéro sont également masquées.
+ *
+ * Le HTML est fourni par pageRecapitulatifTemplate.js.
  */
 
-import { formaterEuro } from '../../core/interface/formatageEuro.js';
+
+import { pageRecapitulatifTemplate } from '../templates/pageRecapitulatifTemplate.js';
+
+import { formaterEuro } from '../../../core/interface/formatageEuro.js';
+
 
 import {
   collecterTotauxSoir,
-} from './calculSoir.js';
+} from '../logique/calculSoir.js';
 
-/**
- * Génère le HTML de la page Récapitulatif.
- *
- * @returns {string} HTML de la page.
- */
-function genererHtmlRecapitulatif() {
-  return `
-    <form id="soir-recap-form" class="card" novalidate>
-      <div id="soir-recap-message" class="form-message" role="status"></div>
-
-      <fieldset>
-        <legend>Encaissements</legend>
-
-        <div class="recap-line" id="soir-recap-line-adipos" hidden>
-          <span>Espèces Adipos</span>
-          <strong id="soir-recap-adipos">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-cb-classic-amex" hidden>
-          <span>CB classique + AMEX</span>
-          <strong id="soir-recap-cb-classic-amex">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-cb-tr" hidden>
-          <span>CB Ticket Restaurant</span>
-          <strong id="soir-recap-cb-tr">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-cb-ancv" hidden>
-          <span>ANCV connecté</span>
-          <strong id="soir-recap-cb-ancv">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-mypos" hidden>
-          <span>myPOS</span>
-          <strong id="soir-recap-mypos">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-ancv-paper" hidden>
-          <span>ANCV papier</span>
-          <strong id="soir-recap-ancv-paper">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-ancv-count" hidden>
-          <span>Nombre d'ANCV</span>
-          <strong id="soir-recap-ancv-count">0</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-checks" hidden>
-          <span>Chèques</span>
-          <strong id="soir-recap-checks">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-checks-count" hidden>
-          <span>Nombre de chèques</span>
-          <strong id="soir-recap-checks-count">0</strong>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Écart</legend>
-
-        <div class="recap-line" id="soir-recap-line-cash-difference" hidden>
-          <span>Écart espèces</span>
-          <strong id="soir-recap-cash-difference">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-mypos-difference" hidden>
-          <span>myPOS</span>
-          <strong id="soir-recap-mypos-difference">0,00 €</strong>
-        </div>
-
-        <div class="recap-line" id="soir-recap-line-total-difference" hidden>
-          <span>Écart total</span>
-          <strong id="soir-recap-total-difference">0,00 €</strong>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Fréquentation</legend>
-
-        <div class="soir-recap-grid deux">
-          <div class="form-field">
-            <label for="soir-recap-dine-in">Couverts sur place</label>
-            <input type="text" id="soir-recap-dine-in" inputmode="numeric" value="0" />
-          </div>
-
-          <div class="form-field">
-            <label for="soir-recap-takeaway">Pizzas à emporter</label>
-            <input type="text" id="soir-recap-takeaway" inputmode="numeric" value="0" />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset id="soir-recap-tva-fieldset">
-        <legend>TVA</legend>
-
-        <div class="soir-recap-grid trois">
-          <div class="form-field">
-            <label for="soir-recap-vat-55">TTC 5,5 %</label>
-            <input type="text" id="soir-recap-vat-55" inputmode="decimal" value="0" />
-          </div>
-
-          <div class="form-field">
-            <label for="soir-recap-vat-10">TTC 10 %</label>
-            <input type="text" id="soir-recap-vat-10" inputmode="decimal" value="0" />
-          </div>
-
-          <div class="form-field">
-            <label for="soir-recap-vat-20">TTC 20 %</label>
-            <input type="text" id="soir-recap-vat-20" inputmode="decimal" value="0" />
-          </div>
-        </div>
-
-        <div class="recap-line">
-          <span>Total TVA TTC</span>
-          <strong id="soir-recap-vat-total">0,00 €   </strong>
-        </div>
-
-        <div class="recap-line">
-          <span>Contrôle TVA</span>
-          <strong id="soir-recap-coherence">—   </strong>
-        </div>
-      </fieldset>
-
-      <button type="submit" id="soir-recap-validate-button" class="button-primary">
-        Valider le Soir
-      </button>
-    </form>
-  `;
-}
 
 /**
  * Applique l’UX « effacer au focus, restaurer au blur ».
@@ -156,12 +31,14 @@ function appliquerComportementChamp(champ) {
     champ.value = '';
   });
 
+
   champ.addEventListener('blur', () => {
     if (champ.value === '') {
       champ.value = champ.dataset.previousValue || '0';
     }
   });
 }
+
 
 /**
  * Masque ou affiche une ligne selon sa valeur.
@@ -173,10 +50,12 @@ function appliquerComportementChamp(champ) {
 function basculerLigne(conteneur, id, visible) {
   const element = conteneur.querySelector(`#${id}`);
 
+
   if (element) {
     element.hidden = !visible;
   }
 }
+
 
 /**
  * Initialise la page Récapitulatif.
@@ -190,16 +69,19 @@ export function initialiserPageRecapitulatif(
   conteneur,
   { onValider } = {},
 ) {
-  conteneur.innerHTML = genererHtmlRecapitulatif();
+  conteneur.innerHTML = pageRecapitulatifTemplate;
+
 
   const formulaire = conteneur.querySelector('#soir-recap-form');
   const message = conteneur.querySelector('#soir-recap-message');
+
 
   /**
    * Met à jour l’ensemble du récapitulatif.
    */
   function mettreAJourRecap() {
     const totaux = collecterTotauxSoir();
+
 
     // --- Encaissements : masqués si 0 ---
     const lignesEncaissements = [
@@ -249,16 +131,20 @@ export function initialiserPageRecapitulatif(
       },
     ];
 
+
     lignesEncaissements.forEach((ligne) => {
       const visible = ligne.valeur !== 0;
 
+
       basculerLigne(conteneur, ligne.ligne, visible);
+
 
       if (visible) {
         conteneur.querySelector(`#${ligne.cible}`).textContent =
           ligne.texte;
       }
     });
+
 
     // --- Compteurs : masqués si 0 ---
     basculerLigne(
@@ -267,10 +153,12 @@ export function initialiserPageRecapitulatif(
       totaux.ancvPaper.count !== 0,
     );
 
+
     if (totaux.ancvPaper.count !== 0) {
       conteneur.querySelector('#soir-recap-ancv-count').textContent =
         String(totaux.ancvPaper.count);
     }
+
 
     basculerLigne(
       conteneur,
@@ -278,10 +166,12 @@ export function initialiserPageRecapitulatif(
       totaux.checks.count !== 0,
     );
 
+
     if (totaux.checks.count !== 0) {
       conteneur.querySelector('#soir-recap-checks-count').textContent =
         String(totaux.checks.count);
     }
+
 
     // --- Écarts : masqués si 0, visibles si négatifs ou positifs ---
     const ecarts = [
@@ -302,10 +192,13 @@ export function initialiserPageRecapitulatif(
       },
     ];
 
+
     ecarts.forEach((ecart) => {
       const visible = ecart.valeur !== 0;
 
+
       basculerLigne(conteneur, ecart.ligne, visible);
+
 
       if (visible) {
         conteneur.querySelector(`#${ecart.cible}`).textContent =
@@ -313,17 +206,21 @@ export function initialiserPageRecapitulatif(
       }
     });
 
+
     // --- Contrôle TVA ---
     const coherent = totaux.vatTotal === totaux.paymentsTotal;
     const ecartTva = arrondir(totaux.vatTotal - totaux.paymentsTotal);
 
+
     conteneur.querySelector('#soir-recap-vat-total').textContent =
       formaterEuro(totaux.vatTotal);
+
 
     const coherence = conteneur.querySelector('#soir-recap-coherence');
     const fieldsetTva = conteneur.querySelector(
       '#soir-recap-tva-fieldset',
     );
+
 
     if (coherent) {
       coherence.textContent = 'OK';
@@ -338,20 +235,26 @@ export function initialiserPageRecapitulatif(
     }
   }
 
+
   function arrondir(valeur) {
     return Math.round((Number(valeur) + Number.EPSILON) * 100) / 100;
   }
 
+
   formulaire.addEventListener('input', mettreAJourRecap);
+
 
   formulaire.querySelectorAll('input').forEach((champ) => {
     appliquerComportementChamp(champ);
   });
 
+
   formulaire.addEventListener('submit', (evenement) => {
     evenement.preventDefault();
 
+
     const totaux = collecterTotauxSoir();
+
 
     if (totaux.vatTotal !== totaux.paymentsTotal) {
       message.textContent =
@@ -360,12 +263,15 @@ export function initialiserPageRecapitulatif(
       return;
     }
 
+
     if (onValider) {
       onValider({ totaux });
     }
   });
 
+
   mettreAJourRecap();
+
 
   return {
     mettreAJourRecap,

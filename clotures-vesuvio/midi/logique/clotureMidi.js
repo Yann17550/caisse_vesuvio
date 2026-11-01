@@ -5,7 +5,7 @@
 
 import {
   convertirEnMontant,
-} from '../../core/montants/conversionMontants.js';
+} from '../../../core/montants/conversionMontants.js';
 
 import {
   validerCoherenceMidi,
@@ -14,7 +14,7 @@ import {
 import {
   enregistrerClotureVesuvio,
   validerClotureVesuvio,
-} from '../services/serviceClotureJournaliere.js';
+} from '../../services/serviceClotureJournaliere.js';
 
 /**
  * Retourne la date du jour au format ISO.

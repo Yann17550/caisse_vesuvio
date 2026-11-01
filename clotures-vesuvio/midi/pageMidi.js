@@ -21,16 +21,16 @@ import { formaterEuro } from '../../core/interface/formatageEuro.js';
 
 import {
   calculerTotauxMidi,
-} from './calculMidi.js';
+} from './logique/calculMidi.js';
 
 import {
   afficherMessageMidi,
   effacerMessageMidi,
-} from './recapMidi.js';
+} from './logique/recapMidi.js';
 
 import {
   validerEtEnregistrerMidi,
-} from './clotureMidi.js';
+} from './logique/clotureMidi.js';
 
 let paiementsMyPos = [];
 let etablissementActif = null;

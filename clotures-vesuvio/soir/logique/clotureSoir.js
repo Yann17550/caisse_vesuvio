@@ -9,7 +9,7 @@
 import {
   enregistrerClotureVesuvio,
   validerClotureVesuvio,
-} from '../services/serviceClotureJournaliere.js';
+} from '../../services/serviceClotureJournaliere.js';
 
 /**
  * Retourne la date métier du Soir.

@@ -1,0 +1,172 @@
+/* Fichier : clotures-vesuvio/soir/cssRecapitulatif.css
+   Rôle : styles de la page Récapitulatif du Soir. */
+
+
+/* ============================================
+   PAGE RÉCAPITULATIF
+   ============================================ */
+
+/* Fond de la page Récapitulatif : gris clair. */
+#soir-page-recapitulatif {
+  background-color: var(--color-soir-recap);
+}
+
+/* Bouton Récap actif dans la navigation du Soir. */
+.soir-nav-button.is-active[data-soir-page="recapitulatif"] {
+  background-color: var(--color-soir-recap-accent);
+  color: #ffffff;
+}
+
+
+/* ============================================
+   FORMULAIRE RÉCAPITULATIF
+   ============================================ */
+
+/* Conteneur général du formulaire : empilement des blocs. */
+#soir-recap-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Blocs Encaissements, Écart, Fréquentation et TVA. */
+#soir-recap-form fieldset {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+
+/* ============================================
+   LIGNES RÉCAPITULATIVES
+   ============================================ */
+
+/* Ligne générique : libellé à gauche, montant à droite. */
+.recap-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+/* Ligne masquée lorsque sa valeur est à zéro. */
+.recap-line[hidden] {
+  display: none;
+}
+
+/* ============================================
+   BLOC ÉCART
+   ============================================ */
+
+/* Séparation légère entre Écart espèces, myPOS et Écart total. */
+#soir-recap-form fieldset:nth-of-type(2) .recap-line + .recap-line {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #dddddd;
+}
+
+/* ============================================
+   BLOC FRÉQUENTATION
+   ============================================ */
+
+/* Couverts sur place et pizzas à emporter : deux colonnes. */
+.soir-recap-grid.deux {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Champs de la fréquentation : libellé au-dessus de la saisie. */
+.soir-recap-grid .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Saisies de la fréquentation : hauteur tactile, valeur centrée. */
+.soir-recap-grid input {
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+
+/* ============================================
+   BLOC TVA
+   ============================================ */
+
+/* Les trois taux de TVA : trois colonnes égales. */
+.soir-recap-grid.trois {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Bloc TVA neutre, avant contrôle de cohérence. */
+#soir-recap-tva-fieldset {
+  background-color: #f4f4f4;
+  border-color: #d9d9d9;
+}
+
+/* Bloc TVA cohérent : fond vert clair. */
+#soir-recap-tva-fieldset.tva-ok {
+  background-color: #d4edda;
+  border-color: #a3cfaf;
+}
+
+/* Bloc TVA incohérent : fond rouge. */
+#soir-recap-tva-fieldset.tva-error {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+}
+
+/* Titre TVA en cas d’incohérence :
+   noir foncé pour se détacher du fond gris de la page. */
+#soir-recap-tva-fieldset.tva-error legend {
+  color: #dc2626;
+}
+
+/* Libellés des champs TVA en cas d’incohérence : blancs sur fond rouge. */
+#soir-recap-tva-fieldset.tva-error label {
+  color: #dc2626;
+}
+
+/* Lignes Total TVA TTC et Contrôle TVA :
+   aérées et alignées comme les champs de saisie. */
+#soir-recap-tva-fieldset .recap-line {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #dddddd;
+}
+
+/* Libellés Total TVA TTC et Contrôle TVA. */
+#soir-recap-tva-fieldset .recap-line span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* Montants Total TVA TTC et Contrôle TVA. */
+#soir-recap-tva-fieldset .recap-line strong {
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ============================================
+   MESSAGE ET VALIDATION
+   ============================================ */
+
+/* Message : masqué lorsqu’il est vide. */
+#soir-recap-message:empty {
+  display: none;
+}
+
+/* Bouton Valider le Soir : vert, grande hauteur tactile. */
+#soir-recap-validate-button {
+  min-height: 52px;
+  background-color: var(--color-success);
+  color: #ffffff;
+  font-weight: 700;
+}

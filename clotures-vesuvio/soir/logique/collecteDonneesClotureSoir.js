@@ -5,7 +5,7 @@
  * Ce module ne lit pas le DOM et ne contient pas de règle de validation.
  */
 
-import { arrondirADeuxDecimales } from '../../core/montants/conversionMontants.js';
+import { arrondirADeuxDecimales } from '../../../core/montants/conversionMontants.js';
 
 /**
  * Retourne la date du jour au format ISO.

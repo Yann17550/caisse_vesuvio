@@ -9,7 +9,7 @@
 import {
   convertirEnMontant,
   arrondirADeuxDecimales,
-} from '../../core/montants/conversionMontants.js';
+} from '../../../core/montants/conversionMontants.js';
 
 /**
  * Calcule les totaux du Midi.

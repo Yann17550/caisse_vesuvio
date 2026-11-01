@@ -1,0 +1,121 @@
+/* Fichier : clotures-vesuvio/soir/cssCB.css
+   Rôle : styles de la page CB du Soir, repris de l’ancien css/soir.css. */
+
+#soir-page-cartes {
+  background-color: var(--color-soir-card);
+}
+
+.soir-nav-button.is-active[data-soir-page="cartes"] {
+  background-color: var(--color-soir-card-accent);
+  color: #ffffff;
+}
+
+#soir-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#soir-card-form fieldset {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+#soir-card-form legend {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Contact / sans contact : deux colonnes */
+.soir-card-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.soir-card-pair .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.soir-card-pair label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.soir-card-pair input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+/* MyPOS */
+.soir-card-mypos-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.soir-card-mypos-row .form-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.soir-card-mypos-row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.soir-card-mypos-row input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+#soir-card-mypos-add {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+  background-color: var(--color-soir-card-accent);
+  color: #ffffff;
+}
+
+/* Liste MyPOS */
+#soir-card-mypos-list {
+  margin: 8px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.payment-delete {
+  min-height: 32px;
+  padding: 4px 10px;
+  background-color: #dc2626;
+  color: #ffffff;
+  font-size: 0.8rem;
+}

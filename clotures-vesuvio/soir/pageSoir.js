@@ -6,15 +6,18 @@
  * puis branche le bouton Valider à clotureSoir.js.
  */
 
-import { initialiserPageCB } from './pageCB.js';
-import { initialiserPageEspeces } from './pageEspeces.js';
-import { initialiserPageANCV } from './pageANCV.js';
-import { initialiserPageCheques } from './pageCheques.js';
-import { initialiserPageRecapitulatif } from './pageRecapitulatif.js';
+import { initialiserPageCB } from './pageJS/pageCB.js';
+import {
+  initialiserPageEspeces,
+  validerPageEspeces,
+} from './pageJS/pageEspeces.js';
+import { initialiserPageANCV } from './pageJS/pageANCV.js';
+import { initialiserPageCheques } from './pageJS/pageCheques.js';
+import { initialiserPageRecapitulatif } from './pageJS/pageRecapitulatif.js';
 
 import {
   validerEtEnregistrerSoir,
-} from './clotureSoir.js';
+} from './logique/clotureSoir.js';
 
 const PAGES = [
   { id: 'cartes', libelle: 'CB' },
@@ -69,8 +72,9 @@ function genererConteneurs() {
  *
  * @param {HTMLElement} conteneur - Conteneur du Soir.
  * @param {string} page - Identifiant de la page.
+ * @param {Object|null} recap - Module de mise à jour du récapitulatif.
  */
-function afficherPage(conteneur, page) {
+function afficherPage(conteneur, page, recap) {
   conteneur
     .querySelectorAll('.soir-page')
     .forEach((section) => {
@@ -97,6 +101,10 @@ function afficherPage(conteneur, page) {
 
   if (titre && pageTrouvee) {
     titre.textContent = pageTrouvee.libelle;
+  }
+
+  if (page === 'recapitulatif' && recap) {
+    recap.mettreAJourRecap();
   }
 }
 
@@ -125,7 +133,7 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
   initialiserPageANCV(pageAncv);
   initialiserPageCheques(pageCheques);
 
-  initialiserPageRecapitulatif(pageRecap, {
+  const recap = initialiserPageRecapitulatif(pageRecap, {
     onValider: async ({ totaux }) => {
       const message = pageRecap.querySelector('#soir-recap-message');
 
@@ -165,9 +173,23 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
     .querySelectorAll('.soir-nav-button')
     .forEach((bouton) => {
       bouton.addEventListener('click', () => {
-        afficherPage(conteneur, bouton.dataset.soirPage);
+        const pageCible = bouton.dataset.soirPage;
+
+        const pageActuelle = conteneur
+          .querySelector('.soir-page:not(.is-hidden)')
+          ?.dataset.soirPage;
+
+        if (
+          pageActuelle === 'especes' &&
+          pageCible !== 'especes' &&
+          !validerPageEspeces()
+        ) {
+          return;
+        }
+
+        afficherPage(conteneur, pageCible, recap);
       });
     });
 
-  afficherPage(conteneur, 'cartes');
+  afficherPage(conteneur, 'cartes', recap);
 }

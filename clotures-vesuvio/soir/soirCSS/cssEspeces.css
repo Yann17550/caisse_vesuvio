@@ -1,0 +1,57 @@
+/* Fichier : clotures-vesuvio/soir/cssEspeces.css */
+
+#soir-page-especes {
+  background-color: var(--color-soir-cash);
+}
+
+.soir-nav-button.is-active[data-soir-page="especes"] {
+  background-color: var(--color-soir-cash-accent);
+  color: #ffffff;
+}
+
+#soir-cash-form fieldset {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.soir-cash-grid {
+  display: grid;
+  grid-template-columns:
+    max-content minmax(0, 1fr)
+    max-content minmax(0, 1fr);
+  row-gap: 8px;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.soir-cash-grid > :nth-child(4n + 3) {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+}
+
+.soir-cash-label {
+  font-size: 0.85rem;
+}
+
+.soir-cash-input {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 6px 2px;
+  font-size: 0.9rem;
+}
+
+#soir-cash-form .form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+#soir-cash-form input {
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+}

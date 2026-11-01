@@ -6,7 +6,7 @@
  * Ce module ne lit pas le DOM.
  */
 
-import { convertirEnMontant } from '../../core/montants/conversionMontants.js';
+import { convertirEnMontant } from '../../../core/montants/conversionMontants.js';
 
 /**
  * Vérifie qu’un montant est valide.

@@ -6,7 +6,7 @@
  * Les pages du Soir mettent à jour cet état.
  */
 
-import { arrondirADeuxDecimales } from '../../core/montants/conversionMontants.js';
+import { arrondirADeuxDecimales } from '../../../core/montants/conversionMontants.js';
 
 /**
  * Crée l’état initial du Soir.
