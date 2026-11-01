@@ -31,7 +31,7 @@ Les applications sont donc nommées :
 ## 3. Stack et déploiement
 
 - Dépôt GitHub : `Yann17550/caisse_vesuvio`
-- Branche de travail : `feature/midi-mobile-layout`
+- Branche de travail : `main`
 - Déploiement prévu : Vercel, un seul projet Vercel pour l’instant.
 - Base de données : Supabase.
 - Tables connues :
@@ -97,7 +97,7 @@ Le nom fonctionnel des modules applicatifs est en revanche
 - La nouvelle application Vesuvio est construite en parallèle
   dans `core/` et `clotures-vesuvio/`.
 - `core/` fournit les briques génériques réutilisables.
-- `clotures-vesuvio/` contiendra la nouvelle application de clôture.
+- `clotures-vesuvio/` contient la nouvelle application de clôture.
 - La bascule vers la nouvelle application se fera uniquement
   lorsqu’elle sera complète, testée et validée.
 - `js/` sera supprimé uniquement après la bascule finale.
@@ -128,15 +128,13 @@ Le nom fonctionnel des modules applicatifs est en revanche
 - Aucun fichier de `js/` ne doit être modifié.
 - Le nouveau point d’entrée est `accueil/demarrageApplication.js`.
 - `index.html` est la nouvelle page d’accueil.
-- `index-initial.html` est une sauvegarde temporaire locale,
-  non commitée, conservée jusqu’à validation complète de la nouvelle
-  navigation.
+- `index-initial.html` a été supprimé après validation complète
+  de la nouvelle navigation.
 
 ### Arborescence actuelle validée
 
 ```text
 index.html
-index-initial.html
 
 accueil/
   demarrageApplication.js
@@ -178,6 +176,50 @@ core/
   validation/
     reglesMontants.js
     reglesSaisies.js
+
+clotures-vesuvio/
+  demarrageCloturesVesuvio.js
+
+  midi/
+    pageMidi.js
+    logique/
+      calculMidi.js
+      clotureMidi.js
+      recapMidi.js
+    templates/
+      pageMidiTemplate.js
+    midiCSS/
+      cssMidi.css
+
+  soir/
+    pageSoir.js
+    pageJS/
+      pageCB.js
+      pageEspeces.js
+      pageANCV.js
+      pageCheques.js
+      pageRecapitulatif.js
+    logique/
+      calculSoir.js
+      clotureSoir.js
+      collecteDonneesClotureSoir.js
+      etatClotureSoir.js
+      validationClotureSoir.js
+    templates/
+      pageCBTemplate.js
+      pageEspecesTemplate.js
+      pageANCVTemplate.js
+      pageChequesTemplate.js
+      pageRecapitulatifTemplate.js
+    soirCSS/
+      cssCB.css
+      cssEspeces.css
+      cssANCV.css
+      cssCheques.css
+      cssRecapitulatif.css
+
+  services/
+    serviceClotureJournaliere.js
 
 js/
   main.js
@@ -282,39 +324,82 @@ accueil/
 - `navigationApplications.js` ne touche pas au DOM.
 - `demarrageApplication.js` ne contient aucune logique métier.
 
-## 7. Nouvelle application Vesuvio
+## 7. Application Vesuvio — structure validée
 
-La nouvelle application Vesuvio sera construite dans
-`clotures-vesuvio/`, en utilisant les briques de `core/`.
+L’application Vesuvio est construite dans `clotures-vesuvio/`,
+en utilisant les briques de `core/`.
+
+### Principes de structure
+
+- Chaque service (Midi, Soir) possède :
+  - une page globale à la racine du service ;
+  - un dossier `logique/` pour les calculs, la validation
+    et la préparation des données ;
+  - un dossier `templates/` pour le HTML ;
+  - un dossier de CSS dédié.
+- Le Soir possède en plus un dossier `pageJS/` pour ses
+  cinq pages de saisie.
+- Le Midi est une page unique : il n’a pas de `pageJS/`.
+
+### Structure du Midi
 
 ```text
-clotures-vesuvio/
-  midi/
-    gestionClotureMidi.js
-    vueMidi.js
-    modeleVueMidi.js
-    validationClotureMidi.js
-    affichageRecapitulatifMidi.js
-
-  soir/
-    navigationServiceSoir.js
-    collecteDonneesClotureSoir.js
-    vueSoir.js
-    modeleVueSoir.js
-    validationClotureSoir.js
-    pages/
-      pageCartesBancaires.js
-      pageEspeces.js
-      pageAncv.js
-      pageCheques.js
-      pageRecapitulatif.js
-
-  services/
-    serviceClotureJournaliere.js
+clotures-vesuvio/midi/
+  pageMidi.js
+  logique/
+    calculMidi.js
+    clotureMidi.js
+    recapMidi.js
+  templates/
+    pageMidiTemplate.js
+  midiCSS/
+    cssMidi.css
 ```
 
-Ces fichiers seront créés progressivement,
-sans modifier `js/`.
+### Structure du Soir
+
+```text
+clotures-vesuvio/soir/
+  pageSoir.js
+  pageJS/
+    pageCB.js
+    pageEspeces.js
+    pageANCV.js
+    pageCheques.js
+    pageRecapitulatif.js
+  logique/
+    calculSoir.js
+    clotureSoir.js
+    collecteDonneesClotureSoir.js
+    etatClotureSoir.js
+    validationClotureSoir.js
+  templates/
+    pageCBTemplate.js
+    pageEspecesTemplate.js
+    pageANCVTemplate.js
+    pageChequesTemplate.js
+    pageRecapitulatifTemplate.js
+  soirCSS/
+    cssCB.css
+    cssEspeces.css
+    cssANCV.css
+    cssCheques.css
+    cssRecapitulatif.css
+```
+
+### Ancien modèle — supprimé
+
+Les fichiers suivants appartenaient à l’ancien modèle
+et ont été supprimés après vérification de leur non-utilisation :
+
+```text
+clotures-vesuvio/soir/modeleVueSoir.js
+clotures-vesuvio/soir/vueSoir.js
+clotures-vesuvio/soir/navigationServiceSoir.js
+clotures-vesuvio/soir/affichageRecapitulatifSoir.js
+clotures-vesuvio/soir/gestionClotureSoir.js
+clotures-vesuvio/soir/pages/
+```
 
 ## 8. Application Oléron future
 
@@ -323,24 +408,19 @@ Pizza d’Oléron n’a pas de service du Midi.
 ```text
 clotures-pizz-doleron/
   soir/
-    navigationServiceSoir.js
-    collecteDonneesClotureSoir.js
-    vueSoir.js
-    modeleVueSoir.js
-    validationClotureSoir.js
-    pages/
-      pageCartesBancaires.js
-      pageEspeces.js
-      pageAncv.js
-      pageCheques.js
-      pageRecapitulatif.js
+    pageSoir.js
+    pageJS/
+    logique/
+    templates/
+    soirCSS/
 
   services/
     serviceClotureJournaliere.js
 ```
 
-Ces fichiers seront créés lors de la construction réelle
-de l’application Pizza d’Oléron.
+Ces dossiers seront créés lors de la construction réelle
+de l’application Pizza d’Oléron, selon la même philosophie
+que le Soir du Vesuvio.
 
 ## 9. Nomenclature validée
 
@@ -349,7 +429,7 @@ de l’application Pizza d’Oléron.
 - Noms de fichiers et de fonctions en français.
 - Pas de noms vagues : `utils`, `helpers`, `controller` sont proscrits.
 - Le nom décrit la responsabilité métier réelle.
-- Le DOM est isolé dans les modules de vue.
+- Le HTML est isolé dans les modules de templates.
 - Les règles métier Vesuvio restent dans `clotures-vesuvio/`.
 - Les règles métier Oléron resteront dans `clotures-pizz-doleron/`.
 
@@ -430,7 +510,7 @@ et les futures applications.
 4. Créer les modules `core/base-de-donnees/`.
 5. Ne modifier aucun fichier de `js/`.
 
-### Phase 3 — Nouvelle application Vesuvio
+### Phase 3 — Nouvelle application Vesuvio : terminée
 
 1. Créer `clotures-vesuvio/midi/`.
 2. Créer `clotures-vesuvio/soir/`.
@@ -439,6 +519,15 @@ et les futures applications.
 5. Ne modifier aucun fichier de `js/`.
 6. Tester chaque étape sur téléphone.
 7. Commit et push après chaque étape validée.
+
+### Phase 3 bis — Restructuration Midi et Soir : terminée
+
+1. Séparer le HTML dans `templates/`.
+2. Déplacer les pages de saisie du Soir dans `pageJS/`.
+3. Regrouper les calculs et la validation dans `logique/`.
+4. Déplacer les CSS dans `midiCSS/` et `soirCSS/`.
+5. Supprimer l’ancien modèle après vérification de non-utilisation.
+6. Commit et push sur `main`.
 
 ### Phase 4 — Bascule finale
 
@@ -508,10 +597,13 @@ et les futures applications.
 - [x] Vérification syntaxique de tous les fichiers `core/`.
 - [x] **Phase 2 — Tronc commun : terminée.**
 - [ ] Ajout du bouton « Accueil » dans les clôtures Vesuvio.
-- [ ] Suppression de `index-initial.html` après validation complète.
-- [ ] Création de `clotures-vesuvio/midi/`.
-- [ ] Création de `clotures-vesuvio/soir/`.
-- [ ] Création de `clotures-vesuvio/services/`.
+- [x] Suppression de `index-initial.html` après validation complète.
+- [x] Création de `clotures-vesuvio/midi/`.
+- [x] Création de `clotures-vesuvio/soir/`.
+- [x] Création de `clotures-vesuvio/services/`.
+- [x] Restructuration Midi et Soir : `templates/`, `pageJS/`, `logique/`, CSS.
+- [x] Suppression de l’ancien modèle Vesuvio.
+- [x] Bascule de la branche de travail vers `main`.
 - [ ] Bascule finale vers la nouvelle application Vesuvio.
 - [ ] Suppression de `js/` après bascule.
 
@@ -601,6 +693,14 @@ feat(interface): ajouter la remise à zéro des formulaires
 feat(interface): ajouter le masquage des lignes et le formatage euro et entier
 ```
 
-- Branche : `feature/midi-mobile-layout`
+```text
+refactor(clotures-vesuvio): separer le HTML du Midi dans un template dedie
+```
+
+```text
+Restructuration clotures-vesuvio : templates, pageJS, logique, CSS ; suppression ancien modele
+```
+
+- Branche : `main`
 - Dépôt : `Yann17550/caisse_vesuvio`
-- Dernier commit : masquage des lignes et formatage euro et entier.
+- Dernier commit : `Restructuration clotures-vesuvio : templates, pageJS, logique, CSS ; suppression ancien modele`
