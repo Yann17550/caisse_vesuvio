@@ -1,34 +1,28 @@
 /**
  * Fichier : clotures-vesuvio/demarrageCloturesVesuvio.js
- * Rôle : point d’entrée de la nouvelle application Clôtures Vesuvio.
+ * Rôle : point d’entrée de l’application Clôtures Vesuvio.
  *
- * Gère la navigation Midi / Soir / Accueil.
- * Lorsque le Soir est actif, sa navigation de pages est déplacée
- * dans le header. Pendant la navigation entre les pages du Soir,
- * les boutons Midi / Soir / Accueil sont occultés.
+ * Après sélection de l’établissement :
+ * - titre et Retour accueil sur une ligne permanente ;
+ * - choix Midi / Soir sur la ligne suivante ;
+ * - aucun service ouvert automatiquement.
+ *
+ * Après sélection du service :
+ * - le choix Midi / Soir est masqué ;
+ * - le sous-titre du service est affiché et centré.
  *
  * Ce module ne contient ni calcul métier ni accès direct à Supabase.
  */
 
-
 import { initialiserPageAccueil } from '../accueil/pageAccueil.js';
 import { obtenirEtablissementActif } from '../accueil/selectionEtablissement.js';
-
-
 import { initialiserPageMidi } from './midi/pageMidi.js';
 import { initialiserPageSoir } from './soir/pageSoir.js';
 
-
-/**
- * Indique si les clôtures Vesuvio ont déjà été initialisées.
- *
- * @type {boolean}
- */
 let cloturesVesuvioInitialisees = false;
 
-
 /**
- * Retourne la navigation du Soir, ou null si absente.
+ * Retourne la navigation des pages du Soir.
  *
  * @returns {HTMLElement|null} Navigation du Soir.
  */
@@ -36,17 +30,13 @@ function obtenirNavigationSoir() {
   return document.querySelector('.soir-navigation');
 }
 
-
 /**
- * Replace la navigation du Soir dans sa section d’origine.
- *
- * @returns {void}
+ * Replace la navigation du Soir dans sa section.
  */
 function rangerNavigationSoir() {
   const navigationSoir = obtenirNavigationSoir();
   const sectionSoir = document.getElementById('soir-section');
-  const conteneurPages = document.getElementById('soir-pages');
-
+  const conteneurPages = sectionSoir?.querySelector('#soir-pages');
 
   if (
     navigationSoir &&
@@ -58,69 +48,72 @@ function rangerNavigationSoir() {
   }
 }
 
-
 /**
- * Affiche le service sélectionné et masque les autres.
+ * Affiche l’accueil, le choix du service ou le service sélectionné.
  *
- * @param {'midi'|'soir'|'accueil'} service - Service à afficher.
+ * @param {'accueil'|'choix'|'midi'|'soir'} service - Écran à afficher.
  */
 function afficherService(service) {
-  const boutonsService = document.querySelectorAll('.service-button');
-  const sectionsService = document.querySelectorAll('.service-section');
+  const estAccueil = service === 'accueil';
+  const estChoix = service === 'choix';
+  const estMidi = service === 'midi';
+  const estSoir = service === 'soir';
+
   const sectionAccueil = document.getElementById('accueil-section');
+  const sectionClotures = document.getElementById(
+    'clotures-vesuvio-section',
+  );
   const navigationService = document.getElementById('service-switch');
-  const body = document.body;
+  const boutonAccueil = document.getElementById('service-accueil-button');
+  const sousTitre = document.getElementById('clotures-sous-titre');
 
-
-  body.classList.remove('service-midi', 'service-soir');
-
-
-  if (service === 'midi') {
-    body.classList.add('service-midi');
-  }
-
-
-  if (service === 'soir') {
-    body.classList.add('service-soir');
-  }
-
-
-  boutonsService.forEach((bouton) => {
-    const estActif = bouton.dataset.service === service;
-
-
-    bouton.classList.toggle('is-active', estActif);
-  });
-
-
-  sectionsService.forEach((section) => {
-    const estActif = section.dataset.service === service;
-
-
-    section.classList.toggle('is-hidden', !estActif);
-  });
-
+  document.body.classList.toggle('accueil-actif', estAccueil);
+  document.body.classList.toggle('service-midi', estMidi);
+  document.body.classList.toggle('service-soir', estSoir);
 
   if (sectionAccueil) {
-    sectionAccueil.classList.toggle(
-      'is-hidden',
-      service !== 'accueil',
-    );
+    sectionAccueil.classList.toggle('is-hidden', !estAccueil);
   }
 
+  if (sectionClotures) {
+    sectionClotures.classList.toggle('is-hidden', estAccueil);
+  }
+
+  document.querySelectorAll('.service-section').forEach((section) => {
+    section.classList.toggle(
+      'is-hidden',
+      section.dataset.service !== service,
+    );
+  });
+
+  document.querySelectorAll('.service-button').forEach((bouton) => {
+    bouton.classList.toggle(
+      'is-active',
+      bouton.dataset.service === service,
+    );
+  });
+
+  if (boutonAccueil) {
+    boutonAccueil.classList.toggle('is-hidden', estAccueil);
+  }
 
   if (navigationService) {
-    navigationService.classList.toggle(
-      'is-hidden',
-      service === 'accueil',
-    );
+    navigationService.classList.toggle('is-hidden', !estChoix);
   }
 
+  if (sousTitre) {
+    sousTitre.textContent = estMidi
+      ? 'Clôture midi'
+      : estSoir
+        ? 'Clôture soir'
+        : '';
 
-  if (service === 'soir') {
+    sousTitre.classList.toggle('is-hidden', !estMidi && !estSoir);
+  }
+
+  if (estSoir) {
     const appHeader = document.querySelector('.app-header');
     const navigationSoir = obtenirNavigationSoir();
-
 
     if (appHeader && navigationSoir) {
       appHeader.appendChild(navigationSoir);
@@ -130,130 +123,77 @@ function afficherService(service) {
   }
 }
 
-
 /**
- * Initialise les clôtures Vesuvio.
- *
- * Cette fonction est appelée lorsque l’utilisateur
- * a sélectionné l’établissement Le Vesuvio.
+ * Initialise les services après sélection de l’établissement,
+ * puis affiche uniquement le choix Midi / Soir.
  */
 function initialiserCloturesVesuvio() {
-  if (cloturesVesuvioInitialisees) {
-    afficherService('midi');
-    return;
-  }
-
-
   const etablissement = obtenirEtablissementActif();
-
 
   if (!etablissement || !etablissement.id) {
     return;
   }
 
+  if (!cloturesVesuvioInitialisees) {
+    const sectionMidi = document.getElementById('midi-section');
+    const sectionSoir = document.getElementById('soir-section');
 
-  const sectionMidi = document.getElementById('midi-section');
-  const sectionSoir = document.getElementById('soir-section');
+    if (sectionMidi) {
+      initialiserPageMidi({
+        conteneur: sectionMidi,
+        etablissementId: etablissement.id,
+      });
+    }
 
+    if (sectionSoir) {
+      initialiserPageSoir({
+        conteneur: sectionSoir,
+        etablissementId: etablissement.id,
+      });
+    }
 
-  if (sectionMidi) {
-    initialiserPageMidi({
-      conteneur: sectionMidi,
-      etablissementId: etablissement.id,
-    });
+    cloturesVesuvioInitialisees = true;
   }
 
-
-  if (sectionSoir) {
-    initialiserPageSoir({
-      conteneur: sectionSoir,
-      etablissementId: etablissement.id,
-    });
-  }
-
-
-  const navigationService = document.getElementById('service-switch');
-
-
-  if (navigationService) {
-    navigationService.classList.remove('is-hidden');
-  }
-
-
-  afficherService('midi');
-
-
-  cloturesVesuvioInitialisees = true;
+  afficherService('choix');
 }
 
-
 /**
- * Attache la navigation entre Accueil, Midi et Soir.
+ * Attache les boutons Midi, Soir et Retour accueil.
  */
 function attacherNavigationServices() {
-  const boutonsService = document.querySelectorAll('.service-button');
-
-
-  boutonsService.forEach((bouton) => {
+  document.querySelectorAll('.service-button').forEach((bouton) => {
     bouton.addEventListener('click', () => {
-      afficherService(bouton.dataset.service);
+      const service = bouton.dataset.service;
+
+      if (service === 'accueil') {
+        afficherService('accueil');
+        return;
+      }
+
+      if (
+        cloturesVesuvioInitialisees &&
+        (service === 'midi' || service === 'soir')
+      ) {
+        afficherService(service);
+      }
     });
   });
 }
-
-
-/**
- * Occulte les boutons Midi / Soir / Accueil pendant la navigation
- * entre les pages du Soir.
- *
- * Règle : cliquer sur une page du Soir masque les boutons de service.
- * Cliquer à nouveau sur la page déjà active les fait réapparaître.
- */
-function attacherOccultationServicesSoir() {
-  document.addEventListener('click', (evenement) => {
-    const boutonPage = evenement.target.closest('.soir-nav-button');
-
-
-    if (!boutonPage) {
-      return;
-    }
-
-
-    const navigationService =
-      document.getElementById('service-switch');
-
-
-    if (!navigationService) {
-      return;
-    }
-
-
-    if (boutonPage.classList.contains('is-active')) {
-      navigationService.classList.toggle('is-hidden');
-    } else {
-      navigationService.classList.add('is-hidden');
-    }
-  });
-}
-
 
 /**
  * Initialise l’application.
  */
 function initialiserApplication() {
   attacherNavigationServices();
-  attacherOccultationServicesSoir();
-
-
-  initialiserPageAccueil();
-
 
   document.addEventListener(
     'accueil:clotures-vesuvio-ouvertes',
     initialiserCloturesVesuvio,
   );
-}
 
+  initialiserPageAccueil();
+}
 
 document.addEventListener(
   'DOMContentLoaded',

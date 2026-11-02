@@ -3,20 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clôtures Vesuvio</title>
+  <title>Sélection d’application</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/accueil.css" />
   <link rel="stylesheet" href="css/clotures-vesuvio/base.css" />
   <link rel="stylesheet" href="clotures-vesuvio/midi/midiCSS/cssMidi.css" />
-  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssCB.css">
-  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssEspeces.css">
-  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssANCV.css">
-  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssCheques.css">
-  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssRecapitulatif.css">
+  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssCB.css" />
+  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssEspeces.css" />
+  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssANCV.css" />
+  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssCheques.css" />
+  <link rel="stylesheet" href="clotures-vesuvio/soir/soirCSS/cssRecapitulatif.css" />
 </head>
 <body class="accueil-actif">
   <header class="app-header">
-    <h1>Clôtures Vesuvio</h1>
+    <div class="header-ligne-permanente">
+      <h1>Sélection d’application</h1>
+      <button
+        type="button"
+        id="service-accueil-button"
+        class="service-button is-hidden"
+        data-service="accueil"
+        aria-label="Retour à l’accueil"
+        title="Accueil"
+      >
+        Accueil
+      </button>
+    </div>
 
     <nav
       id="service-switch"
@@ -31,8 +43,6 @@
       >
         Midi
       </button>
-
-
       <button
         type="button"
         id="service-soir-button"
@@ -41,28 +51,18 @@
       >
         Soir
       </button>
-
-
-      <button
-        type="button"
-        id="service-accueil-button"
-        class="service-button"
-        data-service="accueil"
-      >
-        Accueil
-      </button>
     </nav>
+
+    <p
+      id="clotures-sous-titre"
+      class="is-hidden"
+      aria-live="polite"
+    ></p>
   </header>
 
   <main class="app-main">
     <div id="app-pages" class="app-pages">
-
-      <section
-        id="accueil-section"
-        class="accueil-section"
-      >
-        <h2>Accueil</h2>
-
+      <section id="accueil-section" class="accueil-section">
         <div class="accueil-applications">
           <button
             type="button"
@@ -78,12 +78,10 @@
           class="accueil-choix-etablissement is-hidden"
         >
           <h3>Choisir l’établissement</h3>
-
           <div
             id="accueil-liste-etablissements"
             class="accueil-liste-etablissements"
           ></div>
-
           <button
             type="button"
             id="accueil-bouton-retour"
@@ -105,7 +103,6 @@
         class="clotures-vesuvio-section is-hidden"
       >
         <div id="app-pages-clotures-vesuvio" class="app-pages">
-
           <section
             id="midi-section"
             class="service-section is-hidden"
@@ -118,22 +115,21 @@
             data-service="soir"
           >
             <h2>Service</h2>
-
             <nav
               id="soir-navigation"
               class="soir-navigation"
               aria-label="Pages du service Soir"
             ></nav>
-
             <div id="soir-pages" class="soir-pages"></div>
           </section>
-
         </div>
       </section>
-
     </div>
   </main>
 
-  <script type="module" src="clotures-vesuvio/demarrageCloturesVesuvio.js"></script>
+  <script
+    type="module"
+    src="clotures-vesuvio/demarrageCloturesVesuvio.js"
+  ></script>
 </body>
 </html>

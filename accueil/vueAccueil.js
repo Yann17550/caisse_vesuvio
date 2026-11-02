@@ -1,50 +1,48 @@
 /**
  * Fichier : accueil/vueAccueil.js
- * Rôle : manipuler l’interface de la page d’accueil.
+ * Rôle : manipuler l’interface de sélection des applications
+ * et des établissements.
  *
- * Ce module contient uniquement l’accès au DOM.
- * Il ne contient aucune règle métier, aucun calcul
- * et aucun accès à Supabase.
+ * Page 1 : Sélection d’application.
+ * Page A : Clôture établissement.
+ * Page A1 : Vesuvio.
  *
- * Il permet à la page d’accueil de :
- * - sélectionner les éléments de l’interface ;
- * - afficher ou masquer les écrans ;
- * - afficher les établissements ;
- * - afficher ou effacer un message ;
- * - attacher les événements des boutons.
- *
- * Dépendances :
- * - Aucune.
+ * Ce module contient uniquement la gestion de l’interface.
+ * Aucune règle métier, aucun calcul et aucun accès à Supabase.
  */
 
-/**
- * Références des éléments DOM de la page d’accueil.
- *
- * @type {{
- *   section: HTMLElement|null,
- *   boutonClotures: HTMLButtonElement|null,
- *   choixEtablissement: HTMLElement|null,
- *   listeEtablissements: HTMLElement|null,
- *   message: HTMLElement|null,
- *   boutonRetourAccueil: HTMLButtonElement|null
- * }}
- */
 const elements = {
   section: null,
+  titre: null,
   boutonClotures: null,
   choixEtablissement: null,
   listeEtablissements: null,
   message: null,
   boutonRetourAccueil: null,
+  boutonAccueilHeader: null,
 };
 
 /**
- * Sélectionne les éléments DOM de la page d’accueil.
+ * Met à jour le titre principal.
  *
- * @returns {boolean} True si la section d’accueil existe, false sinon.
+ * @param {string} texte - Titre à afficher.
+ */
+function definirTitre(texte) {
+  if (elements.titre) {
+    elements.titre.textContent = texte;
+  }
+}
+
+/**
+ * Sélectionne les éléments de l’interface.
+ *
+ * @returns {boolean} True si la section d’accueil existe.
  */
 export function initialiserVueAccueil() {
   elements.section = document.getElementById('accueil-section');
+  elements.titre = document.querySelector(
+    '.app-header .header-ligne-permanente h1',
+  );
   elements.boutonClotures = document.getElementById(
     'accueil-bouton-clotures',
   );
@@ -58,23 +56,24 @@ export function initialiserVueAccueil() {
   elements.boutonRetourAccueil = document.getElementById(
     'accueil-bouton-retour',
   );
+  elements.boutonAccueilHeader = document.getElementById(
+    'service-accueil-button',
+  );
 
   return elements.section !== null;
 }
 
 /**
- * Indique si la page d’accueil est présente dans le DOM.
+ * Indique si la vue est disponible.
  *
- * @returns {boolean} True si la page d’accueil est disponible.
+ * @returns {boolean} True si la section existe.
  */
 export function estVueAccueilDisponible() {
   return elements.section !== null;
 }
 
 /**
- * Affiche l’écran d’accueil.
- *
- * @returns {void}
+ * Affiche la page 1 : sélection de l’application.
  */
 export function afficherAccueil() {
   if (!elements.section) {
@@ -82,25 +81,20 @@ export function afficherAccueil() {
   }
 
   elements.section.classList.remove('is-hidden');
+  definirTitre('Sélection d’application');
 }
 
 /**
- * Masque l’écran d’accueil.
- *
- * @returns {void}
+ * Masque la section contenant les pages 1 et A.
  */
 export function masquerAccueil() {
-  if (!elements.section) {
-    return;
+  if (elements.section) {
+    elements.section.classList.add('is-hidden');
   }
-
-  elements.section.classList.add('is-hidden');
 }
 
 /**
- * Affiche l’écran de choix de l’établissement.
- *
- * @returns {void}
+ * Affiche la page A : sélection de l’établissement.
  */
 export function afficherChoixEtablissement() {
   if (!elements.choixEtablissement || !elements.boutonClotures) {
@@ -109,12 +103,11 @@ export function afficherChoixEtablissement() {
 
   elements.choixEtablissement.classList.remove('is-hidden');
   elements.boutonClotures.classList.add('is-hidden');
+  definirTitre('Clôture établissement');
 }
 
 /**
- * Masque l’écran de choix de l’établissement.
- *
- * @returns {void}
+ * Masque le choix de l’établissement.
  */
 export function masquerChoixEtablissement() {
   if (!elements.choixEtablissement || !elements.boutonClotures) {
@@ -126,11 +119,10 @@ export function masquerChoixEtablissement() {
 }
 
 /**
- * Affiche la liste des établissements dans l’interface.
+ * Affiche les boutons de sélection des établissements.
  *
- * @param {ReadonlyArray<object>} etablissements - Établissements à afficher.
- * @param {Function} auClicEtablissement - Fonction appelée avec l’identifiant.
- * @returns {void}
+ * @param {ReadonlyArray<object>} etablissements - Liste à afficher.
+ * @param {Function} auClicEtablissement - Action de sélection.
  */
 export function afficherEtablissements(
   etablissements,
@@ -144,6 +136,7 @@ export function afficherEtablissements(
 
   etablissements.forEach((etablissement) => {
     const bouton = document.createElement('button');
+
     bouton.type = 'button';
     bouton.className = 'accueil-bouton-etablissement';
     bouton.textContent = etablissement.nom;
@@ -158,11 +151,10 @@ export function afficherEtablissements(
 }
 
 /**
- * Affiche un message dans la page d’accueil.
+ * Affiche un message.
  *
- * @param {string} message - Message à afficher.
+ * @param {string} message - Texte à afficher.
  * @param {'info'|'erreur'} type - Type de message.
- * @returns {void}
  */
 export function afficherMessage(message, type = 'info') {
   if (!elements.message) {
@@ -178,9 +170,7 @@ export function afficherMessage(message, type = 'info') {
 }
 
 /**
- * Efface le message affiché dans la page d’accueil.
- *
- * @returns {void}
+ * Efface le message.
  */
 export function effacerMessage() {
   if (!elements.message) {
@@ -193,37 +183,36 @@ export function effacerMessage() {
 }
 
 /**
- * Attache l’événement du bouton « Clôtures ».
+ * Attache le clic sur l’application Clôtures.
  *
- * @param {Function} auClic - Fonction appelée lors du clic.
- * @returns {void}
+ * @param {Function} auClic - Action à exécuter.
  */
 export function attacherEvenementBoutonClotures(auClic) {
-  if (!elements.boutonClotures) {
-    return;
+  if (elements.boutonClotures) {
+    elements.boutonClotures.addEventListener('click', auClic);
   }
-
-  elements.boutonClotures.addEventListener('click', auClic);
 }
 
 /**
- * Attache l’événement du bouton « Retour à l’accueil ».
+ * Attache les boutons de retour à la page 1.
  *
- * @param {Function} auClic - Fonction appelée lors du clic.
- * @returns {void}
+ * Le bouton de la page A et celui du header appellent
+ * la même action de réinitialisation de l’accueil.
+ *
+ * @param {Function} auClic - Action à exécuter.
  */
 export function attacherEvenementBoutonRetour(auClic) {
-  if (!elements.boutonRetourAccueil) {
-    return;
+  if (elements.boutonRetourAccueil) {
+    elements.boutonRetourAccueil.addEventListener('click', auClic);
   }
 
-  elements.boutonRetourAccueil.addEventListener('click', auClic);
+  if (elements.boutonAccueilHeader) {
+    elements.boutonAccueilHeader.addEventListener('click', auClic);
+  }
 }
 
 /**
- * Affiche la section des clôtures Vesuvio.
- *
- * @returns {void}
+ * Affiche la page A1 : clôtures du Vesuvio.
  */
 export function afficherCloturesVesuvio() {
   const cloturesSection = document.getElementById(
@@ -235,21 +224,18 @@ export function afficherCloturesVesuvio() {
   }
 
   cloturesSection.classList.remove('is-hidden');
+  definirTitre('Vesuvio');
 }
 
 /**
- * Masque la section des clôtures Vesuvio.
- *
- * @returns {void}
+ * Masque la page A1.
  */
 export function masquerCloturesVesuvio() {
   const cloturesSection = document.getElementById(
     'clotures-vesuvio-section',
   );
 
-  if (!cloturesSection) {
-    return;
+  if (cloturesSection) {
+    cloturesSection.classList.add('is-hidden');
   }
-
-  cloturesSection.classList.add('is-hidden');
 }

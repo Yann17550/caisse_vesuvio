@@ -33,10 +33,10 @@ const CLE_BROUILLON = 'caisse-vesuvio:brouillon-soir';
 
 const PAGES = [
   { id: 'cartes', libelle: 'CB' },
-  { id: 'especes', libelle: 'Espèces' },
+  { id: 'especes', libelle: 'Espèces ' },
   { id: 'ancv', libelle: 'ANCV' },
-  { id: 'cheques', libelle: 'Chèques' },
-  { id: 'recapitulatif', libelle: 'Récap' },
+  { id: 'cheques', libelle: 'Chèques ' },
+  { id: 'recapitulatif', libelle: 'Récap ' },
 ];
 
 
