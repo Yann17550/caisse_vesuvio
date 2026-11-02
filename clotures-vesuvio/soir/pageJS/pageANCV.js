@@ -1,13 +1,13 @@
 /**
- * Fichier : clotures-vesuvio/soir/pageANCV.js
+ * Fichier : clotures-vesuvio/soir/pageJS/pageANCV.js
  * Rôle : page ANCV papier du Soir.
  *
  * Les coupons sont affichés par cumul de dénomination.
  * Le bouton Supprimer retire tous les coupons d’une dénomination.
+ * Les coupons sont conservés lors d’un rafraîchissement.
  *
  * Le HTML est fourni par pageANCVTemplate.js.
  */
-
 
 import { pageAncvTemplate } from '../templates/pageANCVTemplate.js';
 
@@ -18,10 +18,29 @@ import {
 
 import { formaterEuro } from '../../../core/interface/formatageEuro.js';
 
+import {
+  sauvegarderSection,
+  lireSection,
+} from '../../../core/interface/persistanceBrouillon.js';
+
+const CLE_BROUILLON = 'caisse-vesuvio:brouillon-soir';
 
 let denominationActive = 10;
 let coupons = [];
 
+
+/**
+ * Sauvegarde la liste des coupons dans le brouillon.
+ *
+ * @returns {void}
+ */
+function sauvegarderCoupons() {
+  sauvegarderSection(
+    CLE_BROUILLON,
+    'ancv-coupons',
+    coupons,
+  );
+}
 
 /**
  * Applique l’UX « effacer au focus, restaurer au blur ».
@@ -95,36 +114,29 @@ function afficherListe(conteneur) {
 
   liste.innerHTML = '';
 
-
   const cumuls = {};
-
 
   coupons.forEach((coupon) => {
     cumuls[coupon.denomination] =
       (cumuls[coupon.denomination] || 0) + 1;
   });
 
-
   Object.keys(cumuls)
     .sort((a, b) => Number(a) - Number(b))
     .forEach((denomination) => {
       const nombre = cumuls[denomination];
 
-
       const element = document.createElement('li');
       element.className = 'payment-item';
-
 
       const texte = document.createElement('span');
       texte.textContent =
         `${nombre} × ${formaterEuro(Number(denomination))}`;
 
-
       const bouton = document.createElement('button');
       bouton.type = 'button';
       bouton.className = 'payment-delete';
       bouton.textContent = 'Supprimer';
-
 
       bouton.addEventListener('click', () => {
         coupons = coupons.filter(
@@ -132,18 +144,16 @@ function afficherListe(conteneur) {
             coupon.denomination !== Number(denomination),
         );
 
-
         afficherListe(conteneur);
         mettreAJourTotaux(conteneur);
+        sauvegarderCoupons();
       });
-
 
       element.appendChild(texte);
       element.appendChild(bouton);
       liste.appendChild(element);
     });
 }
-
 
 /**
  * Initialise la page ANCV.
@@ -152,14 +162,27 @@ function afficherListe(conteneur) {
  */
 export function initialiserPageANCV(conteneur) {
   conteneur.innerHTML = pageAncvTemplate;
-  coupons = [];
+
+
+  const brouillonCoupons = lireSection(
+    CLE_BROUILLON,
+    'ancv-coupons',
+  );
+
+
+  coupons = Array.isArray(brouillonCoupons)
+    ? brouillonCoupons
+    : [];
+
 
 
   const champNombre = conteneur.querySelector('#soir-ancv-nb');
   const boutonAjouter = conteneur.querySelector('#soir-ancv-add');
 
 
+
   appliquerComportementChamp(champNombre);
+
 
 
   conteneur
@@ -171,19 +194,23 @@ export function initialiserPageANCV(conteneur) {
           .forEach((element) => element.classList.remove('is-active'));
 
 
+
         bouton.classList.add('is-active');
         denominationActive = Number(bouton.dataset.ancvValue);
       });
     });
 
 
+
   function ajouter() {
     const nombre = Number(champNombre.value);
+
 
 
     if (!Number.isInteger(nombre) || nombre <= 0) {
       return;
     }
+
 
 
     for (let index = 0; index < nombre; index += 1) {
@@ -194,6 +221,7 @@ export function initialiserPageANCV(conteneur) {
     champNombre.value = '0';
     afficherListe(conteneur);
     mettreAJourTotaux(conteneur);
+    sauvegarderCoupons();
   }
 
 

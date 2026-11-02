@@ -4,7 +4,9 @@
  *
  * Reprend la navigation et les couleurs de l’ancien Soir,
  * puis branche le bouton Valider à clotureSoir.js.
+ * Le brouillon des saisies est effacé après un enregistrement réussi.
  */
+
 
 import { initialiserPageCB } from './pageJS/pageCB.js';
 import {
@@ -15,9 +17,19 @@ import { initialiserPageANCV } from './pageJS/pageANCV.js';
 import { initialiserPageCheques } from './pageJS/pageCheques.js';
 import { initialiserPageRecapitulatif } from './pageJS/pageRecapitulatif.js';
 
+
 import {
   validerEtEnregistrerSoir,
 } from './logique/clotureSoir.js';
+
+
+import {
+  effacerBrouillon,
+} from '../../core/interface/persistanceBrouillon.js';
+
+
+const CLE_BROUILLON = 'caisse-vesuvio:brouillon-soir';
+
 
 const PAGES = [
   { id: 'cartes', libelle: 'CB' },
@@ -26,6 +38,7 @@ const PAGES = [
   { id: 'cheques', libelle: 'Chèques' },
   { id: 'recapitulatif', libelle: 'Récap' },
 ];
+
 
 /**
  * Génère la navigation du Soir.
@@ -43,12 +56,14 @@ function genererNavigation() {
     </button>
   `).join('');
 
+
   return `
     <nav class="soir-navigation" aria-label="Pages du service Soir">
       ${boutons}
     </nav>
   `;
 }
+
 
 /**
  * Génère les conteneurs de pages.
@@ -64,8 +79,10 @@ function genererConteneurs() {
     ></section>
   `).join('');
 
+
   return `<div id="soir-pages" class="soir-pages">${sections}</div>`;
 }
+
 
 /**
  * Affiche une page du Soir.
@@ -84,6 +101,7 @@ function afficherPage(conteneur, page, recap) {
       );
     });
 
+
   conteneur
     .querySelectorAll('.soir-nav-button')
     .forEach((bouton) => {
@@ -93,20 +111,25 @@ function afficherPage(conteneur, page, recap) {
       );
     });
 
+
   const pageTrouvee = PAGES.find(
     (pageDefinition) => pageDefinition.id === page,
   );
 
+
   const titre = conteneur.querySelector('#soir-titre-page');
+
 
   if (titre && pageTrouvee) {
     titre.textContent = pageTrouvee.libelle;
   }
 
+
   if (page === 'recapitulatif' && recap) {
     recap.mettreAJourRecap();
   }
 }
+
 
 /**
  * Initialise le service Soir.
@@ -122,30 +145,36 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
     ${genererConteneurs()}
   `;
 
+
   const pageCartes = conteneur.querySelector('#soir-page-cartes');
   const pageEspeces = conteneur.querySelector('#soir-page-especes');
   const pageAncv = conteneur.querySelector('#soir-page-ancv');
   const pageCheques = conteneur.querySelector('#soir-page-cheques');
   const pageRecap = conteneur.querySelector('#soir-page-recapitulatif');
 
+
   initialiserPageCB(pageCartes);
   initialiserPageEspeces(pageEspeces);
   initialiserPageANCV(pageAncv);
   initialiserPageCheques(pageCheques);
 
+
   const recap = initialiserPageRecapitulatif(pageRecap, {
     onValider: async ({ totaux }) => {
       const message = pageRecap.querySelector('#soir-recap-message');
 
+
       message.textContent = 'Enregistrement du Soir en cours…';
       message.classList.remove('is-error');
       message.classList.add('is-success');
+
 
       try {
         const resultat = await validerEtEnregistrerSoir({
           totaux,
           etablissementId,
         });
+
 
         if (!resultat.succes) {
           message.textContent = resultat.message;
@@ -154,9 +183,14 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
           return;
         }
 
+
         message.textContent = resultat.message;
         message.classList.add('is-success');
         message.classList.remove('is-error');
+
+
+        effacerBrouillon(CLE_BROUILLON);
+
 
         setTimeout(() => {
           window.location.reload();
@@ -169,15 +203,18 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
     },
   });
 
+
   conteneur
     .querySelectorAll('.soir-nav-button')
     .forEach((bouton) => {
       bouton.addEventListener('click', () => {
         const pageCible = bouton.dataset.soirPage;
 
+
         const pageActuelle = conteneur
           .querySelector('.soir-page:not(.is-hidden)')
           ?.dataset.soirPage;
+
 
         if (
           pageActuelle === 'especes' &&
@@ -187,9 +224,11 @@ export function initialiserPageSoir({ conteneur, etablissementId }) {
           return;
         }
 
+
         afficherPage(conteneur, pageCible, recap);
       });
     });
+
 
   afficherPage(conteneur, 'cartes', recap);
 }

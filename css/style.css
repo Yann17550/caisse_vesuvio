@@ -456,3 +456,35 @@ button:hover {
 .coherence-error {
   color: #dc2626;
 }
+
+/* ============================================
+   HEADER : BOUTONS MIDI / SOIR / ACCUEIL
+   ============================================ */
+
+
+/* Boutons de service moins hauts lorsque le Soir est actif :
+   la navigation des pages du Soir prend place dans le header. */
+body.service-soir .service-button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+
+/* Bouton Accueil : même style que Midi et Soir. */
+.service-button[data-service="accueil"] {
+  flex: 0 0 auto;
+}
+
+
+/* Bouton Accueil actif : fond neutre foncé. */
+body.service-soir .service-button[data-service="accueil"].is-active {
+  background-color: var(--color-soir-recap-accent);
+}
+
+
+/* Navigation du Soir dans le header : les 5 boutons de pages
+   occupent la ligne sous Midi / Soir / Accueil. */
+.app-header .soir-navigation {
+  margin-top: 10px;
+  margin-bottom: 0;
+}

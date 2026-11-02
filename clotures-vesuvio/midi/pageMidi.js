@@ -5,35 +5,56 @@
  * Reprend la physionomie et l’UX de l’ancien Midi :
  * saisie en deux colonnes, MyPOS paiement par paiement,
  * effacement au focus et restauration au blur.
+ * Les saisies sont conservées lors d’un rafraîchissement.
  */
+
 
 import { pageMidiTemplate } from './templates/pageMidiTemplate.js';
 import {
   ajouterComportementEffacerRestaurer,
 } from '../../core/interface/comportementChampTexte.js';
 
+
 import {
   convertirEnMontant,
   arrondirADeuxDecimales,
 } from '../../core/montants/conversionMontants.js';
 
+
 import { formaterEuro } from '../../core/interface/formatageEuro.js';
+
 
 import {
   calculerTotauxMidi,
 } from './logique/calculMidi.js';
+
 
 import {
   afficherMessageMidi,
   effacerMessageMidi,
 } from './logique/recapMidi.js';
 
+
 import {
   validerEtEnregistrerMidi,
 } from './logique/clotureMidi.js';
 
+
+import {
+  restaurerFormulaire,
+  configurerSauvegardeAutomatique,
+  sauvegarderSection,
+  lireSection,
+  effacerBrouillon,
+} from '../../core/interface/persistanceBrouillon.js';
+
+
+const CLE_BROUILLON = 'caisse-vesuvio:brouillon-midi';
+
+
 let paiementsMyPos = [];
 let etablissementActif = null;
+
 
 
 /**
@@ -48,6 +69,7 @@ function obtenirElements(conteneur) {
     message: conteneur.querySelector('#midi-form-message'),
     boutonValider: conteneur.querySelector('#midi-validate-button'),
 
+
     champCbClassique: conteneur.querySelector('#midi-cb-classic'),
     champCbTicketResto: conteneur.querySelector('#midi-cb-ticket-resto'),
     champCashAdipos: conteneur.querySelector('#midi-cash-adipos'),
@@ -55,19 +77,23 @@ function obtenirElements(conteneur) {
     champAncvConnect: conteneur.querySelector('#midi-ancv-connect'),
     champChecks: conteneur.querySelector('#midi-checks'),
 
+
     champMyPos: conteneur.querySelector('#midi-mypos-amount'),
     boutonMyPos: conteneur.querySelector('#midi-mypos-add-button'),
     listeMyPos: conteneur.querySelector('#midi-mypos-list'),
     totalMyPos: conteneur.querySelector('#midi-mypos-total'),
 
+
     champTva55: conteneur.querySelector('#midi-vat-5-5'),
     champTva10: conteneur.querySelector('#midi-vat-10'),
     champTva20: conteneur.querySelector('#midi-vat-20'),
+
 
     champPizzasEmporter: conteneur.querySelector('#midi-pizzas-takeaway'),
     champCouverts: conteneur.querySelector('#midi-pizzas-dine-in'),
   };
 }
+
 
 /**
  * Ajoute le comportement UX à tous les champs.
@@ -87,20 +113,38 @@ function appliquerComportementChamps(elements) {
     elements.champTva20,
   ];
 
+
   champsMontants.forEach((champ) => {
     ajouterComportementEffacerRestaurer(champ, '0,00');
   });
+
 
   ajouterComportementEffacerRestaurer(
     elements.champPizzasEmporter,
     '0',
   );
 
+
   ajouterComportementEffacerRestaurer(
     elements.champCouverts,
     '0',
   );
 }
+
+
+/**
+ * Sauvegarde la liste MyPos dans le brouillon.
+ *
+ * @returns {void}
+ */
+function sauvegarderListeMyPos() {
+  sauvegarderSection(
+    CLE_BROUILLON,
+    'midi-mypos',
+    paiementsMyPos,
+  );
+}
+
 
 /**
  * Affiche la liste des paiements MyPos.
@@ -110,29 +154,36 @@ function appliquerComportementChamps(elements) {
 function afficherListeMyPos(elements) {
   elements.listeMyPos.innerHTML = '';
 
+
   paiementsMyPos.forEach((paiement, index) => {
     const element = document.createElement('li');
     element.className = 'payment-item';
 
+
     const montant = document.createElement('span');
     montant.textContent = formaterEuro(paiement.montant);
+
 
     const boutonSupprimer = document.createElement('button');
     boutonSupprimer.type = 'button';
     boutonSupprimer.className = 'payment-delete';
     boutonSupprimer.textContent = 'Supprimer';
 
+
     boutonSupprimer.addEventListener('click', () => {
       paiementsMyPos.splice(index, 1);
       afficherListeMyPos(elements);
       mettreAJourTotalMyPos(elements);
+      sauvegarderListeMyPos();
     });
+
 
     element.appendChild(montant);
     element.appendChild(boutonSupprimer);
     elements.listeMyPos.appendChild(element);
   });
 }
+
 
 /**
  * Met à jour le total MyPos.
@@ -145,10 +196,12 @@ function mettreAJourTotalMyPos(elements) {
     0,
   );
 
+
   elements.totalMyPos.textContent = formaterEuro(
     arrondirADeuxDecimales(total),
   );
 }
+
 
 /**
  * Ajoute un paiement MyPos.
@@ -158,6 +211,7 @@ function mettreAJourTotalMyPos(elements) {
 function ajouterPaiementMyPos(elements) {
   const montant = convertirEnMontant(elements.champMyPos.value);
 
+
   if (montant === null || montant <= 0) {
     afficherMessageMidi(
       'MyPos : saisir un montant valide et positif.',
@@ -166,15 +220,19 @@ function ajouterPaiementMyPos(elements) {
     return;
   }
 
+
   paiementsMyPos.push({
     montant: arrondirADeuxDecimales(montant),
   });
+
 
   elements.champMyPos.value = '';
   afficherListeMyPos(elements);
   mettreAJourTotalMyPos(elements);
   effacerMessageMidi();
+  sauvegarderListeMyPos();
 }
+
 
 /**
  * Collecte les données du formulaire.
@@ -202,6 +260,7 @@ function collecterDonnees(elements) {
   };
 }
 
+
 /**
  * Verrouille ou déverrouille le formulaire.
  *
@@ -218,6 +277,7 @@ function definirVerrouillage(elements, verrouille) {
     });
 }
 
+
 /**
  * Remet le formulaire à zéro.
  *
@@ -228,7 +288,9 @@ function reinitialiserPage(elements) {
   afficherListeMyPos(elements);
   mettreAJourTotalMyPos(elements);
 
+
   elements.formulaire.reset();
+
 
   elements.champCbClassique.value = '0,00';
   elements.champCbTicketResto.value = '0,00';
@@ -243,6 +305,7 @@ function reinitialiserPage(elements) {
   elements.champCouverts.value = '0';
 }
 
+
 /**
  * Valide puis enregistre le Midi.
  *
@@ -251,8 +314,10 @@ function reinitialiserPage(elements) {
 async function validerMidi(elements) {
   effacerMessageMidi();
 
+
   const donnees = collecterDonnees(elements);
   const totaux = calculerTotauxMidi(donnees);
+
 
   const resultat = await validerEtEnregistrerMidi({
     donnees,
@@ -260,19 +325,24 @@ async function validerMidi(elements) {
     etablissementId: etablissementActif,
   });
 
+
   if (!resultat.succes) {
     afficherMessageMidi(resultat.message, 'erreur');
     return;
   }
 
+
   reinitialiserPage(elements);
   definirVerrouillage(elements, true);
+  effacerBrouillon(CLE_BROUILLON);
+
 
   afficherMessageMidi(
     'Midi enregistré et validé dans Supabase.',
     'succes',
   );
 }
+
 
 /**
  * Initialise la page Midi.
@@ -283,17 +353,39 @@ async function validerMidi(elements) {
  */
 export function initialiserPageMidi({ conteneur, etablissementId }) {
   etablissementActif = etablissementId;
-  paiementsMyPos = [];
+
 
   conteneur.innerHTML = pageMidiTemplate;
 
+
   const elements = obtenirElements(conteneur);
 
+
+  const brouillonMyPos = lireSection(
+    CLE_BROUILLON,
+    'midi-mypos',
+  );
+
+
+  paiementsMyPos = Array.isArray(brouillonMyPos)
+    ? brouillonMyPos
+    : [];
+
+
+  restaurerFormulaire(CLE_BROUILLON, elements.formulaire);
+  configurerSauvegardeAutomatique(
+    CLE_BROUILLON,
+    elements.formulaire,
+  );
+
+
   appliquerComportementChamps(elements);
+
 
   elements.boutonMyPos.addEventListener('click', () => {
     ajouterPaiementMyPos(elements);
   });
+
 
   elements.champMyPos.addEventListener('keydown', (evenement) => {
     if (evenement.key === 'Enter') {
@@ -302,10 +394,12 @@ export function initialiserPageMidi({ conteneur, etablissementId }) {
     }
   });
 
+
   elements.formulaire.addEventListener('submit', (evenement) => {
     evenement.preventDefault();
     validerMidi(elements);
   });
+
 
   afficherListeMyPos(elements);
   mettreAJourTotalMyPos(elements);

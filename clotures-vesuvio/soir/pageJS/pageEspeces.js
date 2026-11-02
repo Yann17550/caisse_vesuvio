@@ -1,15 +1,15 @@
 /**
- * Fichier : clotures-vesuvio/soir/pageEspeces.js
+ * Fichier : clotures-vesuvio/soir/pageJS/pageEspeces.js
  * Rôle : page Espèces du Soir.
  *
  * Mise en page : billets à gauche, pièces à droite.
  * Navigation : billets (100 à 5), pièces (2 à 0,10),
  * Adipos, fond de caisse.
  * Adipos est obligatoire, même à 0.
+ * Les saisies sont conservées lors d’un rafraîchissement.
  *
  * Le HTML est fourni par pageEspecesTemplate.js.
  */
-
 
 import { pageEspecesTemplate } from '../templates/pageEspecesTemplate.js';
 
@@ -18,9 +18,14 @@ import {
   arrondirADeuxDecimales,
 } from '../../../core/montants/conversionMontants.js';
 
-
 import { formaterEuro } from '../../../core/interface/formatageEuro.js';
 
+import {
+  restaurerFormulaire,
+  configurerSauvegardeAutomatique,
+} from '../../../core/interface/persistanceBrouillon.js';
+
+const CLE_BROUILLON = 'caisse-vesuvio:brouillon-soir';
 
 /**
  * Applique l’UX « effacer au focus, restaurer au blur ».
@@ -33,14 +38,12 @@ function appliquerComportementChamp(champ) {
     champ.value = '';
   });
 
-
   champ.addEventListener('blur', () => {
     if (champ.value === '') {
       champ.value = champ.dataset.previousValue || '0';
     }
   });
 }
-
 
 /**
  * Vérifie que le champ Adipos est renseigné avant de quitter la page.
@@ -50,16 +53,13 @@ function appliquerComportementChamp(champ) {
 export function validerPageEspeces() {
   const champAdipos = document.getElementById('soir-cash-adipos');
 
-
   if (!champAdipos || champAdipos.value.trim() === '') {
     champAdipos.focus();
     return false;
   }
 
-
   return true;
 }
-
 
 /**
  * Initialise la page Espèces.
@@ -69,13 +69,15 @@ export function validerPageEspeces() {
 export function initialiserPageEspeces(conteneur) {
   conteneur.innerHTML = pageEspecesTemplate;
 
-
+  const formulaire = conteneur.querySelector('#soir-cash-form');
   const champAdipos = conteneur.querySelector('#soir-cash-adipos');
   const champFond = conteneur.querySelector('#soir-cash-fund');
   const valeurComptee = conteneur.querySelector(
     '#soir-cash-counted-value',
   );
 
+  restaurerFormulaire(CLE_BROUILLON, formulaire);
+  configurerSauvegardeAutomatique(CLE_BROUILLON, formulaire);
 
   function mettreAJour() {
     const totalCompte =
@@ -90,14 +92,11 @@ export function initialiserPageEspeces(conteneur) {
       (Number(conteneur.querySelector('#soir-coin-020').value) || 0) * 0.2 +
       (Number(conteneur.querySelector('#soir-coin-010').value) || 0) * 0.1;
 
-
     const fond = convertirEnMontant(champFond.value) || 0;
     const caEspeces = arrondirADeuxDecimales(totalCompte - fond);
 
-
     valeurComptee.textContent = formaterEuro(caEspeces);
   }
-
 
   // Ordre de navigation : billets, pièces, Adipos, fond de caisse.
   const ordreNavigation = [
@@ -115,11 +114,9 @@ export function initialiserPageEspeces(conteneur) {
     champFond,
   ];
 
-
   ordreNavigation.forEach((champ) => {
     appliquerComportementChamp(champ);
     champ.addEventListener('input', mettreAJour);
-
 
     champ.addEventListener('keydown', (evenement) => {
       const estNavigation =
@@ -127,32 +124,25 @@ export function initialiserPageEspeces(conteneur) {
         evenement.key === 'Tab' ||
         evenement.key === 'Go';
 
-
       if (!estNavigation) {
         return;
       }
 
-
       const index = ordreNavigation.indexOf(evenement.target);
-
 
       if (index === -1) {
         return;
       }
 
-
       evenement.preventDefault();
 
-
       const suivant = ordreNavigation[index + 1];
-
 
       if (suivant) {
         suivant.focus();
       }
     });
   });
-
 
   mettreAJour();
 }
