@@ -1,0 +1,25 @@
+/* Totaux et récapitulatifs communs aux clôtures. */
+:where(#clotures-vesuvio-section) .recap-line {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; background-color: var(--color-background);
+  border-radius: 8px; font-weight: 700;
+}
+:where(#clotures-vesuvio-section) .recap-line[hidden] { display: none; }
+:where(#clotures-vesuvio-section) .recap-section { padding-top: 8px; border-top: 1px solid var(--color-border); }
+:where(#clotures-vesuvio-section) .recap-section h3 { margin-top: 0; }
+:where(#clotures-vesuvio-section) .recap-list { margin: 0; display: grid; gap: 8px; }
+:where(#clotures-vesuvio-section) .recap-list > div {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 8px 10px; background-color: var(--color-background); border-radius: 8px;
+}
+:where(#clotures-vesuvio-section) .recap-list dt { color: var(--color-muted); }
+:where(#clotures-vesuvio-section) .recap-list dd { margin: 0; font-weight: 700; }
+:where(#clotures-vesuvio-section) .recap-bloc {
+  display: flex; flex-direction: column; gap: 8px; padding: 10px;
+  background-color: #f7f7f7; border: 1px solid #dddddd; border-radius: var(--radius);
+}
+:where(#clotures-vesuvio-section) .recap-ligne { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+:where(#clotures-vesuvio-section) .recap-ligne strong { font-variant-numeric: tabular-nums; }
+@media (min-width: 640px) {
+  :where(#clotures-vesuvio-section) .recap-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

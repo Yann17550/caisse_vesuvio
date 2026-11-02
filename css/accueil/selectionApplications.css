@@ -1,0 +1,21 @@
+/* Page 1 : sélection d’application ; conteneur partagé avec A. */
+.accueil-section { padding: 16px; }
+.accueil-applications {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.accueil-bouton-application {
+  width: 100%;
+  min-height: 44px;
+  padding: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.accueil-bouton-application:active { background: #f0f0f0; }

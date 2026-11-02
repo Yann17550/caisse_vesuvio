@@ -1,0 +1,29 @@
+/* Page Midi : règles de la feuille effectivement chargée. */
+.midi-form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; margin: 0 auto; }
+.midi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.midi-field { display: flex; flex-direction: column; gap: 4px; }
+:where(#clotures-vesuvio-section) .midi-field label { font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
+:where(#clotures-vesuvio-section) .midi-field input {
+  width: 100%; min-height: 48px; padding: 8px 10px; border: 1px solid var(--color-border);
+  border-radius: 8px; font-size: 16px; text-align: right;
+}
+.midi-vat-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.midi-mypos {
+  grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px;
+  padding: 10px; background-color: var(--color-midi-mypos-soft); border-radius: var(--radius);
+}
+:where(#clotures-vesuvio-section) .midi-mypos label { font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
+.midi-mypos-row { display: flex; gap: 8px; }
+:where(#clotures-vesuvio-section) .midi-mypos-row input {
+  flex: 1; min-width: 0; min-height: 48px; padding: 8px 10px;
+  border: 1px solid var(--color-border); border-radius: 8px; font-size: 16px; text-align: right;
+}
+:where(#clotures-vesuvio-section) .midi-mypos-row button {
+  flex: 0 0 auto; min-height: 48px; padding: 8px 14px;
+  background-color: var(--color-midi); color: #ffffff; font-size: 0.95rem;
+}
+:where(#clotures-vesuvio-section) .midi-validate {
+  min-height: 52px; border-radius: var(--radius);
+  background-color: var(--color-success); color: #ffffff; font-size: 1.05rem; font-weight: 700;
+}
+@media (min-width: 640px) { .midi-grid { gap: 14px; } }

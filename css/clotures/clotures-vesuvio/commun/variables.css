@@ -1,0 +1,20 @@
+/* Palette propre à l’application Clôtures Vesuvio. */
+:root {
+  --color-midi: #b45309;
+  --color-midi-soft: #f79c47;
+  --color-midi-mypos-soft: #f3edd5;
+  --color-soir: #2563eb;
+  --color-soir-soft: #bfdbfe;
+  --color-success: #15803d;
+  --color-danger: #b91c1c;
+  --color-soir-card: #dbeafe;
+  --color-soir-cash: #dcfce7;
+  --color-soir-ancv: #ffedd5;
+  --color-soir-checks: #ede9fe;
+  --color-soir-recap: #e5e7eb;
+  --color-soir-card-accent: #2563eb;
+  --color-soir-cash-accent: #15803d;
+  --color-soir-ancv-accent: #ea580c;
+  --color-soir-checks-accent: #7c3aed;
+  --color-soir-recap-accent: #374151;
+}

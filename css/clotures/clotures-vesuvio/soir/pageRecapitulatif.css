@@ -1,0 +1,27 @@
+/* Page Récapitulatif du Soir. */
+#soir-page-recapitulatif { background-color: var(--color-soir-recap); }
+.soir-nav-button.is-active[data-soir-page="recapitulatif"] { background-color: var(--color-soir-recap-accent); color: #ffffff; }
+#soir-recap-form { display: flex; flex-direction: column; gap: 12px; }
+:where(#clotures-vesuvio-section) #soir-recap-form fieldset { padding: 10px; }
+#soir-recap-form fieldset:nth-of-type(2) .recap-line + .recap-line {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid #dddddd;
+}
+.soir-recap-grid.deux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.soir-recap-grid.trois { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+:where(#clotures-vesuvio-section) .soir-recap-grid .form-field { display: flex; flex-direction: column; gap: 4px; }
+:where(#clotures-vesuvio-section) .soir-recap-grid input {
+  min-height: 48px; padding: 8px 10px; border: 1px solid var(--color-border);
+  border-radius: 8px; text-align: center;
+}
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset { background-color: #f4f4f4; border-color: #d9d9d9; }
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-ok { background-color: #d4edda; border-color: #a3cfaf; }
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error { background-color: #fee2e2; border-color: #dc2626; }
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error legend,
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error label { color: #dc2626; }
+#soir-recap-tva-fieldset .recap-line { margin-top: 12px; padding-top: 10px; border-top: 1px solid #dddddd; }
+#soir-recap-tva-fieldset .recap-line span { font-size: 0.9rem; font-weight: 600; color: var(--color-muted); }
+#soir-recap-tva-fieldset .recap-line strong { font-size: 1rem; font-variant-numeric: tabular-nums; }
+#soir-recap-message:empty { display: none; }
+:where(#clotures-vesuvio-section) #soir-recap-validate-button {
+  min-height: 52px; background-color: var(--color-success); color: #ffffff; font-weight: 700;
+}

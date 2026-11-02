@@ -1,0 +1,12 @@
+/* Navigation des cinq pages du Soir, y compris dans le header. */
+.soir-navigation { display: flex; gap: 6px; margin-bottom: 16px; }
+.soir-nav-button {
+  flex: 1; min-width: 0; min-height: 44px; padding: 10px 4px;
+  border: none; border-radius: 8px; background-color: var(--color-midi);
+  color: #ffffff; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.soir-nav-button:hover { filter: brightness(0.95); }
+.soir-nav-button:disabled { opacity: 0.6; cursor: not-allowed; }
+.soir-nav-button.is-active { font-weight: 700; }
+.app-header .soir-navigation { max-width: 100%; margin: 12px 0 0; }
+@media (min-width: 640px) { .soir-navigation { gap: 8px; } }

@@ -1,0 +1,11 @@
+/* Messages et validation des clôtures. */
+:where(#clotures-vesuvio-section) .form-message { min-height: 20px; margin: 12px 0; font-weight: 600; }
+:where(#clotures-vesuvio-section) .form-message.is-error { color: var(--color-danger); }
+:where(#clotures-vesuvio-section) .form-message.is-success { color: var(--color-success); }
+:where(#clotures-vesuvio-section) .message:empty { display: none; }
+:where(#clotures-vesuvio-section) .message-info { color: var(--color-muted); }
+:where(#clotures-vesuvio-section) .message-succes { color: var(--color-success); font-weight: 600; }
+:where(#clotures-vesuvio-section) .message-erreur { color: #b91c1c; font-weight: 600; }
+:where(#clotures-vesuvio-section) .input-error { border-color: #dc2626 !important; background-color: #fef2f2; }
+:where(#clotures-vesuvio-section) .field-error { color: #dc2626; font-size: 0.85rem; margin-top: 4px; }
+:where(#clotures-vesuvio-section) .coherence-error { color: #dc2626; }

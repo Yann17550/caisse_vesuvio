@@ -1,0 +1,23 @@
+/* Page CB et MyPOS du Soir. */
+#soir-page-cartes { background-color: var(--color-soir-card); }
+.soir-nav-button.is-active[data-soir-page="cartes"] { background-color: var(--color-soir-card-accent); color: #ffffff; }
+#soir-card-form { display: flex; flex-direction: column; gap: 12px; }
+:where(#clotures-vesuvio-section) #soir-card-form fieldset { padding: 10px; }
+:where(#clotures-vesuvio-section) #soir-card-form legend { font-size: 0.95rem; font-weight: 600; }
+.soir-card-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+:where(#clotures-vesuvio-section) .soir-card-pair .form-field,
+:where(#clotures-vesuvio-section) .soir-card-mypos-row .form-field { display: flex; flex-direction: column; gap: 4px; }
+:where(#clotures-vesuvio-section) .soir-card-pair label,
+:where(#clotures-vesuvio-section) .soir-card-mypos-row label { font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
+:where(#clotures-vesuvio-section) .soir-card-pair input,
+:where(#clotures-vesuvio-section) .soir-card-mypos-row input {
+  width: 100%; min-height: 48px; padding: 8px 10px; border: 1px solid var(--color-border);
+  border-radius: 8px; font-size: 16px; text-align: right;
+}
+.soir-card-mypos-row { display: flex; gap: 8px; align-items: flex-end; }
+:where(#clotures-vesuvio-section) .soir-card-mypos-row .form-field { flex: 1; min-width: 0; }
+:where(#clotures-vesuvio-section) #soir-card-mypos-add {
+  flex: 0 0 auto; min-height: 48px; padding: 8px 14px;
+  background-color: var(--color-soir-card-accent); color: #ffffff;
+}
+#soir-card-mypos-list { margin: 8px 0 0; padding-left: 0; list-style: none; }

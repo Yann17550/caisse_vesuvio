@@ -1,0 +1,10 @@
+/* Variables communes à toutes les applications. */
+:root {
+  --color-background: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-text: #1f2933;
+  --color-muted: #6b7280;
+  --color-border: #d8dee4;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

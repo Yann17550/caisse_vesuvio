@@ -1,0 +1,51 @@
+/* Formulaires partagés, limités à l’application de clôture. */
+:where(#clotures-vesuvio-section) .card { display: flex; flex-direction: column; gap: 16px; }
+:where(#clotures-vesuvio-section) fieldset {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+:where(#clotures-vesuvio-section) legend { padding: 0 6px; font-weight: 700; }
+:where(#clotures-vesuvio-section) .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+:where(#clotures-vesuvio-section) label { font-weight: 600; }
+:where(#clotures-vesuvio-section) input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+:where(#clotures-vesuvio-section) input:focus { outline: 2px solid var(--color-midi); outline-offset: 1px; }
+:where(#clotures-vesuvio-section) button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-midi);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+:where(#clotures-vesuvio-section) button:hover { filter: brightness(0.95); }
+:where(#clotures-vesuvio-section) button:disabled { opacity: 0.6; cursor: not-allowed; }
+:where(#clotures-vesuvio-section) .champ-formulaire { display: flex; flex-direction: column; gap: 4px; }
+:where(#clotures-vesuvio-section) .champ-formulaire label { font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
+:where(#clotures-vesuvio-section) .champ-formulaire input {
+  width: 100%; min-height: 48px; padding: 8px 10px;
+  border: 1px solid var(--color-border); border-radius: 8px; font-size: 16px;
+}
+:where(#clotures-vesuvio-section) .champ-formulaire input[inputmode="decimal"] { text-align: right; }
+:where(#clotures-vesuvio-section) .champ-formulaire input[inputmode="numeric"] { text-align: center; }
+:where(#clotures-vesuvio-section) .form-actions { display: flex; gap: 8px; }
+:where(#clotures-vesuvio-section) .form-actions button { flex: 1; }
+:where(#clotures-vesuvio-section) .form-actions button[type="submit"] { background-color: var(--color-success); }
+@media (min-width: 640px) {
+  :where(#clotures-vesuvio-section) .champ-formulaire { gap: 6px; }
+}

@@ -1,0 +1,68 @@
+/* Header commun : titre centré et retour à la page 1. */
+.app-header {
+  padding: 16px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.app-header .header-ligne-permanente {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  width: 100%;
+  min-height: 44px;
+}
+.app-header .header-ligne-permanente h1 {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-size: clamp(1.15rem, 4vw, 1.4rem);
+  line-height: 1.25;
+  text-align: center;
+}
+body.accueil-actif .app-header .header-ligne-permanente h1 {
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.app-header #service-accueil-button {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  flex: none;
+  width: auto;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: none;
+  cursor: pointer;
+}
+.app-header #service-accueil-button:hover {
+  background-color: var(--color-background);
+}
+.app-header #service-accueil-button:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+@media (max-width: 360px) {
+  .app-header { padding: 12px; }
+  .app-header .header-ligne-permanente { column-gap: 4px; }
+  .app-header #service-accueil-button {
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 0.7rem;
+  }
+}
+@media (min-width: 640px) {
+  .app-header { padding: 20px 24px; }
+}

@@ -1,0 +1,18 @@
+/* Page ANCV papier du Soir. */
+#soir-page-ancv { background-color: var(--color-soir-ancv); }
+.soir-nav-button.is-active[data-soir-page="ancv"] { background-color: var(--color-soir-ancv-accent); color: #ffffff; }
+#soir-ancv-form fieldset, #soir-ancv-form { display: flex; flex-direction: column; gap: 10px; }
+.soir-ancv-values { display: flex; gap: 2%; }
+:where(#clotures-vesuvio-section) .soir-ancv-value-button {
+  flex: 1; min-width: 0; padding: 10px 0; border: 1px solid #ccc;
+  border-radius: 8px; background: #fff; color: #333; font-size: 1rem;
+}
+:where(#clotures-vesuvio-section) .soir-ancv-value-button.is-active { background: #0066cc; color: #fff; border-color: #0066cc; }
+.soir-ancv-entry { display: flex; gap: 2%; }
+:where(#clotures-vesuvio-section) .soir-ancv-entry input {
+  flex: 1; min-width: 0; text-align: center; padding: 10px; font-size: 1rem;
+  border: 1px solid var(--color-border); border-radius: 8px;
+}
+.soir-ancv-entry .button { flex: 0 0 30%; }
+#soir-page-ancv .hidden-value { display: none; }
+#soir-ancv-list { margin: 0; padding-left: 0; list-style: none; }
