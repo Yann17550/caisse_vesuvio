@@ -1,12 +1,63 @@
-/* Navigation des cinq pages du Soir, y compris dans le header. */
-.soir-navigation { display: flex; gap: 6px; margin-bottom: 16px; }
-.soir-nav-button {
-  flex: 1; min-width: 0; min-height: 44px; padding: 10px 4px;
-  border: none; border-radius: 8px; background-color: var(--color-midi);
-  color: #ffffff; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+/* =========================================================
+   FICHIER : css/clotures/clotures-vesuvio/soir/navigation.css
+   RÔLE : navigation entre les cinq pages du service Soir.
+   Ces boutons apparaissent notamment dans le header de la page A1.
+   ========================================================= */
+
+/* Conteneur des boutons de navigation du Soir :
+   CB, Espèces, ANCV, Chèques et Récapitulatif.
+   Les boutons sont placés côte à côte. */
+.soir-navigation {
+  display: flex;          /* Les boutons sont alignés horizontalement. */
+  gap: 6px;               /* Espace de 6 pixels entre chaque bouton. */
+  margin-bottom: 16px;    /* Espace de 16 pixels sous le groupe de boutons. */
 }
-.soir-nav-button:hover { filter: brightness(0.95); }
-.soir-nav-button:disabled { opacity: 0.6; cursor: not-allowed; }
-.soir-nav-button.is-active { font-weight: 700; }
-.app-header .soir-navigation { max-width: 100%; margin: 12px 0 0; }
-@media (min-width: 640px) { .soir-navigation { gap: 8px; } }
+
+/* Style commun aux cinq boutons de navigation du Soir. */
+.soir-nav-button {
+  flex: 1;                /* Chaque bouton prend une part égale de la largeur disponible. */
+  min-width: 0;           /* Empêche un bouton de déborder sur un petit écran. */
+  min-height: 44px;       /* Hauteur minimale confortable, notamment pour le tactile. */
+  padding: 10px 4px;      /* Espace intérieur : 10px haut/bas, 4px gauche/droite. */
+  border: none;           /* Aucune bordure autour des boutons. */
+  border-radius: 8px;     /* Coins arrondis de 8 pixels. */
+  background-color: var(--color-midi); /* Fond orange, défini dans variables.css. */
+  color: #ffffff;         /* Texte blanc. */
+  font-size: 0.85rem;     /* Texte légèrement réduit pour tenir dans les boutons. */
+  font-weight: 600;       /* Texte semi-gras. */
+  white-space: nowrap;    /* Empêche le texte de passer sur deux lignes. */
+  cursor: pointer;        /* Curseur en forme de main au survol. */
+}
+
+/* Effet visuel lorsque la souris passe sur un bouton :
+   le fond devient légèrement plus sombre. */
+.soir-nav-button:hover {
+  filter: brightness(0.95);
+}
+
+/* État d’un bouton désactivé :
+   il reste visible mais paraît moins important et n’est pas cliquable. */
+.soir-nav-button:disabled {
+  opacity: 0.6;           /* Le bouton est partiellement transparent. */
+  cursor: not-allowed;    /* Le curseur indique que l’action n’est pas disponible. */
+}
+
+/* Bouton correspondant à la page actuellement affichée.
+   Le JavaScript ajoute la classe « is-active » à ce bouton. */
+.soir-nav-button.is-active {
+  font-weight: 700;       /* Le texte du bouton actif est plus gras. */
+}
+
+/* Adaptation du groupe de boutons lorsqu’il est placé dans le header. */
+.app-header .soir-navigation {
+  max-width: 100%;        /* Le groupe ne dépasse jamais la largeur du header. */
+  margin: 12px 0 0;       /* Espace de 12 pixels au-dessus du groupe. */
+}
+
+/* Sur les écrans d’au moins 640 pixels de large,
+   l’espace entre les boutons passe de 6 à 8 pixels. */
+@media (min-width: 640px) {
+  .soir-navigation {
+    gap: 8px;
+  }
+}

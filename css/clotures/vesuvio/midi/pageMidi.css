@@ -27,3 +27,8 @@
   background-color: var(--color-success); color: #ffffff; font-size: 1.05rem; font-weight: 700;
 }
 @media (min-width: 640px) { .midi-grid { gap: 14px; } }
+
+/* Total MyPos du Midi : padding spécifique conservé. */
+:where(#clotures-vesuvio-section) .midi-mypos .recap-line {
+  padding: 8px 10px;
+}

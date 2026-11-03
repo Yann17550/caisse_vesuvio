@@ -5,7 +5,22 @@
 :where(#clotures-vesuvio-section) #soir-recap-form fieldset { padding: 10px; }
 #soir-recap-form fieldset:nth-of-type(2) .recap-line + .recap-line {
   margin-top: 10px; padding-top: 10px; border-top: 1px solid #dddddd;
+}/* Couleurs des blocs du Récapitulatif. */
+#soir-recap-form fieldset:nth-of-type(1) {
+  background-color: #eaf2fb;
+  border-color: #b9d4ee;
 }
+
+#soir-recap-form fieldset:nth-of-type(2) {
+  background-color: #fdf6e3;
+  border-color: #f0e0b0;
+}
+
+#soir-recap-form fieldset:nth-of-type(3) {
+  background-color: #f1edf8;
+  border-color: #d8cceb;
+}
+
 .soir-recap-grid.deux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .soir-recap-grid.trois { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 :where(#clotures-vesuvio-section) .soir-recap-grid .form-field { display: flex; flex-direction: column; gap: 4px; }
@@ -16,8 +31,16 @@
 :where(#clotures-vesuvio-section) #soir-recap-tva-fieldset { background-color: #f4f4f4; border-color: #d9d9d9; }
 :where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-ok { background-color: #d4edda; border-color: #a3cfaf; }
 :where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error { background-color: #fee2e2; border-color: #dc2626; }
+/* TVA en erreur : fond rouge vif, titre et libellés en blanc. */
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error {
+  background-color: #dc2626;
+  border-color: #b91c1c;
+}
+
 :where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error legend,
-:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error label { color: #dc2626; }
+:where(#clotures-vesuvio-section) #soir-recap-tva-fieldset.tva-error label {
+  color: #ffffff;
+}
 #soir-recap-tva-fieldset .recap-line { margin-top: 12px; padding-top: 10px; border-top: 1px solid #dddddd; }
 #soir-recap-tva-fieldset .recap-line span { font-size: 0.9rem; font-weight: 600; color: var(--color-muted); }
 #soir-recap-tva-fieldset .recap-line strong { font-size: 1rem; font-variant-numeric: tabular-nums; }

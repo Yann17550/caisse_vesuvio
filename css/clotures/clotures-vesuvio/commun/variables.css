@@ -1,20 +1,81 @@
-/* Palette propre à l’application Clôtures Vesuvio. */
+/* =========================================================
+   FICHIER : css/clotures/clotures-vesuvio/commun/variables.css
+   RÔLE : couleurs propres à l’application Clôtures Vesuvio.
+   Ces variables sont utilisées par les autres feuilles CSS
+   avec la syntaxe var(--nom-de-la-variable).
+   ========================================================= */
+
 :root {
+  /* -------------------------------------------------------
+     COULEURS DES SERVICES
+     ------------------------------------------------------- */
+
+  /* Couleur principale du service Midi.
+     Utilisée notamment pour le fond du bouton Midi sélectionné. */
   --color-midi: #b45309;
+
+  /* Couleur douce du service Midi.
+     Réservée aux fonds ou accents plus clairs liés au Midi. */
   --color-midi-soft: #f79c47;
+
+  /* Fond très clair réservé à la zone ou aux éléments MyPOS du Midi. */
   --color-midi-mypos-soft: #f3edd5;
+
+  /* Couleur principale du service Soir.
+     Utilisée notamment pour le fond du bouton Soir sélectionné. */
   --color-soir: #2563eb;
+
+  /* Couleur douce du service Soir.
+     Réservée aux fonds ou accents plus clairs liés au Soir. */
   --color-soir-soft: #bfdbfe;
+
+  /* -------------------------------------------------------
+     ÉTATS ET MESSAGES
+     ------------------------------------------------------- */
+
+  /* Vert utilisé pour les validations, succès ou totaux positifs. */
   --color-success: #15803d;
+
+  /* Rouge utilisé pour les erreurs, alertes ou écarts de contrôle. */
   --color-danger: #b91c1c;
+
+  /* -------------------------------------------------------
+     FONDS DES PAGES DU SERVICE SOIR
+     ------------------------------------------------------- */
+
+  /* Fond de la page Cartes bancaires du Soir. */
   --color-soir-card: #dbeafe;
+
+  /* Fond de la page Espèces du Soir. */
   --color-soir-cash: #dcfce7;
+
+  /* Fond de la page ANCV du Soir. */
   --color-soir-ancv: #ffedd5;
+
+  /* Fond de la page Chèques du Soir. */
   --color-soir-checks: #ede9fe;
+
+  /* Fond de la page Récapitulatif du Soir. */
   --color-soir-recap: #e5e7eb;
+
+  /* -------------------------------------------------------
+     COULEURS D’ACCENT DES PAGES DU SERVICE SOIR
+     -------------------------------------------------------
+     Ces couleurs servent aux titres, bordures ou éléments
+     visuels distinctifs de chaque page du Soir. */
+
+  /* Accent de la page Cartes bancaires. */
   --color-soir-card-accent: #2563eb;
+
+  /* Accent de la page Espèces. */
   --color-soir-cash-accent: #15803d;
+
+  /* Accent de la page ANCV. */
   --color-soir-ancv-accent: #ea580c;
+
+  /* Accent de la page Chèques. */
   --color-soir-checks-accent: #7c3aed;
+
+  /* Accent de la page Récapitulatif. */
   --color-soir-recap-accent: #374151;
 }
